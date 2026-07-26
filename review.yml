@@ -1,0 +1,438 @@
+aid: nokia-network-as-code
+name: Nokia Network as Code
+review:
+  question: >-
+    Does Nokia Network as Code expose a real, self-serve developer surface for
+    CAMARA network APIs, and can a machine-readable contract be obtained
+    without a sales conversation?
+  answer: true
+  date: '2026-07-25'
+  reviewer: API Evangelist
+  tier: network-api-exposure
+  homeMarket: Finland
+findings:
+  summary: >-
+    Nokia Network as Code is one of the very few organisations in the
+    network-API-exposure tier where the marketing claim and the callable
+    surface actually line up. Two complete OpenAPI documents were harvested
+    verbatim from Nokia's public Apache-2.0 GitHub repository
+    (nokia/network-as-code-sdks): a 58-path / 78-operation gateway export and a
+    52-path / 70-operation CAMARA-conformant document declaring
+    x-camara-commonalities 0.4.0. Generated Python and TypeScript SDKs ship on
+    PyPI and npm at version 10.0.0. Signup at networkascode.nokia.io is open and
+    self-serve, and the hub advertises two public plans, DEFAULT and SIMULATOR —
+    a simulator tier, not only a sales conversation. The honest caveats are
+    real too: the developer console at /console redirects to /auth/login, the
+    portal's own specification viewer is switched off
+    (NEXT_PUBLIC_SHOW_SPECS = "false" in the page environment), the docs site is
+    a client-rendered SPA that returns HTTP 200 for literally any /docs/* slug
+    and serves no crawlable content to a non-JavaScript client, and production
+    traffic in any given market only works where Nokia holds a commercial
+    agreement with that market's operator. The whole developer platform is a
+    white-labelled RapidAPI Enterprise Hub — the gateway host is
+    network-as-code.p-eu.rapidapi.com, not a Nokia-owned API hostname, and the
+    hub's own build scripts fetch the OpenAPI via RapidAPI's GraphQL
+    exportOpenApi query.
+  developerPortal:
+    url: https://networkascode.nokia.io/
+    httpStatus: 200
+    verdict: real self-serve portal
+    gatedElements:
+      - path: /console
+        httpStatus: 200
+        redirectsTo: https://networkascode.nokia.io/auth/login?referral=%2Fconsole
+        note: API catalogue and console require an account.
+      - note: >-
+          In-portal OpenAPI viewer disabled; page environment sets
+          NEXT_PUBLIC_SHOW_SPECS to "false". The specs are nevertheless
+          published openly on GitHub.
+      - note: >-
+          Live network access per market is contingent on Nokia's commercial
+          agreement with the operator serving that market.
+    openSignup:
+      url: https://networkascode.nokia.io/auth/sign-up
+      httpStatus: 200
+    publicPlans:
+      - DEFAULT
+      - SIMULATOR
+    platform: >-
+      RapidAPI Enterprise Hub, white-labelled. Confirmed from the page
+      environment (NEXT_PUBLIC_RAPID_HUB_HOST), the served robots.txt (which is
+      RapidAPI's, listing rapidapi.com sitemaps), and the enterprise-docs
+      .rapidapi.com help links embedded in the hub shell.
+    docsCaveat: >-
+      https://networkascode.nokia.io/docs is a Next.js SPA. Any /docs/<slug>
+      returns HTTP 200 with an identical 155 KB React flight payload — a
+      deliberately bogus slug is byte-comparable to /docs/getting-started — so
+      documentation content is not server-rendered and is not machine
+      readable. Only /docs, /docs/getting-started and /docs/mcp-server are
+      confirmed real by being linked from the homepage markup.
+  openapi:
+    downloadable: true
+    count: 2
+    portalDownload: false
+    specs:
+      - file: openapi/nokia-network-as-code-platform-openapi.json
+        sourceURL: https://raw.githubusercontent.com/nokia/network-as-code-sdks/main/openapi/rapid-spec-oas.json
+        httpStatus: 200
+        fetched: '2026-07-25'
+        bytes: 2039244
+        openapi: 3.0.0
+        paths: 58
+        operations: 78
+        title: Network as Code
+        server: https://network-as-code.p-eu.rapidapi.com
+        parses: true
+        note: >-
+          RapidAPI gateway export of the single Network as Code API. Declared
+          security is ApiKeyAuth via the x-rapidapi-key header.
+      - file: openapi/nokia-network-as-code-camara-openapi.yml
+        sourceURL: https://raw.githubusercontent.com/nokia/network-as-code-sdks/main/openapi/Single-NaC-API-OAS.yaml
+        httpStatus: 200
+        fetched: '2026-07-25'
+        bytes: 610241
+        openapi: 3.0.3
+        paths: 52
+        operations: 70
+        title: Network as Code
+        parses: true
+        note: >-
+          CAMARA-conformant consolidated document; info.x-camara-commonalities
+          is 0.4.0, licence Apache 2.0, contact
+          support.networkascode@nokia.com, declared security
+          oAuth2ClientCredentials with an openIdConnect scheme.
+    provenanceNote: >-
+      Neither spec is downloadable from the developer portal itself. Both were
+      harvested from the public, Apache-2.0-licensed Nokia GitHub repository
+      that generates the SDKs. The repository's fetch-and-cleanup-spec.sh shows
+      the upstream source is an authenticated RapidAPI GraphQL exportOpenApi
+      call against the Nokia tenant.
+  camara:
+    posture: >-
+      Direct CAMARA implementer and multi-operator aggregator with callable,
+      publicly specified APIs — not a press release. Seventeen CAMARA API
+      families are present as real paths in the harvested specification,
+      including a dedicated /passthrough/camara/v1/* proxy namespace, and the
+      consolidated document declares CAMARA Commonalities 0.4.0.
+    evidenceLevel: implementation
+    apisWithEvidence:
+      - name: Number Verification
+        paths:
+          - /passthrough/camara/v1/number-verification/number-verification/v0/verify
+          - /passthrough/camara/v1/number-verification/number-verification/v0/device-phone-number
+          - /passthrough/camara/v1/number-verification/number-verification/v2/verify
+          - /passthrough/camara/v1/number-verification/number-verification/v2/device-phone-number
+      - name: SIM Swap
+        paths:
+          - /passthrough/camara/v1/sim-swap/sim-swap/v0/check
+          - /passthrough/camara/v1/sim-swap/sim-swap/v0/retrieve-date
+      - name: Device Swap
+        paths:
+          - /passthrough/camara/v1/device-swap/device-swap/v1/check
+          - /passthrough/camara/v1/device-swap/device-swap/v1/retrieve-date
+      - name: Device Location Retrieval
+        paths:
+          - /location-retrieval/v0/retrieve
+      - name: Location Verification
+        paths:
+          - /location-verification/v0/verify
+          - /location-verification/v1/verify
+      - name: Geofencing Subscriptions
+        paths:
+          - /geofencing-subscriptions/v0.3/subscriptions
+          - /geofencing-subscriptions/v0.3/subscriptions/{subscriptionId}
+      - name: Device Status - Reachability
+        paths:
+          - /device-status/device-reachability-status/v1/retrieve
+          - /device-status/device-reachability-status-subscriptions/v0.7/subscriptions
+          - /device-status/device-reachability-status-subscriptions/v0.8/subscriptions
+          - /device-status/v0/connectivity
+      - name: Device Status - Roaming
+        paths:
+          - /device-status/device-roaming-status/v1/retrieve
+          - /device-status/device-roaming-status-subscriptions/v0.7/subscriptions
+          - /device-status/device-roaming-status-subscriptions/v0.8/subscriptions
+          - /device-status/v0/roaming
+      - name: Quality on Demand (QoD)
+        paths:
+          - /quality-on-demand/v1/sessions
+          - /quality-on-demand/v1/sessions/{sessionId}/extend
+          - /quality-on-demand/v1/retrieve-sessions
+          - /qod/v0/sessions
+      - name: KYC Match
+        paths:
+          - /passthrough/camara/v1/kyc-match/kyc-match/v0.3/match
+      - name: KYC Age Verification
+        paths:
+          - /passthrough/camara/v1/kyc-age-verification/kyc-age-verification/v0.1/verify
+      - name: KYC Fill-in
+        paths:
+          - /passthrough/camara/v1/kyc-fill-in/kyc-fill-in/v0.4/fill-in
+      - name: KYC Tenure
+        paths:
+          - /passthrough/camara/v1/kyc-tenure/kyc-tenure/v0.1/check-tenure
+      - name: Call Forwarding Signal
+        paths:
+          - /passthrough/camara/v1/call-forwarding-signal/call-forwarding-signal/v0.3/call-forwardings
+          - /passthrough/camara/v1/call-forwarding-signal/call-forwarding-signal/v0.3/unconditional-call-forwardings
+        note: CAMARA's anti-fraud / scam-signal family.
+      - name: Number Recycling
+        paths:
+          - /passthrough/camara/v1/number-recycling/number-recycling/v0.2/check
+      - name: Consent Info
+        paths:
+          - /passthrough/camara/v1/consent-info/consent-info/v0.1/retrieve
+      - name: Congestion Insights
+        paths:
+          - /congestion-insights/v0/query
+          - /congestion-insights/v0/subscriptions
+    camaraApisNotFound:
+      - Carrier Billing
+      - Population Density Data
+      - Simple Edge Discovery / Edge Cloud
+    marketedButNotInSpec:
+      - capability: Population Density Data
+        note: Advertised as a Network Intelligence capability; no path in either harvested spec.
+      - capability: Network Aware Route Optimization
+        note: Advertised as a Network Intelligence capability; no path in either harvested spec.
+      - capability: eSIM Provisioning
+        note: >-
+          Advertised as a Programmable Connectivity capability and backed by a
+          Tata Communications MOVE agreement announced at MWC 2026; no eSIM
+          path in either harvested spec.
+    nonCamaraNetworkApis:
+      - name: Network Slice Management (Nokia "Specialized Networks")
+        paths:
+          - /slice/v1/slices
+          - /slice/v1/slices/{id}/activate
+          - /slice/v1/slices/{id}/deactivate
+          - /device-attach/v0/attachments
+        note: >-
+          Nokia-defined slicing surface. No CAMARA provenance was confirmed for
+          these paths, so they are recorded outside the CAMARA list.
+  openGateway:
+    participant: true
+    role: >-
+      Vendor and platform participant rather than an operator signatory. Nokia
+      is not itself a mobile network operator and therefore does not appear on
+      GSMA's operator commitment list; it publishes GSMA Open Gateway guest
+      material, and its Network as Code platform hosted the GSMA Open Gateway
+      Hackathon at MWC 2026 with winners announced at DevCon.
+    sources:
+      - https://www.gsma.com/solutions-and-impact/gsma-open-gateway/open-gateway-guest-blog-nokia-the-role-of-the-operator-platform-in-implementing-network-apis/
+      - https://www.nokia.com/newsroom/nokia-expands-network-as-code-ecosystem-advances-api-based-agentic-ai-with-google-cloud-mwc26/
+  aduna:
+    reachesMarketThroughAduna: false
+    note: >-
+      No Aduna relationship was found. Nokia Network as Code is the direct
+      competitor to Aduna, the Ericsson-led carrier joint venture — it is
+      Nokia's own aggregation channel. Nokia's secondary channel is Google
+      Cloud Marketplace, where three network APIs were listed in July 2025,
+      extended at MWC 2026 into an agentic-AI partnership using Google's Agent
+      Development Kit and Gemini over MCP.
+  tmforum:
+    conformanceCertificationFound: false
+    evidence: >-
+      The hub's own tag taxonomy defines a tag named "Source" described as
+      "Source organization of the API" with the values ["TMF", "CAMARA"],
+      showing the platform is built to carry TM Forum-sourced APIs alongside
+      CAMARA ones. No TM Forum Open API path appears in either harvested
+      specification, and no TM Forum Open API conformance certificate was
+      confirmed for the Network as Code product during this review. Nokia
+      states that its operator-side Network Exposure Platform supports TM Forum
+      Open APIs; that is a vendor claim, not a verified certification.
+  threeGPP:
+    nefOrScefSurface: false
+    note: >-
+      Nokia's Network Exposure Platform (NEP) is the operator-side 3GPP
+      exposure component that sits beneath Network as Code and is deployed in
+      operator cores (announced with Globe and TELUS). NEP itself publishes no
+      public API, and no NEF or SCEF endpoint appears in either harvested
+      specification.
+    networkSlicing: true
+    edgeOrMec: false
+  auth:
+    gatewayScheme:
+      type: apiKey
+      in: header
+      name: x-rapidapi-key
+      note: >-
+        Declared as the document-level security requirement (ApiKeyAuth) in the
+        harvested gateway specification. This is the RapidAPI Enterprise Hub
+        key, not a Nokia-issued credential.
+    platformScheme:
+      type: oauth2
+      flow: client_credentials
+      note: >-
+        The CAMARA document declares oAuth2ClientCredentials as its global
+        security requirement plus an openIdConnect scheme. The gateway
+        specification exposes GET /oauth2/v1/auth/clientcredentials, GET
+        /oauth2/v1/apps/{nac_app_ref}/.well-known/jwks.json, GET
+        /.well-known/openid-configuration and GET
+        /.well-known/oauth-authorization-server.
+    camaraTokenModel: >-
+      CAMARA two-legged and three-legged access tokens are both described in
+      operation and schema documentation — a phoneNumber must be supplied with
+      a two-legged token and MUST NOT be supplied with a three-legged token,
+      which returns 422 UNNECESSARY_IDENTIFIER. Purpose-bound scopes appear
+      throughout (the string "purpose" occurs 55 times).
+    ciba:
+      present: false
+      note: >-
+        No occurrence of CIBA, backchannel authentication, or bc-authorize in
+        either harvested specification. Network-initiated authorization is
+        implied by the three-legged token model but the CIBA flow itself is not
+        documented in the published contracts.
+    wellKnownAnonymous:
+      - url: https://network-as-code.p-eu.rapidapi.com/.well-known/openid-configuration
+        httpStatus: 404
+        body: '{"message":"API doesn''t exists"}'
+      - url: https://network-as-code.p-eu.rapidapi.com/.well-known/oauth-authorization-server
+        httpStatus: 429
+        body: '{"message":"Too many requests"}'
+      - url: https://networkascode.nokia.io/.well-known/openid-configuration
+        httpStatus: 404
+      - url: https://networkascode.nokia.io/.well-known/oauth-authorization-server
+        httpStatus: 404
+    verdict: >-
+      Two-layer authentication: a RapidAPI gateway API key for the channel, and
+      OAuth2 client-credentials / OIDC tokens for the network capability. No
+      well-known document is anonymously retrievable.
+  webhooks:
+    present: true
+    pattern: >-
+      CAMARA subscription model. Subscription resources carry a sink URL plus a
+      sinkCredential object (credentialType ACCESSTOKEN); notifications are
+      CloudEvents. The strings sink and notificationUrl occur 279 and 103 times
+      respectively in the gateway specification, and CloudEvents is referenced
+      throughout.
+    subscriptionSurfaces:
+      - /device-status/device-reachability-status-subscriptions/v0.7|v0.8/subscriptions
+      - /device-status/device-roaming-status-subscriptions/v0.7|v0.8/subscriptions
+      - /device-status/v0/subscriptions
+      - /geofencing-subscriptions/v0.3/subscriptions
+      - /congestion-insights/v0/subscriptions
+    asyncapiPublished: false
+  sdks:
+    packages:
+      - language: Python
+        package: network_as_code
+        registry: PyPI
+        url: https://pypi.org/project/network-as-code/
+        latestVersion: 10.0.0
+        releases: 24
+        httpStatus: 200
+      - language: TypeScript
+        package: network-as-code
+        registry: npm
+        url: https://registry.npmjs.org/network-as-code
+        latestVersion: 10.0.0
+        versions: 23
+    generation: >-
+      Both SDKs are generated with Fern from the OpenAPI specification
+      (fern/generators.yml pins fern-typescript-sdk 3.64.1 and fern-python-sdk
+      5.5.6). Source repository nokia/network-as-code-sdks, Apache-2.0, last
+      pushed 2026-06-05.
+  mcp:
+    present: true
+    docsURL: https://networkascode.nokia.io/docs/mcp-server
+    serverHost: https://mcp.prodeu.apihub.nokia.io
+    hostHttpStatus: 200
+    hostResponse: '{"version":"0.1.12-13474f4"}'
+    note: >-
+      The MCP host is live and returns a version document at its root, but no
+      MCP transport path was reachable anonymously — /mcp, /sse and the MCP
+      OAuth well-known documents all return 404, and a JSON-RPC initialize POST
+      returns 404. The hub advertises install targets for Claude Desktop,
+      Claude Code, Cursor and VS Code and enables an mcp_playground flag, so
+      the server is presumed to be session- or key-scoped per tenant.
+  graphql:
+    firstPartyPublicEndpoint: false
+    note: >-
+      The only GraphQL surface found is RapidAPI's own platform API
+      (graphql-platform.p-eu.rapidapi.com), used by Nokia's build script with
+      an authenticated exportOpenApi query. Not a Nokia developer-facing API.
+  postman:
+    publicWorkspaceFound: false
+  operatorFootprint:
+    note: >-
+      Named partners from Nokia's MWC 2026 release; more than 75 partners are
+      claimed in total across telecom providers, CPaaS platforms, systems
+      integrators and vertical ISVs.
+    operators:
+      - name: Deutsche Telekom
+        detail: Number Verification deployed on DT's network for Blocksport SuperApps, replacing OTPs.
+      - name: Globe Telecom (Philippines)
+        detail: Full NEP API portfolio; Silent Network Authentication (Number Verification) adopted by Philippine banks under Globe's G Verify.
+      - name: Orange (France, Spain)
+        detail: Framework contract; identity, anti-fraud and network insights APIs commercially available via NaC.
+      - name: Rakuten Mobile
+        detail: Exploring Number Verification for partner fraud prevention.
+      - name: Tata Communications
+        detail: Network Fabric plus MOVE eSIM capabilities being integrated into NaC for IoT.
+      - name: Telefónica
+        detail: Testing A2A and MCP protocols with Nokia for agentic exposure of network capability.
+      - name: TELUS
+        detail: NEP deployment plus Number Verification, SIM Swap and Quality on Demand.
+      - name: Vodafone
+        detail: Commercial agreements for UK, Netherlands, Germany, Spain and Greece opcos; anti-fraud and identity APIs first.
+  transports:
+    - protocol: REST
+      scheme: https
+      baseURL: https://network-as-code.p-eu.rapidapi.com
+      documented: true
+    - protocol: Webhook
+      scheme: https
+      documented: true
+      note: CAMARA sink + CloudEvents subscription notifications; consumer-hosted endpoint.
+    - protocol: MCP
+      scheme: https
+      baseURL: https://mcp.prodeu.apihub.nokia.io
+      documented: true
+      anonymouslyReachable: false
+    - protocol: GraphQL
+      documented: false
+    - protocol: gRPC
+      documented: false
+    - protocol: WebSocket
+      documented: false
+sources:
+  - url: https://networkascode.nokia.io/
+    type: Portal
+    httpStatus: 200
+    note: Marketing plus product entry; claims 20+ network APIs, 70+ ecosystem partners.
+  - url: https://networkascode.nokia.io/docs
+    type: Documentation
+    httpStatus: 200
+    note: Client-rendered RapidAPI Enterprise Hub SPA; identical payload for every slug.
+  - url: https://networkascode.nokia.io/console
+    type: Console
+    httpStatus: 200
+    note: Redirects to /auth/login?referral=%2Fconsole.
+  - url: https://networkascode.nokia.io/robots.txt
+    type: Robots
+    httpStatus: 200
+    note: Served file is RapidAPI's, listing rapidapi.com sitemaps — evidence of the white-label hub.
+  - url: https://github.com/nokia/network-as-code-sdks
+    type: SourceCode
+    httpStatus: 200
+    note: Apache-2.0. Contains both harvested OpenAPI documents, the Fern generator config, and fetch-and-cleanup-spec.sh.
+  - url: https://raw.githubusercontent.com/nokia/network-as-code-sdks/main/openapi/rapid-spec-oas.json
+    type: OpenAPI
+    httpStatus: 200
+  - url: https://raw.githubusercontent.com/nokia/network-as-code-sdks/main/openapi/Single-NaC-API-OAS.yaml
+    type: OpenAPI
+    httpStatus: 200
+  - url: https://pypi.org/project/network-as-code/
+    type: SDK
+    httpStatus: 200
+  - url: https://www.nokia.com/newsroom/nokia-expands-network-as-code-ecosystem-advances-api-based-agentic-ai-with-google-cloud-mwc26/
+    type: PressRelease
+    httpStatus: 200
+    note: MWC 2026 ecosystem expansion; operator list and Google Cloud agentic-AI partnership.
+  - url: https://www.nokia.com/programmable-networks/network-as-code/
+    type: Product
+    httpStatus: 200
+  - url: https://mcp.prodeu.apihub.nokia.io
+    type: MCP
+    httpStatus: 200
