@@ -1,0 +1,2187 @@
+generated: '2026-07-25'
+method: generated
+source: openapi/nokia-network-as-code-camara-openapi.yml, openapi/nokia-network-as-code-platform-openapi.json
+description: Recommended x-agentic-access execution contracts, classified heuristically from
+  the OpenAPI. A governance starting point for exposing this API to AI agents — review and bind
+  audience per deployment. See research/curity/agentic-governance/.
+summary:
+  operations: 148
+  by_action_class:
+    acting: 97
+    connected: 51
+  by_consequence:
+    write: 97
+    read: 51
+  human_in_the_loop_required: 0
+operations:
+- path: /geofencing-subscriptions/v0.3/subscriptions
+  method: post
+  operationId: createSubscription
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - geofencing-subscriptions:org.camaraproject.geofencing-subscriptions.v0.area-entered:create
+    - geofencing-subscriptions:org.camaraproject.geofencing-subscriptions.v0.area-left:create
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /geofencing-subscriptions/v0.3/subscriptions
+  method: get
+  operationId: retrieveGeofencingSubscriptionList
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - geofencing-subscriptions:read
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /geofencing-subscriptions/v0.3/subscriptions/{subscriptionId}
+  method: get
+  operationId: retrieveGeofencingSubscription
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - geofencing-subscriptions:read
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /geofencing-subscriptions/v0.3/subscriptions/{subscriptionId}
+  method: delete
+  operationId: deleteGeofencingSubscription
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - geofencing-subscriptions:delete
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /location-retrieval/v0/retrieve
+  method: post
+  operationId: retrieveLocation
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - location-retrieval:read
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /location-verification/v1/verify
+  method: post
+  operationId: verifyLocation
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - location-verification:verify
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /location-verification/v0/verify
+  method: post
+  operationId: verifyLocation-LocV-V0
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - location-verification:verify
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /device-status/device-reachability-status/v1/retrieve
+  method: post
+  operationId: getReachabilityStatus
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - device-reachability-status:read
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /device-status/device-roaming-status/v1/retrieve
+  method: post
+  operationId: getRoamingStatus
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - device-roaming-status:read
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /device-status/device-reachability-status-subscriptions/v0.7/subscriptions
+  method: post
+  operationId: createDeviceReachabilityStatusSubscription
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - device-reachability-status-subscriptions:org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data:create
+    - device-reachability-status-subscriptions:org.camaraproject.device-reachability-status-subscriptions.v0.reachability-disconnected:create
+    - device-reachability-status-subscriptions:org.camaraproject.device-reachability-status-subscriptions.v0.reachability-sms:create
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /device-status/device-reachability-status-subscriptions/v0.7/subscriptions
+  method: get
+  operationId: retrieveDeviceReachabilityStatusSubscriptionList
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - device-reachability-status-subscriptions:read
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /device-status/device-reachability-status-subscriptions/v0.7/subscriptions/{subscriptionId}
+  method: get
+  operationId: retrieveDeviceReachabilityStatusSubscription
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - device-reachability-status-subscriptions:read
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /device-status/device-reachability-status-subscriptions/v0.7/subscriptions/{subscriptionId}
+  method: delete
+  operationId: deleteDeviceReachabilityStatusSubscription
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - device-reachability-status-subscriptions:delete
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /device-status/device-roaming-status-subscriptions/v0.7/subscriptions
+  method: post
+  operationId: createDeviceRoamingStatusSubscription
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - device-roaming-status-subscriptions:org.camaraproject.device-roaming-status-subscriptions.v0.roaming-change-country:create
+    - device-roaming-status-subscriptions:org.camaraproject.device-roaming-status-subscriptions.v0.roaming-off:create
+    - device-roaming-status-subscriptions:org.camaraproject.device-roaming-status-subscriptions.v0.roaming-on:create
+    - device-roaming-status-subscriptions:org.camaraproject.device-roaming-status-subscriptions.v0.roaming-status:create
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /device-status/device-roaming-status-subscriptions/v0.7/subscriptions
+  method: get
+  operationId: retrieveDeviceRoamingStatusSubscriptionList
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - device-roaming-status-subscriptions:read
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /device-status/device-roaming-status-subscriptions/v0.7/subscriptions/{subscriptionId}
+  method: get
+  operationId: retrieveDeviceRoamingStatusSubscription
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - device-roaming-status-subscriptions:read
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /device-status/device-roaming-status-subscriptions/v0.7/subscriptions/{subscriptionId}
+  method: delete
+  operationId: deleteDeviceRoamingStatusSubscription
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - device-roaming-status-subscriptions:delete
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /device-status/v0/connectivity
+  method: post
+  operationId: getConnectivityStatus
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - device-status:connectivity:read
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /device-status/v0/roaming
+  method: post
+  operationId: getRoamingStatus-DS-V0
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - device-status:roaming:read
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /device-status/v0/subscriptions
+  method: post
+  operationId: createDeviceStatusSubscription
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - device-status:subscriptions:create
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /device-status/v0/subscriptions
+  method: get
+  operationId: retrieveSubscriptionList
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - device-status:subscriptions:read
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /device-status/v0/subscriptions/{subscriptionId}
+  method: get
+  operationId: retrieveSubscription
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - device-status:subscriptions:read
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /device-status/v0/subscriptions/{subscriptionId}
+  method: delete
+  operationId: deleteSubscription
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - device-status:subscriptions:delete
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /passthrough/camara/v1/number-verification/number-verification/v0/verify
+  method: post
+  operationId: phoneNumberVerify
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - number-verification:verify
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /passthrough/camara/v1/number-verification/number-verification/v0/device-phone-number
+  method: get
+  operationId: phoneNumberShare
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    scope:
+    - number-verification:device-phone-number:read
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /passthrough/camara/v1/kyc-age-verification/kyc-age-verification/v0.1/verify
+  method: post
+  operationId: verifyAge
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - kyc-age-verification:verify
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /passthrough/camara/v1/kyc-match/kyc-match/v0.3/match
+  method: post
+  operationId: verifyKYCMatch
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - kyc-match:match
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /passthrough/camara/v1/kyc-tenure/kyc-tenure/v0.1/check-tenure
+  method: post
+  operationId: checkTenure
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - kyc-tenure:check-tenure
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /passthrough/camara/v1/kyc-fill-in/kyc-fill-in/v0.4/fill-in
+  method: post
+  operationId: kycFillIn
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - kyc-fill-in:address
+    - kyc-fill-in:birthdate
+    - kyc-fill-in:cityOfBirth
+    - kyc-fill-in:country
+    - kyc-fill-in:countryOfBirth
+    - kyc-fill-in:email
+    - kyc-fill-in:familyName
+    - kyc-fill-in:familyNameAtBirth
+    - kyc-fill-in:gender
+    - kyc-fill-in:givenName
+    - kyc-fill-in:houseNumberExtension
+    - kyc-fill-in:idDocument
+    - kyc-fill-in:idDocumentExpiryDate
+    - kyc-fill-in:idDocumentType
+    - kyc-fill-in:locality
+    - kyc-fill-in:middleNames
+    - kyc-fill-in:name
+    - kyc-fill-in:nameKanaHankaku
+    - kyc-fill-in:nameKanaZenkaku
+    - kyc-fill-in:nationality
+    - kyc-fill-in:phoneNumber
+    - kyc-fill-in:postalCode
+    - kyc-fill-in:region
+    - kyc-fill-in:set-all
+    - kyc-fill-in:streetName
+    - kyc-fill-in:streetNumber
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /passthrough/camara/v1/number-recycling/number-recycling/v0.2/check
+  method: post
+  operationId: checkNumberRecycling
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - number-recycling:check
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /passthrough/camara/v1/sim-swap/sim-swap/v0/retrieve-date
+  method: post
+  operationId: retrieveSimSwapDate
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - sim-swap
+    - sim-swap:retrieve-date
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /passthrough/camara/v1/sim-swap/sim-swap/v0/check
+  method: post
+  operationId: checkSimSwap
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - sim-swap
+    - sim-swap:check
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /passthrough/camara/v1/device-swap/device-swap/v1/retrieve-date
+  method: post
+  operationId: retrieveDeviceSwapDate
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - device-swap
+    - device-swap:retrieve-date
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /passthrough/camara/v1/device-swap/device-swap/v1/check
+  method: post
+  operationId: checkDeviceSwap
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - device-swap
+    - device-swap:check
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /qod/v0/sessions
+  method: get
+  operationId: getAllSessions
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /qod/v0/sessions
+  method: post
+  operationId: createSession
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /qod/v0/sessions/{sessionId}
+  method: get
+  operationId: getSession
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /qod/v0/sessions/{sessionId}
+  method: delete
+  operationId: deleteSession
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /qod/v0/sessions/{sessionId}/extend
+  method: post
+  operationId: extendQosSessionDuration
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /qod/v0/retrieve-sessions
+  method: post
+  operationId: retrieveSessions
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /quality-on-demand/v1/sessions
+  method: get
+  operationId: getAllSessions-QoD-V1
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /quality-on-demand/v1/sessions
+  method: post
+  operationId: createSession-QoD-V1
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /quality-on-demand/v1/sessions/{sessionId}
+  method: get
+  operationId: getSession-QoD-V1
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /quality-on-demand/v1/sessions/{sessionId}
+  method: delete
+  operationId: deleteSession-QoD-V1
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /quality-on-demand/v1/sessions/{sessionId}/extend
+  method: post
+  operationId: extendQosSessionDuration-QoD-V1
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /quality-on-demand/v1/retrieve-sessions
+  method: post
+  operationId: retrieveSessions-QoD-V1
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /passthrough/camara/v1/call-forwarding-signal/call-forwarding-signal/v0.3/unconditional-call-forwardings
+  method: post
+  operationId: retrieveUnconditionalCallForwarding
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - call-forwarding-signal:unconditional-call-forwardings:read
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /passthrough/camara/v1/call-forwarding-signal/call-forwarding-signal/v0.3/call-forwardings
+  method: post
+  operationId: retrieveCallForwarding
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - call-forwarding-signal:call-forwardings:read
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /passthrough/camara/v1/consent-info/consent-info/v0.1/retrieve
+  method: post
+  operationId: retrieveStatus
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    scope:
+    - consent-info:retrieve
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /slice/v1/slices
+  method: get
+  operationId: getAllSlices
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /slice/v1/slices
+  method: post
+  operationId: create_slice
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /slice/v1/slices/{id}
+  method: get
+  operationId: get_slice
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /slice/v1/slices/{id}
+  method: delete
+  operationId: delete_slice
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /slice/v1/slices/{id}/activate
+  method: post
+  operationId: activate_slice
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /slice/v1/slices/{id}/deactivate
+  method: post
+  operationId: deactivate_slice
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /device-attach/v0/attachments
+  method: get
+  operationId: getAllAttachmentsStatus
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /device-attach/v0/attachments
+  method: post
+  operationId: attachDevice
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /device-attach/v0/attachments/{resource_id}
+  method: delete
+  operationId: detachDevice
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /device-attach/v0/attachments/{resource_id}
+  method: get
+  operationId: getAttachmentStatus
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /device-attach/v0/attachments/subscribers/{operation}
+  method: post
+  operationId: manageSubscriber
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /congestion-insights/v0/subscriptions
+  method: get
+  operationId: getSubscriptions
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /congestion-insights/v0/subscriptions
+  method: post
+  operationId: createSubscription-ConI-V1
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /congestion-insights/v0/subscriptions/{resource_id}
+  method: get
+  operationId: getSubscription
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /congestion-insights/v0/subscriptions/{resource_id}
+  method: delete
+  operationId: deleteSubscription-ConI-V1
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /congestion-insights/v0/query
+  method: post
+  operationId: fetch
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /oauth2/v1/auth/clientcredentials
+  method: get
+  operationId: get_client_credentials
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /oauth2/v1/apps/{nac_app_ref}/.well-known/jwks.json
+  method: get
+  operationId: get_jwks_apps__nac_app_ref___well_known_jwks_json_get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /.well-known/openid-configuration
+  method: get
+  operationId: get_well_known_oidc_openid_configuration_get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /.well-known/oauth-authorization-server
+  method: get
+  operationId: get_well_known_oauth_oauth_authorization_server_get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /.well-known/security.txt
+  method: get
+  operationId: get_security_txt_security_txt_get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /quality-on-demand/v1/retrieve-sessions
+  method: post
+  operationId: retrieveSessions-QoD-V1
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /device-status/device-roaming-status-subscriptions/v0.8/subscriptions/{subscriptionId}
+  method: get
+  operationId: retrieveDeviceRoamingStatusSubscription-DS-ROS-V080
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /device-status/device-roaming-status-subscriptions/v0.8/subscriptions/{subscriptionId}
+  method: delete
+  operationId: deleteDeviceRoamingStatusSubscription-DS-ROS-V080
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /oauth2/v1/apps/{nac_app_ref}/.well-known/jwks.json
+  method: get
+  operationId: get_jwks_apps__nac_app_ref___well_known_jwks_json_get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /device-status/v0/connectivity
+  method: post
+  operationId: getConnectivityStatus
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /device-status/device-reachability-status-subscriptions/v0.7/subscriptions/{subscriptionId}
+  method: delete
+  operationId: deleteDeviceReachabilityStatusSubscription
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /device-status/device-reachability-status-subscriptions/v0.7/subscriptions/{subscriptionId}
+  method: get
+  operationId: retrieveDeviceReachabilityStatusSubscription
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /device-status/device-reachability-status-subscriptions/v0.7/subscriptions
+  method: get
+  operationId: retrieveDeviceReachabilityStatusSubscriptionList
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /device-status/device-reachability-status-subscriptions/v0.7/subscriptions
+  method: post
+  operationId: createDeviceReachabilityStatusSubscription
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /passthrough/camara/v1/number-verification/number-verification/v0/verify
+  method: post
+  operationId: phoneNumberVerify
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /passthrough/camara/v1/kyc-tenure/kyc-tenure/v0.1/check-tenure
+  method: post
+  operationId: checkTenure
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /.well-known/openid-configuration
+  method: get
+  operationId: get_well_known_oidc_openid_configuration_get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /passthrough/camara/v1/sim-swap/sim-swap/v0/check
+  method: post
+  operationId: checkSimSwap
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /device-attach/v0/attachments
+  method: post
+  operationId: attachDevice
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /device-attach/v0/attachments
+  method: get
+  operationId: getAllAttachmentsStatus
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /device-status/device-roaming-status-subscriptions/v0.7/subscriptions
+  method: get
+  operationId: retrieveDeviceRoamingStatusSubscriptionList
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /device-status/device-roaming-status-subscriptions/v0.7/subscriptions
+  method: post
+  operationId: createDeviceRoamingStatusSubscription
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /device-status/device-roaming-status-subscriptions/v0.7/subscriptions/{subscriptionId}
+  method: delete
+  operationId: deleteDeviceRoamingStatusSubscription
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /device-status/device-roaming-status-subscriptions/v0.7/subscriptions/{subscriptionId}
+  method: get
+  operationId: retrieveDeviceRoamingStatusSubscription
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /passthrough/camara/v1/number-verification/number-verification/v2/verify
+  method: post
+  operationId: phoneNumberVerify-NV-V2
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /slice/v1/slices/{id}/activate
+  method: post
+  operationId: activate_slice
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /location-verification/v0/verify
+  method: post
+  operationId: verifyLocation-LocV-V0
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /slice/v1/slices/{id}/deactivate
+  method: post
+  operationId: deactivate_slice
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /geofencing-subscriptions/v0.3/subscriptions/{subscriptionId}
+  method: delete
+  operationId: deleteGeofencingSubscription
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /geofencing-subscriptions/v0.3/subscriptions/{subscriptionId}
+  method: get
+  operationId: retrieveGeofencingSubscription
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /passthrough/camara/v1/number-recycling/number-recycling/v0.2/check
+  method: post
+  operationId: checkNumberRecycling
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /qod/v0/sessions/{sessionId}/extend
+  method: post
+  operationId: extendQosSessionDuration
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /device-status/v0/subscriptions
+  method: post
+  operationId: createDeviceStatusSubscription
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /device-status/v0/subscriptions
+  method: get
+  operationId: retrieveSubscriptionList
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /quality-on-demand/v1/sessions/{sessionId}
+  method: delete
+  operationId: deleteSession-QoD-V1
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /quality-on-demand/v1/sessions/{sessionId}
+  method: get
+  operationId: getSession-QoD-V1
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /device-status/v0/roaming
+  method: post
+  operationId: getRoamingStatus-DS-V0
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /qod/v0/sessions/{sessionId}
+  method: get
+  operationId: getSession
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /qod/v0/sessions/{sessionId}
+  method: delete
+  operationId: deleteSession
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /passthrough/camara/v1/kyc-age-verification/kyc-age-verification/v0.1/verify
+  method: post
+  operationId: verifyAge
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /device-status/device-reachability-status-subscriptions/v0.8/subscriptions/{subscriptionId}
+  method: get
+  operationId: retrieveDeviceReachabilityStatusSubscription-DS-RES-V080
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /device-status/device-reachability-status-subscriptions/v0.8/subscriptions/{subscriptionId}
+  method: delete
+  operationId: deleteDeviceReachabilityStatusSubscription-DS-RES-V080
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /congestion-insights/v0/subscriptions
+  method: post
+  operationId: createSubscription-ConI-V1
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /congestion-insights/v0/subscriptions
+  method: get
+  operationId: getSubscriptions
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /location-verification/v1/verify
+  method: post
+  operationId: verifyLocation
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /device-status/device-reachability-status-subscriptions/v0.8/subscriptions
+  method: get
+  operationId: retrieveDeviceReachabilityStatusSubscriptionList-DS-RES-V080
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /device-status/device-reachability-status-subscriptions/v0.8/subscriptions
+  method: post
+  operationId: createDeviceReachabilityStatusSubscription-DS-RES-V080
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /slice/v1/slices
+  method: get
+  operationId: getAllSlices
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /slice/v1/slices
+  method: post
+  operationId: create_slice
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /passthrough/camara/v1/kyc-fill-in/kyc-fill-in/v0.4/fill-in
+  method: post
+  operationId: kycFillIn
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /device-attach/v0/attachments/subscribers/{operation}
+  method: post
+  operationId: manageSubscriber
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /passthrough/camara/v1/device-swap/device-swap/v1/retrieve-date
+  method: post
+  operationId: retrieveDeviceSwapDate
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /passthrough/camara/v1/number-verification/number-verification/v2/device-phone-number
+  method: get
+  operationId: phoneNumberShare-NV-V2
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /device-attach/v0/attachments/{resource_id}
+  method: get
+  operationId: getAttachmentStatus
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /device-attach/v0/attachments/{resource_id}
+  method: delete
+  operationId: detachDevice
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /quality-on-demand/v1/sessions
+  method: post
+  operationId: createSession-QoD-V1
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /qod/v0/sessions
+  method: post
+  operationId: createSession
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /device-status/device-reachability-status/v1/retrieve
+  method: post
+  operationId: getReachabilityStatus
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /location-retrieval/v0/retrieve
+  method: post
+  operationId: retrieveLocation
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /slice/v1/slices/{id}
+  method: delete
+  operationId: delete_slice
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /slice/v1/slices/{id}
+  method: get
+  operationId: get_slice
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /passthrough/camara/v1/consent-info/consent-info/v0.1/retrieve
+  method: post
+  operationId: retrieveStatus
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /passthrough/camara/v1/sim-swap/sim-swap/v0/retrieve-date
+  method: post
+  operationId: retrieveSimSwapDate
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /quality-on-demand/v1/sessions/{sessionId}/extend
+  method: post
+  operationId: extendQosSessionDuration-QoD-V1
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /device-status/v0/subscriptions/{subscriptionId}
+  method: get
+  operationId: retrieveSubscription
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /device-status/v0/subscriptions/{subscriptionId}
+  method: delete
+  operationId: deleteSubscription
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /device-status/device-roaming-status/v1/retrieve
+  method: post
+  operationId: getRoamingStatus
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /oauth2/v1/auth/clientcredentials
+  method: get
+  operationId: get_client_credentials
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /passthrough/camara/v1/call-forwarding-signal/call-forwarding-signal/v0.3/call-forwardings
+  method: post
+  operationId: retrieveCallForwarding
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /passthrough/camara/v1/kyc-match/kyc-match/v0.3/match
+  method: post
+  operationId: verifyKYCMatch
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /.well-known/security.txt
+  method: get
+  operationId: get_security_txt_security_txt_get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /qod/v0/retrieve-sessions
+  method: post
+  operationId: retrieveSessions
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /passthrough/camara/v1/call-forwarding-signal/call-forwarding-signal/v0.3/unconditional-call-forwardings
+  method: post
+  operationId: retrieveUnconditionalCallForwarding
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /congestion-insights/v0/subscriptions/{resource_id}
+  method: get
+  operationId: getSubscription
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /congestion-insights/v0/subscriptions/{resource_id}
+  method: delete
+  operationId: deleteSubscription-ConI-V1
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /passthrough/camara/v1/number-verification/number-verification/v0/device-phone-number
+  method: get
+  operationId: phoneNumberShare
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /device-status/device-roaming-status-subscriptions/v0.8/subscriptions
+  method: get
+  operationId: retrieveDeviceRoamingStatusSubscriptionList-DS-ROS-V080
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /device-status/device-roaming-status-subscriptions/v0.8/subscriptions
+  method: post
+  operationId: createDeviceRoamingStatusSubscription-DS-ROS-V080
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /geofencing-subscriptions/v0.3/subscriptions
+  method: post
+  operationId: createSubscription
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /geofencing-subscriptions/v0.3/subscriptions
+  method: get
+  operationId: retrieveGeofencingSubscriptionList
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /congestion-insights/v0/query
+  method: post
+  operationId: fetch
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /passthrough/camara/v1/device-swap/device-swap/v1/check
+  method: post
+  operationId: checkDeviceSwap
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /.well-known/oauth-authorization-server
+  method: get
+  operationId: get_well_known_oauth_oauth_authorization_server_get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none

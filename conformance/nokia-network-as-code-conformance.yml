@@ -1,0 +1,127 @@
+generated: '2026-07-25'
+method: derived
+source: >-
+  openapi/nokia-network-as-code-camara-openapi.yml,
+  openapi/nokia-network-as-code-platform-openapi.json, and searched evidence
+  from https://www.nokia.com/we-are-nokia/security/compliance/ and
+  https://www.nokia.com/we-are-nokia/security/products/cvd/.
+summary: >-
+  This is a CAMARA implementation first and an OpenAPI product second. The
+  consolidated document declares CAMARA Commonalities 0.4.0 explicitly, uses the
+  CAMARA ErrorInfo envelope, the CAMARA x-correlator header, CAMARA
+  purpose-based OIDC scopes and the CAMARA sink/CloudEvents subscription
+  pattern, and seventeen CAMARA API families appear as real callable paths. What
+  it does not do is adopt the wider web-API standards an agent might expect:
+  no RFC 9457 problem details, no RFC 8594 deprecation signalling, no RFC 9116
+  security.txt on the product host (the corporate parent publishes one), and no
+  idempotency contract.
+standards:
+  - id: camara-commonalities-0.4.0
+    conforms: true
+    evidence: info.x-camara-commonalities is 0.4.0 in openapi/nokia-network-as-code-camara-openapi.yml
+  - id: camara-network-apis
+    conforms: true
+    evidence: >-
+      Seventeen CAMARA API families present as real paths - Number Verification,
+      SIM Swap, Device Swap, Number Recycling, Call Forwarding Signal, KYC
+      Match, KYC Age Verification, KYC Fill-in, KYC Tenure, Consent Info,
+      Location Retrieval, Location Verification, Geofencing Subscriptions,
+      Device Reachability Status, Device Roaming Status, Quality on Demand,
+      Congestion Insights.
+  - id: cloudevents
+    conforms: true
+    evidence: 28 org.camaraproject.* CloudEvent types declared across the subscription surfaces; CloudEvents referenced throughout both documents.
+  - id: openapi-3.0
+    conforms: true
+    evidence: 'openapi: 3.0.0 (gateway export) and 3.0.3 (CAMARA document); both parse.'
+  - id: oauth2
+    conforms: true
+    partial: true
+    evidence: >-
+      Global security requirement oAuth2ClientCredentials plus
+      GET /oauth2/v1/auth/clientcredentials. Recorded as partial because the
+      oAuth2ClientCredentials scheme is referenced but never defined in
+      components.securitySchemes.
+  - id: oidc
+    conforms: true
+    partial: true
+    evidence: >-
+      openIdConnect securityScheme named openId carries all 65 operation-level
+      scopes, and GET /.well-known/openid-configuration plus per-app JWKS are
+      declared operations. Recorded as partial because openIdConnectUrl is left
+      at the CAMARA template placeholder https://example.com/... and the
+      well-known documents are not anonymously retrievable.
+  - id: ciba
+    conforms: false
+    evidence: No CIBA, backchannel-authentication or bc-authorize surface in either specification.
+  - id: rfc9457-problem-details
+    conforms: false
+    evidence: Zero application/problem+json responses. Errors use the CAMARA ErrorInfo envelope (status/code/message).
+  - id: rfc8594-sunset-deprecation
+    conforms: false
+    evidence: No Deprecation or Sunset header declared; no operation flagged deprecated.
+  - id: rfc9116-security-txt
+    conforms: true
+    partial: true
+    evidence: >-
+      https://www.nokia.com/.well-known/security.txt returns 200, PGP-signed,
+      Expires 2036-12-31. Not served on networkascode.nokia.io or on the
+      gateway host, although the gateway specification declares a
+      /.well-known/security.txt operation behind the API key.
+  - id: idempotency
+    conforms: false
+    evidence: No Idempotency-Key header or equivalent anywhere in either specification.
+  - id: pagination
+    conforms: false
+    evidence: No cursor/offset/page parameter on any collection operation.
+  - id: iso-iec-27001
+    conforms: true
+    scope: corporate
+    evidence: >-
+      https://www.nokia.com/we-are-nokia/security/compliance/ names ISO/IEC
+      27001:2022 as a standard Nokia operates to. This is a Nokia-wide claim,
+      not a Network as Code product certification.
+  - id: eu-cyber-resilience-act
+    conforms: true
+    scope: corporate
+    evidence: Nokia describes a dedicated CRA compliance programme launched in 2024 on the security compliance page.
+  - id: nis2
+    conforms: true
+    scope: corporate
+    evidence: NIS 2 named on the security compliance page as expanding obligations across Nokia's managed services and manufacturing.
+  - id: gsma-open-gateway
+    conforms: true
+    role: vendor/platform participant
+    evidence: >-
+      Nokia publishes GSMA Open Gateway guest material and hosted the GSMA Open
+      Gateway Hackathon at MWC 2026 on Network as Code. Nokia is not an operator
+      and so is not a GSMA operator signatory.
+  - id: tmforum-open-api
+    conforms: false
+    evidence: >-
+      The hub tag taxonomy defines a "Source" tag with values [TMF, CAMARA],
+      showing the platform is built to carry TM Forum-sourced APIs, but no TM
+      Forum Open API path appears in either specification and no conformance
+      certificate was confirmed.
+  - id: 3gpp-nef-scef
+    conforms: false
+    evidence: >-
+      Nokia's operator-side Network Exposure Platform is the 3GPP exposure
+      component, but it publishes no public API and no NEF/SCEF endpoint appears
+      in either specification.
+  - id: fapi
+    conforms: false
+  - id: json-api
+    conforms: false
+  - id: odata
+    conforms: false
+  - id: scim
+    conforms: false
+  - id: fhir
+    conforms: false
+compliance_program:
+  published: true
+  url: https://www.nokia.com/we-are-nokia/security/compliance/
+  certifications: ['ISO/IEC 27001:2022']
+  regulations: ['EU Cyber Resilience Act', 'NIS 2 Directive', 'Radio Equipment Directive 2014/53/EU', 'U.S. National Security Agreement']
+  scope_note: Corporate Nokia security compliance. No Network as Code product-level SOC 2, ISO 27001 scope statement or PCI attestation was found.

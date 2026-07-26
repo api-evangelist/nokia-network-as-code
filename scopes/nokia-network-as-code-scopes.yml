@@ -1,0 +1,495 @@
+generated: '2026-07-25'
+method: derived
+source: openapi/nokia-network-as-code-camara-openapi.yml (operation-level security requirements)
+note: 'The mechanical deriver found no oauth2 securityScheme because Nokia declares its scopes against
+  an openIdConnect scheme named openId, and the global security requirement names a scheme (oAuth2ClientCredentials)
+  that is never defined in components.securitySchemes - a real defect in the published document, recorded
+  here rather than papered over. The scopes themselves are genuine and follow the CAMARA purpose-based
+  convention: <api-name>:<resource>:<action>, with subscription grants naming the exact CloudEvent type
+  they authorise. The gateway export (openapi/nokia-network-as-code-platform-openapi.json) carries no
+  operation-level security at all - it declares only the RapidAPI ApiKeyAuth header - so the CAMARA document
+  is the only place the scope contract is published.'
+schemes:
+- name: openId
+  type: openIdConnect
+  openIdConnectUrl: https://example.com/.well-known/openid-configuration
+  source: openapi/nokia-network-as-code-camara-openapi.yml
+  defect: openIdConnectUrl is the CAMARA template placeholder example.com, not a Nokia issuer. The real
+    issuer metadata is served behind the gateway at GET /.well-known/openid-configuration.
+- name: oAuth2ClientCredentials
+  type: oauth2 (referenced, undefined)
+  source: openapi/nokia-network-as-code-camara-openapi.yml
+  defect: Named in the document-level security requirement but absent from components.securitySchemes.
+token_model:
+  two_legged: Client-credentials token; the subscriber is identified in the request body (phoneNumber
+    or other device identifier).
+  three_legged: Subscriber-consented token; the identifier is carried inside the token and MUST NOT be
+    repeated in the body (422 UNNECESSARY_IDENTIFIER).
+  ciba: Not documented. No CIBA / backchannel-authentication / bc-authorize surface appears in either
+    specification.
+scopes:
+- scope: call-forwarding-signal:call-forwardings:read
+  family: call-forwarding-signal
+  schemes:
+  - openId
+  operations:
+  - retrieveCallForwarding
+  kind: operation grant
+- scope: call-forwarding-signal:unconditional-call-forwardings:read
+  family: call-forwarding-signal
+  schemes:
+  - openId
+  operations:
+  - retrieveUnconditionalCallForwarding
+  kind: operation grant
+- scope: consent-info:retrieve
+  family: consent-info
+  schemes:
+  - openId
+  operations:
+  - retrieveStatus
+  kind: operation grant
+- scope: device-reachability-status-subscriptions:delete
+  family: device-reachability-status-subscriptions
+  schemes:
+  - openId
+  operations:
+  - deleteDeviceReachabilityStatusSubscription
+  kind: operation grant
+- scope: device-reachability-status-subscriptions:org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data:create
+  family: device-reachability-status-subscriptions
+  schemes:
+  - openId
+  operations:
+  - createDeviceReachabilityStatusSubscription
+  kind: event-type-scoped subscription grant
+- scope: device-reachability-status-subscriptions:org.camaraproject.device-reachability-status-subscriptions.v0.reachability-disconnected:create
+  family: device-reachability-status-subscriptions
+  schemes:
+  - openId
+  operations:
+  - createDeviceReachabilityStatusSubscription
+  kind: event-type-scoped subscription grant
+- scope: device-reachability-status-subscriptions:org.camaraproject.device-reachability-status-subscriptions.v0.reachability-sms:create
+  family: device-reachability-status-subscriptions
+  schemes:
+  - openId
+  operations:
+  - createDeviceReachabilityStatusSubscription
+  kind: event-type-scoped subscription grant
+- scope: device-reachability-status-subscriptions:read
+  family: device-reachability-status-subscriptions
+  schemes:
+  - openId
+  operations:
+  - retrieveDeviceReachabilityStatusSubscription
+  - retrieveDeviceReachabilityStatusSubscriptionList
+  kind: operation grant
+- scope: device-reachability-status:read
+  family: device-reachability-status
+  schemes:
+  - openId
+  operations:
+  - getReachabilityStatus
+  kind: operation grant
+- scope: device-roaming-status-subscriptions:delete
+  family: device-roaming-status-subscriptions
+  schemes:
+  - openId
+  operations:
+  - deleteDeviceRoamingStatusSubscription
+  kind: operation grant
+- scope: device-roaming-status-subscriptions:org.camaraproject.device-roaming-status-subscriptions.v0.roaming-change-country:create
+  family: device-roaming-status-subscriptions
+  schemes:
+  - openId
+  operations:
+  - createDeviceRoamingStatusSubscription
+  kind: event-type-scoped subscription grant
+- scope: device-roaming-status-subscriptions:org.camaraproject.device-roaming-status-subscriptions.v0.roaming-off:create
+  family: device-roaming-status-subscriptions
+  schemes:
+  - openId
+  operations:
+  - createDeviceRoamingStatusSubscription
+  kind: event-type-scoped subscription grant
+- scope: device-roaming-status-subscriptions:org.camaraproject.device-roaming-status-subscriptions.v0.roaming-on:create
+  family: device-roaming-status-subscriptions
+  schemes:
+  - openId
+  operations:
+  - createDeviceRoamingStatusSubscription
+  kind: event-type-scoped subscription grant
+- scope: device-roaming-status-subscriptions:org.camaraproject.device-roaming-status-subscriptions.v0.roaming-status:create
+  family: device-roaming-status-subscriptions
+  schemes:
+  - openId
+  operations:
+  - createDeviceRoamingStatusSubscription
+  kind: event-type-scoped subscription grant
+- scope: device-roaming-status-subscriptions:read
+  family: device-roaming-status-subscriptions
+  schemes:
+  - openId
+  operations:
+  - retrieveDeviceRoamingStatusSubscription
+  - retrieveDeviceRoamingStatusSubscriptionList
+  kind: operation grant
+- scope: device-roaming-status:read
+  family: device-roaming-status
+  schemes:
+  - openId
+  operations:
+  - getRoamingStatus
+  kind: operation grant
+- scope: device-status:connectivity:read
+  family: device-status
+  schemes:
+  - openId
+  operations:
+  - getConnectivityStatus
+  kind: operation grant
+- scope: device-status:roaming:read
+  family: device-status
+  schemes:
+  - openId
+  operations:
+  - getRoamingStatus-DS-V0
+  kind: operation grant
+- scope: device-status:subscriptions:create
+  family: device-status
+  schemes:
+  - openId
+  operations:
+  - createDeviceStatusSubscription
+  kind: operation grant
+- scope: device-status:subscriptions:delete
+  family: device-status
+  schemes:
+  - openId
+  operations:
+  - deleteSubscription
+  kind: operation grant
+- scope: device-status:subscriptions:read
+  family: device-status
+  schemes:
+  - openId
+  operations:
+  - retrieveSubscription
+  - retrieveSubscriptionList
+  kind: operation grant
+- scope: device-swap
+  family: device-swap
+  schemes:
+  - openId
+  operations:
+  - checkDeviceSwap
+  - retrieveDeviceSwapDate
+  kind: API-wide grant
+- scope: device-swap:check
+  family: device-swap
+  schemes:
+  - openId
+  operations:
+  - checkDeviceSwap
+  kind: operation grant
+- scope: device-swap:retrieve-date
+  family: device-swap
+  schemes:
+  - openId
+  operations:
+  - retrieveDeviceSwapDate
+  kind: operation grant
+- scope: geofencing-subscriptions:delete
+  family: geofencing-subscriptions
+  schemes:
+  - openId
+  operations:
+  - deleteGeofencingSubscription
+  kind: operation grant
+- scope: geofencing-subscriptions:org.camaraproject.geofencing-subscriptions.v0.area-entered:create
+  family: geofencing-subscriptions
+  schemes:
+  - openId
+  operations:
+  - createSubscription
+  kind: event-type-scoped subscription grant
+- scope: geofencing-subscriptions:org.camaraproject.geofencing-subscriptions.v0.area-left:create
+  family: geofencing-subscriptions
+  schemes:
+  - openId
+  operations:
+  - createSubscription
+  kind: event-type-scoped subscription grant
+- scope: geofencing-subscriptions:read
+  family: geofencing-subscriptions
+  schemes:
+  - openId
+  operations:
+  - retrieveGeofencingSubscription
+  - retrieveGeofencingSubscriptionList
+  kind: operation grant
+- scope: kyc-age-verification:verify
+  family: kyc-age-verification
+  schemes:
+  - openId
+  operations:
+  - verifyAge
+  kind: operation grant
+- scope: kyc-fill-in:address
+  family: kyc-fill-in
+  schemes:
+  - openId
+  operations:
+  - kycFillIn
+  kind: operation grant
+- scope: kyc-fill-in:birthdate
+  family: kyc-fill-in
+  schemes:
+  - openId
+  operations:
+  - kycFillIn
+  kind: operation grant
+- scope: kyc-fill-in:cityOfBirth
+  family: kyc-fill-in
+  schemes:
+  - openId
+  operations:
+  - kycFillIn
+  kind: operation grant
+- scope: kyc-fill-in:country
+  family: kyc-fill-in
+  schemes:
+  - openId
+  operations:
+  - kycFillIn
+  kind: operation grant
+- scope: kyc-fill-in:countryOfBirth
+  family: kyc-fill-in
+  schemes:
+  - openId
+  operations:
+  - kycFillIn
+  kind: operation grant
+- scope: kyc-fill-in:email
+  family: kyc-fill-in
+  schemes:
+  - openId
+  operations:
+  - kycFillIn
+  kind: operation grant
+- scope: kyc-fill-in:familyName
+  family: kyc-fill-in
+  schemes:
+  - openId
+  operations:
+  - kycFillIn
+  kind: operation grant
+- scope: kyc-fill-in:familyNameAtBirth
+  family: kyc-fill-in
+  schemes:
+  - openId
+  operations:
+  - kycFillIn
+  kind: operation grant
+- scope: kyc-fill-in:gender
+  family: kyc-fill-in
+  schemes:
+  - openId
+  operations:
+  - kycFillIn
+  kind: operation grant
+- scope: kyc-fill-in:givenName
+  family: kyc-fill-in
+  schemes:
+  - openId
+  operations:
+  - kycFillIn
+  kind: operation grant
+- scope: kyc-fill-in:houseNumberExtension
+  family: kyc-fill-in
+  schemes:
+  - openId
+  operations:
+  - kycFillIn
+  kind: operation grant
+- scope: kyc-fill-in:idDocument
+  family: kyc-fill-in
+  schemes:
+  - openId
+  operations:
+  - kycFillIn
+  kind: operation grant
+- scope: kyc-fill-in:idDocumentExpiryDate
+  family: kyc-fill-in
+  schemes:
+  - openId
+  operations:
+  - kycFillIn
+  kind: operation grant
+- scope: kyc-fill-in:idDocumentType
+  family: kyc-fill-in
+  schemes:
+  - openId
+  operations:
+  - kycFillIn
+  kind: operation grant
+- scope: kyc-fill-in:locality
+  family: kyc-fill-in
+  schemes:
+  - openId
+  operations:
+  - kycFillIn
+  kind: operation grant
+- scope: kyc-fill-in:middleNames
+  family: kyc-fill-in
+  schemes:
+  - openId
+  operations:
+  - kycFillIn
+  kind: operation grant
+- scope: kyc-fill-in:name
+  family: kyc-fill-in
+  schemes:
+  - openId
+  operations:
+  - kycFillIn
+  kind: operation grant
+- scope: kyc-fill-in:nameKanaHankaku
+  family: kyc-fill-in
+  schemes:
+  - openId
+  operations:
+  - kycFillIn
+  kind: operation grant
+- scope: kyc-fill-in:nameKanaZenkaku
+  family: kyc-fill-in
+  schemes:
+  - openId
+  operations:
+  - kycFillIn
+  kind: operation grant
+- scope: kyc-fill-in:nationality
+  family: kyc-fill-in
+  schemes:
+  - openId
+  operations:
+  - kycFillIn
+  kind: operation grant
+- scope: kyc-fill-in:phoneNumber
+  family: kyc-fill-in
+  schemes:
+  - openId
+  operations:
+  - kycFillIn
+  kind: operation grant
+- scope: kyc-fill-in:postalCode
+  family: kyc-fill-in
+  schemes:
+  - openId
+  operations:
+  - kycFillIn
+  kind: operation grant
+- scope: kyc-fill-in:region
+  family: kyc-fill-in
+  schemes:
+  - openId
+  operations:
+  - kycFillIn
+  kind: operation grant
+- scope: kyc-fill-in:set-all
+  family: kyc-fill-in
+  schemes:
+  - openId
+  operations:
+  - kycFillIn
+  kind: operation grant
+- scope: kyc-fill-in:streetName
+  family: kyc-fill-in
+  schemes:
+  - openId
+  operations:
+  - kycFillIn
+  kind: operation grant
+- scope: kyc-fill-in:streetNumber
+  family: kyc-fill-in
+  schemes:
+  - openId
+  operations:
+  - kycFillIn
+  kind: operation grant
+- scope: kyc-match:match
+  family: kyc-match
+  schemes:
+  - openId
+  operations:
+  - verifyKYCMatch
+  kind: operation grant
+- scope: kyc-tenure:check-tenure
+  family: kyc-tenure
+  schemes:
+  - openId
+  operations:
+  - checkTenure
+  kind: operation grant
+- scope: location-retrieval:read
+  family: location-retrieval
+  schemes:
+  - openId
+  operations:
+  - retrieveLocation
+  kind: operation grant
+- scope: location-verification:verify
+  family: location-verification
+  schemes:
+  - openId
+  operations:
+  - verifyLocation
+  - verifyLocation-LocV-V0
+  kind: operation grant
+- scope: number-recycling:check
+  family: number-recycling
+  schemes:
+  - openId
+  operations:
+  - checkNumberRecycling
+  kind: operation grant
+- scope: number-verification:device-phone-number:read
+  family: number-verification
+  schemes:
+  - openId
+  operations:
+  - phoneNumberShare
+  kind: operation grant
+- scope: number-verification:verify
+  family: number-verification
+  schemes:
+  - openId
+  operations:
+  - phoneNumberVerify
+  kind: operation grant
+- scope: sim-swap
+  family: sim-swap
+  schemes:
+  - openId
+  operations:
+  - checkSimSwap
+  - retrieveSimSwapDate
+  kind: API-wide grant
+- scope: sim-swap:check
+  family: sim-swap
+  schemes:
+  - openId
+  operations:
+  - checkSimSwap
+  kind: operation grant
+- scope: sim-swap:retrieve-date
+  family: sim-swap
+  schemes:
+  - openId
+  operations:
+  - retrieveSimSwapDate
+  kind: operation grant
+counts:
+  scopes: 65
+  families: 18

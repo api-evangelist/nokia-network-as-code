@@ -55,6 +55,7 @@ tags:
   - Network Exposure
 created: '2026-07-25'
 modified: '2026-07-25'
+enriched: '2026-07-25'
 specificationVersion: '0.19'
 apis:
   - aid: nokia-network-as-code:network-as-code-platform-api
@@ -85,6 +86,12 @@ apis:
         url: https://networkascode.nokia.io/docs/getting-started
       - type: SourceCode
         url: https://github.com/nokia/network-as-code-sdks
+      - type: Overlay
+        url: overlays/nokia-network-as-code-platform-overlay.yaml
+      - type: ErrorCatalog
+        url: errors/nokia-network-as-code-problem-types.yml
+      - type: DataModel
+        url: data-model/nokia-network-as-code-data-model.yml
   - aid: nokia-network-as-code:camara-network-api
     name: Nokia Network as Code CAMARA API
     description: >-
@@ -99,6 +106,7 @@ apis:
       oAuth2ClientCredentials with an openIdConnect scheme; asynchronous
       notifications use the CAMARA sink + CloudEvents webhook pattern.
     humanURL: https://github.com/nokia/network-as-code-sdks
+    baseURL: https://network-as-code.p-eu.rapidapi.com
     tags:
       - CAMARA
       - Network APIs
@@ -110,6 +118,10 @@ apis:
         url: https://github.com/nokia/network-as-code-sdks
       - type: Documentation
         url: https://networkascode.nokia.io/docs
+      - type: Overlay
+        url: overlays/nokia-network-as-code-camara-overlay.yaml
+      - type: OAuthScopes
+        url: scopes/nokia-network-as-code-scopes.yml
   - aid: nokia-network-as-code:digital-identity-and-anti-fraud
     name: Network as Code Digital Identity and Anti-Fraud APIs
     description: >-
@@ -230,6 +242,63 @@ apis:
       - type: GettingStarted
         url: https://networkascode.nokia.io/docs/getting-started
 common:
+  - type: AgenticAccess
+    url: agentic-access/nokia-network-as-code-agentic-access.yml
+  - type: DomainSecurity
+    url: security/nokia-network-as-code-domain-security.yml
+  - type: Authentication
+    url: authentication/nokia-network-as-code-authentication.yml
+  - type: OAuthScopes
+    url: scopes/nokia-network-as-code-scopes.yml
+  - type: Conventions
+    url: conventions/nokia-network-as-code-conventions.yml
+  - type: ErrorCatalog
+    url: errors/nokia-network-as-code-problem-types.yml
+  - type: Lifecycle
+    url: lifecycle/nokia-network-as-code-lifecycle.yml
+  - type: ChangeLog
+    url: changelog/nokia-network-as-code-changelog.yml
+  - type: DataModel
+    url: data-model/nokia-network-as-code-data-model.yml
+  - type: Conformance
+    url: conformance/nokia-network-as-code-conformance.yml
+  - type: Compliance
+    url: https://www.nokia.com/we-are-nokia/security/compliance/
+    name: Nokia security compliance (ISO/IEC 27001:2022, EU CRA, NIS 2)
+  - type: TrustCenter
+    url: security/nokia-network-as-code-trust-center.yml
+  - type: VulnerabilityDisclosure
+    url: security/nokia-network-as-code-vulnerability-disclosure.yml
+  - type: Security
+    url: https://www.nokia.com/we-are-nokia/security/products/cvd/
+    name: Nokia Coordinated Vulnerability Disclosure Program
+  - type: SecurityTxt
+    url: well-known/nokia-network-as-code-security.txt
+  - type: WellKnown
+    url: well-known/nokia-network-as-code-well-known.yml
+  - type: Packages
+    url: packages/nokia-network-as-code-packages.yml
+  - type: Sandbox
+    url: sandbox/nokia-network-as-code-sandbox.yml
+  - type: Webhooks
+    url: asyncapi/nokia-network-as-code-webhooks.yml
+  - type: MCPServer
+    url: mcp/nokia-network-as-code-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/nokia-network-as-code-tool-crosswalk.yml
+  - type: AgentSkill
+    url: skills/_index.yml
+  - type: LLMsTxt
+    url: llms/nokia-network-as-code-llms.txt
+  - type: Overlay
+    url: overlays/nokia-network-as-code-platform-overlay.yaml
+  - type: Overlay
+    url: overlays/nokia-network-as-code-camara-overlay.yaml
+  - type: APIReference
+    url: https://github.com/nokia/network-as-code-sdks/blob/main/network-as-code-py/network_as_code/reference.md
+    name: Generated SDK API reference (the only crawlable reference Nokia publishes)
+  - type: PrivacyPolicy
+    url: https://networkascode.nokia.io/legal/supplemental-privacy-notice
   - type: Website
     url: https://networkascode.nokia.io/
   - type: Portal

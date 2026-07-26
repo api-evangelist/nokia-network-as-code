@@ -1,0 +1,117 @@
+generated: '2026-07-25'
+method: derived
+source: >-
+  openapi/nokia-network-as-code-platform-openapi.json,
+  openapi/nokia-network-as-code-camara-openapi.yml, and the published SDK
+  sources at github.com/nokia/network-as-code-sdks. The developer portal's own
+  documentation is a client-rendered SPA that serves no crawlable prose, so
+  nothing here is taken from docs text.
+summary: >-
+  Network as Code inherits its cross-cutting semantics from CAMARA Commonalities
+  0.4.0 rather than inventing them, then wraps the whole thing in a RapidAPI
+  gateway. That produces a two-layer contract that an integrator has to hold in
+  their head at once: the channel layer (an x-rapidapi-key header, RapidAPI
+  quota semantics, the p-eu gateway host) and the capability layer (CAMARA
+  two-legged and three-legged OAuth tokens, purpose-bound scopes, the ErrorInfo
+  envelope, x-correlator, the sink/CloudEvents subscription model). The honest
+  gaps are as informative as the conventions: there is no idempotency contract,
+  no pagination contract, no rate-limit response headers and no deprecation
+  headers anywhere in either published specification.
+authentication:
+  style: two-layer
+  gateway:
+    scheme: apiKey
+    header: x-rapidapi-key
+    note: RapidAPI Enterprise Hub key. It is the document-level security requirement of the gateway export and authenticates the channel, not the subscriber.
+  capability:
+    scheme: oauth2 / openIdConnect
+    grants: [client_credentials (two-legged), authorization_code (three-legged, subscriber-consented)]
+    scopes: scopes/nokia-network-as-code-scopes.yml
+    credential_issue: GET /oauth2/v1/auth/clientcredentials (operationId get_client_credentials)
+    jwks: GET /oauth2/v1/apps/{nac_app_ref}/.well-known/jwks.json
+  identifier_rule: >-
+    The single most important runtime rule on this platform. With a two-legged
+    token the subscriber MUST be identified in the request body (phoneNumber,
+    networkAccessIdentifier, ipv4Address or ipv6Address) - omitting it returns
+    422 MISSING_IDENTIFIER. With a three-legged token the subscriber is carried
+    inside the token and the body identifier MUST be omitted - supplying it
+    returns 422 UNNECESSARY_IDENTIFIER.
+  detail: authentication/nokia-network-as-code-authentication.yml
+idempotency:
+  supported: false
+  evidence: >-
+    Zero occurrences of "Idempotency", "Idempotency-Key" or any idempotency
+    parameter across both specifications (58-path gateway export and 52-path
+    CAMARA document). No idempotency guidance appears in the SDK sources.
+  consequence: >-
+    Retrying a POST that creates a Quality on Demand session, a network slice,
+    a device attachment or an event subscription can create a duplicate
+    resource. Creating operations do publish 409 ALREADY_EXISTS / CONFLICT /
+    ABORTED, so the safe client pattern is create-then-reconcile: on a timeout,
+    list the resource (retrieveSessions, retrieveGeofencingSubscriptionList,
+    getAllSlices, getAllAttachmentsStatus) before retrying.
+  note: >-
+    Deliberately not wired as a type Idempotency pointer in apis.yml. Nokia has
+    no idempotency contract, and asserting one would be fabrication.
+pagination:
+  supported: false
+  evidence: >-
+    No cursor, pageToken, nextPage, offset or page parameter appears in either
+    specification. Collection endpoints (retrieveGeofencingSubscriptionList,
+    retrieveDeviceReachabilityStatusSubscriptionList,
+    retrieveDeviceRoamingStatusSubscriptionList, getAllSlices,
+    getAllAttachmentsStatus, getSubscriptions) return unbounded arrays.
+  consequence: A tenant with many standing subscriptions has no published way to page them.
+request_tracing:
+  header: x-correlator
+  direction: request and response
+  origin: CAMARA Commonalities 0.4.0
+  occurrences: 362 in the CAMARA document, 40 in the gateway export
+  guidance: Generate a UUID per logical operation, send it as x-correlator, log the echoed value, and quote it in support requests.
+versioning:
+  scheme: uri-path, per capability
+  note: >-
+    There is no single platform version. Each CAMARA API carries its own version
+    segment in the path and its own tag, and multiple versions of the same
+    capability are live simultaneously in one document - Quality on Demand
+    v0.10.1 and v1.0.0, Device Reachability Status Subscriptions v0.7 and v0.8,
+    Location Verification v0.2.0 and v1.0.0, Number Verification v1.0.0 and
+    v2.1. Choosing a version is therefore a per-capability decision, and an
+    agent must not assume one version prefix generalises.
+  detail: lifecycle/nokia-network-as-code-lifecycle.yml
+error_envelope:
+  format: camara-errorinfo (application/json)
+  fields: [status, code, message]
+  rfc9457: false
+  catalog: errors/nokia-network-as-code-problem-types.yml
+  distinct_codes: 47
+rate_limiting:
+  response_headers: none published
+  evidence: No RateLimit, X-RateLimit or Retry-After header appears in either specification.
+  status_codes: [429 TOO_MANY_REQUESTS, 429 QUOTA_EXCEEDED]
+  note: >-
+    Quota is enforced at the RapidAPI gateway per plan (the hub advertises
+    DEFAULT and SIMULATOR plans) but the limits are not published in the
+    contract, so a client must implement blind exponential backoff.
+events:
+  model: CAMARA subscription + CloudEvents to a consumer-hosted sink
+  catalog: asyncapi/nokia-network-as-code-webhooks.yml
+  consent_granularity: per CloudEvent type, enforced by the subscription scope
+field_expansion:
+  supported: false
+metadata:
+  supported: false
+  note: No free-form metadata object on any resource.
+async_pattern:
+  note: >-
+    Nineteen operations return 202 Accepted. Long-running work (session setup,
+    slice activation, subscription establishment) completes asynchronously and
+    reports through the subscription/CloudEvents channel or a subsequent
+    retrieve, not through a polling URL published in the contract.
+cross_references:
+  authentication: authentication/nokia-network-as-code-authentication.yml
+  scopes: scopes/nokia-network-as-code-scopes.yml
+  errors: errors/nokia-network-as-code-problem-types.yml
+  lifecycle: lifecycle/nokia-network-as-code-lifecycle.yml
+  webhooks: asyncapi/nokia-network-as-code-webhooks.yml
+  data_model: data-model/nokia-network-as-code-data-model.yml

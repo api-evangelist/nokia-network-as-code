@@ -1,0 +1,64 @@
+generated: '2026-07-25'
+method: derived
+source: >-
+  openapi/nokia-network-as-code-platform-openapi.json,
+  openapi/nokia-network-as-code-camara-openapi.yml, PyPI and npm release
+  histories for the first-party SDKs, and live probes of the candidate status
+  and roadmap URLs.
+summary: >-
+  Nokia runs many small lifecycles rather than one platform lifecycle. Versions
+  live in the URI path per capability and several generations run side by side,
+  which is generous to integrators but means there is no single "current
+  version" to pin. Against that, the operational transparency is thin: no
+  deprecated operation is flagged anywhere in the published contracts, no
+  Deprecation or Sunset header is declared, no deprecation policy page was
+  found, and no status page exists for the Network as Code platform on any
+  probed host. The only public dated record of change is the SDK release
+  history, which is regular enough to read as a proxy release train.
+versioning:
+  scheme: uri-path, per capability
+  platform_version: none published
+  concurrent_versions:
+    - {capability: Quality on Demand, versions: ['v0.10.1 (/qod/v0)', 'v1.0.0 (/quality-on-demand/v1)']}
+    - {capability: Device Reachability Status Subscriptions, versions: [v0.7, v0.8]}
+    - {capability: Device Roaming Status Subscriptions, versions: [v0.7, v0.8]}
+    - {capability: Location Verification, versions: ['v0.2.0 (/location-verification/v0)', 'v1.0.0 (/location-verification/v1)']}
+    - {capability: Number Verification, versions: ['v1.0.0 (/…/v0/verify)', 'v2.1 (/…/v2/verify)']}
+    - {capability: Device Status, versions: ['v0.5.1 (/device-status/v0)', 'v1.1.0 retrieve endpoints']}
+  commonalities: CAMARA Commonalities 0.4.0 (info.x-camara-commonalities in the CAMARA document)
+deprecation:
+  policy_url: null
+  sunset_header: false
+  deprecation_header: false
+  evidence: >-
+    Zero occurrences of "Deprecation" or "Sunset" in either specification, and
+    no operation carries deprecated: true - not even the older concurrent
+    versions (/qod/v0, v0.7 subscriptions, /location-verification/v0) that are
+    plainly superseded by a newer sibling in the same document. An integrator
+    reading only the contract cannot tell which generation is on the way out.
+deprecated_operations: []
+status_page:
+  url: null
+  probed:
+    - {url: 'https://networkascode.nokia.io/status', status: 404}
+    - {url: 'https://status.networkascode.nokia.io/', status: 'DNS does not resolve'}
+  note: >-
+    No status page for Network as Code. The platform is delivered on a
+    white-labelled RapidAPI Enterprise Hub, and availability of any given
+    capability additionally depends on the serving mobile operator, which is a
+    genuinely hard thing to put on a status board - but nothing is published.
+roadmap:
+  url: null
+  probed:
+    - {url: 'https://networkascode.nokia.io/roadmap', status: 404}
+sla:
+  url: null
+  uptime_target: null
+  note: No public SLA. Commercial terms are reached through https://networkascode.nokia.io/contact-sales.
+release_train:
+  note: >-
+    The SDKs are regenerated from the specification, so their release history is
+    the closest thing to a published API changelog.
+  detail: changelog/nokia-network-as-code-changelog.yml
+  cadence: roughly every 4-8 weeks through 2025, with a longer gap into the 10.0.0 release of 2026-06-05
+  current: {python: 10.0.0, typescript: 10.0.0, released: '2026-06-05'}

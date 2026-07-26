@@ -1,0 +1,54 @@
+generated: '2026-07-25'
+method: searched
+source: >-
+  PyPI and npm registry APIs, plus the first-party Apache-2.0 source repository
+  github.com/nokia/network-as-code-sdks (both libraries are generated from the
+  Network as Code OpenAPI with Fern).
+packages:
+  - language: python
+    registry: pypi
+    name: network_as_code
+    url: https://pypi.org/project/network-as-code/
+    install: pip install network-as-code
+    version: 10.0.0
+    released: '2026-06-05'
+    releases: 24
+    license: Apache-2.0
+    requires: '>=3.11,<4.0'
+    source: https://github.com/nokia/network-as-code-sdks
+    official: true
+    note: >-
+      Generated with fern-python-sdk 5.5.6 from the Network as Code OpenAPI.
+      Client entrypoint network_as_code.client.NetworkAsCodeApi takes the
+      RapidAPI gateway key plus an optional rapidapi_host.
+  - language: typescript
+    registry: npm
+    name: network-as-code
+    url: https://www.npmjs.com/package/network-as-code
+    registry_url: https://registry.npmjs.org/network-as-code
+    install: npm install network-as-code
+    version: 10.0.0
+    released: '2026-06-05'
+    releases: 23
+    license: Apache-2.0
+    source: https://github.com/nokia/network-as-code-sdks
+    official: true
+    note: >-
+      Generated with fern-typescript-sdk 3.64.1. Ships ESM plus type
+      declarations; runtime dependency node-fetch.
+registries_probed:
+  - {registry: pypi, found: true}
+  - {registry: npm, found: true}
+  - {registry: maven-central, found: false}
+  - {registry: nuget, found: false}
+  - {registry: pkg.go.dev, found: false}
+  - {registry: rubygems, found: false}
+  - {registry: packagist, found: false}
+  - {registry: crates.io, found: false}
+notes: >-
+  Two first-party SDKs only, both at lock-step version 10.0.0 and both generated
+  from the same specification, so language coverage tracks the API exactly. No
+  Java, Go, .NET, Ruby, PHP or Rust client is published by Nokia for Network as
+  Code. Related public repositories github.com/nokia/network-as-code-ts and
+  github.com/nokia/network-as-code-py exist alongside the combined
+  network-as-code-sdks monorepo.

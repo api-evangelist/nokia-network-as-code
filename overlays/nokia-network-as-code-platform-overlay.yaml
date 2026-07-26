@@ -1,0 +1,52 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Nokia Network as Code Platform API
+  version: 1.0.0
+extends: openapi/nokia-network-as-code-platform-openapi.json
+x-generated: '2026-07-25'
+x-method: generated
+x-source: Derived from the artifacts in this repository; never mutates the harvested specification.
+actions:
+  - target: $.info
+    update:
+      x-apievangelist-provider: nokia-network-as-code
+      x-apievangelist-artifacts:
+        authentication: authentication/nokia-network-as-code-authentication.yml
+        scopes: scopes/nokia-network-as-code-scopes.yml
+        conventions: conventions/nokia-network-as-code-conventions.yml
+        errors: errors/nokia-network-as-code-problem-types.yml
+        webhooks: asyncapi/nokia-network-as-code-webhooks.yml
+        lifecycle: lifecycle/nokia-network-as-code-lifecycle.yml
+        data_model: data-model/nokia-network-as-code-data-model.yml
+        agentic_access: agentic-access/nokia-network-as-code-agentic-access.yml
+      x-apievangelist-note: >-
+        RapidAPI Enterprise Hub gateway export of Nokia's aggregated Network as
+        Code surface. Harvested verbatim from the Apache-2.0 repository
+        nokia/network-as-code-sdks, which regenerates it from an authenticated
+        RapidAPI GraphQL exportOpenApi call against the Nokia tenant.
+  - target: $.info
+    update:
+      x-apievangelist-gaps:
+        idempotency: No Idempotency-Key contract on any creating operation.
+        pagination: No cursor/offset parameter on any collection operation.
+        rate_limit_headers: No RateLimit or Retry-After headers declared; 429 is returned as TOO_MANY_REQUESTS or QUOTA_EXCEEDED.
+        problem_details: Errors use the CAMARA ErrorInfo envelope, not application/problem+json.
+        deprecation: No operation is flagged deprecated even where a newer version of the same capability is present in the same document.
+        scopes: This gateway export declares no operation-level security at all; the OIDC scope contract lives only in the CAMARA document.
+  - target: $.servers
+    update:
+      - url: https://network-as-code.p-eu.rapidapi.com
+        description: >-
+          RapidAPI Enterprise Hub gateway, EU region. Every production call is
+          routed here; there is no Nokia-owned API hostname.
+  - target: $.components.securitySchemes
+    update:
+      x-apievangelist-capability-layer:
+        type: openIdConnect
+        description: >-
+          Documentation-only annotation. The gateway key authenticates the
+          channel; subscriber-scoped capability calls additionally require a
+          CAMARA two-legged or three-legged token issued through
+          /oauth2/v1/auth/clientcredentials. That second layer is not modelled
+          in this export - it is only modelled in the CAMARA document - which is
+          why an integrator reading this file alone will under-implement auth.

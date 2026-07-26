@@ -1,0 +1,127 @@
+generated: '2026-07-25'
+method: derived
+source: openapi/nokia-network-as-code-camara-openapi.yml + openapi/nokia-network-as-code-platform-openapi.json
+spec_type: Webhooks
+asyncapi_published: false
+summary: 'Nokia publishes no AsyncAPI document, but the event surface is real, specified and substantial:
+  the CAMARA subscription model. A consumer POSTs a subscription carrying a sink URL and a sinkCredential
+  object (credentialType ACCESSTOKEN), names the event types it wants, and Nokia POSTs CloudEvents to
+  that sink. Twenty-eight distinct CloudEvent types are named across the two specifications, and the OIDC
+  scope for a subscription names the exact event type it authorises (e.g. geofencing-subscriptions:org.camaraproject.geofencing-subscriptions.v0.area-entered:create),
+  so consent is event-granular. The webhook receiver is consumer-hosted; Nokia does not sign notifications
+  with a published scheme, it authenticates to the sink with the credential the consumer supplied.'
+delivery:
+  protocol: HTTP POST to a consumer-hosted sink
+  format: CloudEvents
+  sink_field: sink
+  credential_field: sinkCredential
+  credential_types:
+  - ACCESSTOKEN
+  lifecycle_events:
+  - subscription-started
+  - subscription-updated
+  - subscription-ends
+  - subscription-ended
+  note: Subscriptions carry an expiry and emit their own lifecycle events; an agent must handle subscription-ends
+    and re-subscribe rather than assume a standing feed.
+event_types:
+- family: device-reachability-status-subscriptions
+  events:
+  - org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data
+  - org.camaraproject.device-reachability-status-subscriptions.v0.reachability-disconnected
+  - org.camaraproject.device-reachability-status-subscriptions.v0.reachability-sms
+  - org.camaraproject.device-reachability-status-subscriptions.v0.subscription-ended
+  - org.camaraproject.device-reachability-status-subscriptions.v0.subscription-ends
+  - org.camaraproject.device-reachability-status-subscriptions.v0.subscription-started
+  - org.camaraproject.device-reachability-status-subscriptions.v0.subscription-updated
+- family: device-roaming-status-subscriptions
+  events:
+  - org.camaraproject.device-roaming-status-subscriptions.v0.roaming-change-country
+  - org.camaraproject.device-roaming-status-subscriptions.v0.roaming-off
+  - org.camaraproject.device-roaming-status-subscriptions.v0.roaming-on
+  - org.camaraproject.device-roaming-status-subscriptions.v0.roaming-status
+  - org.camaraproject.device-roaming-status-subscriptions.v0.subscription-ended
+  - org.camaraproject.device-roaming-status-subscriptions.v0.subscription-ends
+  - org.camaraproject.device-roaming-status-subscriptions.v0.subscription-started
+  - org.camaraproject.device-roaming-status-subscriptions.v0.subscription-updated
+- family: device-status
+  events:
+  - org.camaraproject.device-status.v0.connectivity-data
+  - org.camaraproject.device-status.v0.connectivity-disconnected
+  - org.camaraproject.device-status.v0.connectivity-sms
+  - org.camaraproject.device-status.v0.roaming-change-country
+  - org.camaraproject.device-status.v0.roaming-off
+  - org.camaraproject.device-status.v0.roaming-on
+  - org.camaraproject.device-status.v0.roaming-status
+  - org.camaraproject.device-status.v0.subscription-ends
+- family: geofencing-subscriptions
+  events:
+  - org.camaraproject.geofencing-subscriptions.v0.area-entered
+  - org.camaraproject.geofencing-subscriptions.v0.area-left
+  - org.camaraproject.geofencing-subscriptions.v0.subscription-ends
+- family: qod
+  events:
+  - org.camaraproject.qod.v0.qos-status-changed
+- family: quality-on-demand
+  events:
+  - org.camaraproject.quality-on-demand.v1.qos-status-changed
+subscription_surfaces:
+- path: /congestion-insights/v0/subscriptions
+  operations:
+  - createSubscription-ConI-V1
+  - getSubscriptions
+- path: /congestion-insights/v0/subscriptions/{resource_id}
+  operations:
+  - deleteSubscription-ConI-V1
+  - getSubscription
+- path: /device-status/device-reachability-status-subscriptions/v0.7/subscriptions
+  operations:
+  - createDeviceReachabilityStatusSubscription
+  - retrieveDeviceReachabilityStatusSubscriptionList
+- path: /device-status/device-reachability-status-subscriptions/v0.7/subscriptions/{subscriptionId}
+  operations:
+  - deleteDeviceReachabilityStatusSubscription
+  - retrieveDeviceReachabilityStatusSubscription
+- path: /device-status/device-reachability-status-subscriptions/v0.8/subscriptions
+  operations:
+  - createDeviceReachabilityStatusSubscription-DS-RES-V080
+  - retrieveDeviceReachabilityStatusSubscriptionList-DS-RES-V080
+- path: /device-status/device-reachability-status-subscriptions/v0.8/subscriptions/{subscriptionId}
+  operations:
+  - deleteDeviceReachabilityStatusSubscription-DS-RES-V080
+  - retrieveDeviceReachabilityStatusSubscription-DS-RES-V080
+- path: /device-status/device-roaming-status-subscriptions/v0.7/subscriptions
+  operations:
+  - createDeviceRoamingStatusSubscription
+  - retrieveDeviceRoamingStatusSubscriptionList
+- path: /device-status/device-roaming-status-subscriptions/v0.7/subscriptions/{subscriptionId}
+  operations:
+  - deleteDeviceRoamingStatusSubscription
+  - retrieveDeviceRoamingStatusSubscription
+- path: /device-status/device-roaming-status-subscriptions/v0.8/subscriptions
+  operations:
+  - createDeviceRoamingStatusSubscription-DS-ROS-V080
+  - retrieveDeviceRoamingStatusSubscriptionList-DS-ROS-V080
+- path: /device-status/device-roaming-status-subscriptions/v0.8/subscriptions/{subscriptionId}
+  operations:
+  - deleteDeviceRoamingStatusSubscription-DS-ROS-V080
+  - retrieveDeviceRoamingStatusSubscription-DS-ROS-V080
+- path: /device-status/v0/subscriptions
+  operations:
+  - createDeviceStatusSubscription
+  - retrieveSubscriptionList
+- path: /device-status/v0/subscriptions/{subscriptionId}
+  operations:
+  - deleteSubscription
+  - retrieveSubscription
+- path: /geofencing-subscriptions/v0.3/subscriptions
+  operations:
+  - createSubscription
+  - retrieveGeofencingSubscriptionList
+- path: /geofencing-subscriptions/v0.3/subscriptions/{subscriptionId}
+  operations:
+  - deleteGeofencingSubscription
+  - retrieveGeofencingSubscription
+counts:
+  event_types: 28
+  subscription_paths: 14

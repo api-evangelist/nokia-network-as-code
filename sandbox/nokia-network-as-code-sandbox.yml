@@ -1,0 +1,57 @@
+generated: '2026-07-25'
+method: searched
+source: >-
+  The hub plan list captured in review.yml (public plans DEFAULT and SIMULATOR),
+  the hub shell configuration at developer.networkascode.nokia.io
+  (mcp_playground enabled), Nokia's product pages, and the SDK integration test
+  harness at github.com/nokia/network-as-code-sdks.
+summary: >-
+  A sandbox exists and it is one of the better reasons to take this platform
+  seriously - a SIMULATOR plan sits alongside DEFAULT as a publicly advertised
+  plan on the hub, so a developer can exercise network capabilities without a
+  live subscriber on a live operator network, which is the hard part of every
+  network-API integration. But none of it is reachable or even readable without
+  an account: the plan is selected inside the console at /console (which
+  redirects to /auth/login), the API playground and MCP playground run in the
+  signed-in hub, and Nokia publishes no magic test values - no test MSISDN
+  range, no simulated device identifier, no fixture triggers. That is the
+  material difference between this and a payments sandbox, and it is recorded
+  here rather than filled in with invented numbers.
+plans:
+  - {name: DEFAULT, kind: live, note: 'Routes to real operator networks where Nokia holds a commercial agreement for that market.'}
+  - {name: SIMULATOR, kind: simulated, note: 'Simulated network responses for development and testing. Publicly advertised on the hub.'}
+mode_separation:
+  mechanism: plan subscription on the RapidAPI Enterprise Hub, not a key prefix
+  note: >-
+    Unlike test/live key prefixes, the same x-rapidapi-key shape is used in both
+    modes; which network answers is a property of the plan the key is subscribed
+    to. There is no in-key or in-response indicator published in either
+    specification, so a client cannot tell simulated from live traffic from the
+    contract alone.
+signup:
+  url: https://networkascode.nokia.io/auth/sign-up
+  status: 200
+  self_serve: true
+console:
+  url: https://networkascode.nokia.io/console
+  gated: true
+  redirects_to: https://networkascode.nokia.io/auth/login?referral=%2Fconsole
+playgrounds:
+  - {name: API playground, location: signed-in hub, note: 'Try-it console for the catalogue.'}
+  - {name: MCP playground, location: signed-in hub, note: 'mcp_playground flag is true in the hub configuration; exercises the hosted MCP server at mcp.prodeu.apihub.nokia.io.'}
+test_values:
+  published: false
+  note: >-
+    No test phone numbers, magic MSISDNs, simulated device identifiers, test
+    QoS profiles or fixture triggers are published on any anonymously reachable
+    surface. Nothing is asserted here that Nokia has not published.
+integration_testing:
+  harness: github.com/nokia/network-as-code-sdks
+  languages: [python, typescript]
+  files:
+    - network-as-code-py/integration_tests/ (call_forwarding, congestion_insights, device_status, device_swap, geofencing, kyc, location, number_recycling, qod, sim_swap, slice)
+    - network-as-code-ts/integration-tests/ (callForwarding, congestionInsights, deviceStatus, deviceSwap, geofencing, kyc, location, numberRecycling, qod, simSwap, slice)
+  credentials: >-
+    Both harnesses read a real key from the environment - NAC_TOKEN, with an
+    optional RAPIDAPI_HOST override - so the published tests are written to run
+    against a developer's own account, not against a shared public sandbox.

@@ -1,0 +1,60 @@
+generated: '2026-07-25'
+method: searched
+status: published
+source: >-
+  https://developer.networkascode.nokia.io/docs/mcp-server - the hub shell
+  configuration embeds "mcp_url":"https://mcp.prodeu.apihub.nokia.io",
+  "mcp_playground":true and an mcp_platforms install matrix.
+server:
+  name: network-as-code
+  vendor: Nokia
+  transport: http
+  url: https://mcp.prodeu.apihub.nokia.io
+  root_probe:
+    status: 200
+    body: '{"version":"0.1.12-13474f4"}'
+  docs: https://networkascode.nokia.io/docs/mcp-server
+install_targets:
+  - {name: claude-desktop, label: Claude Desktop, kind: Custom Connector}
+  - {name: claude-code, label: Claude Code, kind: CLI}
+  - {name: cursor, label: Cursor}
+  - {name: vscode, label: VS Code}
+playground: true
+tools: []
+tools_gated: true
+gating:
+  note: >-
+    The tool list could not be retrieved anonymously. Every MCP transport path
+    probed on the server host returns "404 page not found" - /mcp, /mcp/, /sse,
+    /message, /messages, /v1/mcp, /api/mcp - for both GET and a JSON-RPC
+    tools/list POST, and no MCP OAuth discovery document is served
+    (/.well-known/oauth-authorization-server and
+    /.well-known/oauth-protected-resource are both 404). Only GET / (version)
+    and /version respond. The server is therefore session- or tenant-scoped:
+    the transport path is minted per authenticated hub user, so the real tool
+    set and its inputSchemas require an authenticated introspection from inside
+    a Network as Code account.
+  probes:
+    - {path: /mcp, method: POST, status: 404}
+    - {path: /mcp/, method: POST, status: 404}
+    - {path: /sse, method: POST, status: 404}
+    - {path: /message, method: POST, status: 404}
+    - {path: /messages, method: POST, status: 404}
+    - {path: /v1/mcp, method: POST, status: 404}
+    - {path: /api/mcp, method: POST, status: 404}
+    - {path: /mcp, method: GET, status: 404}
+    - {path: /sse, method: GET, status: 404}
+    - {path: /.well-known/oauth-authorization-server, method: GET, status: 404}
+    - {path: /.well-known/oauth-protected-resource, method: GET, status: 404}
+    - {path: /, method: GET, status: 200}
+context:
+  note: >-
+    Nokia's MCP surface is not a side project. At MWC 2026 Nokia announced an
+    agentic-AI partnership with Google Cloud exposing Network as Code
+    capabilities to Google's Agent Development Kit and Gemini over MCP, and
+    Telefonica is publicly named as testing A2A and MCP protocols with Nokia for
+    agentic exposure of network capability. The hub also runs an in-browser MCP
+    playground for signed-in developers.
+  sources:
+    - https://www.nokia.com/newsroom/nokia-expands-network-as-code-ecosystem-advances-api-based-agentic-ai-with-google-cloud-mwc26/
+crosswalk: mcp/nokia-network-as-code-tool-crosswalk.yml

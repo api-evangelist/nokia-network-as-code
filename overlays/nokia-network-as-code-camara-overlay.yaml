@@ -1,0 +1,57 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Nokia Network as Code CAMARA API
+  version: 1.0.0
+extends: openapi/nokia-network-as-code-camara-openapi.yml
+x-generated: '2026-07-25'
+x-method: generated
+x-source: Derived from the artifacts in this repository; never mutates the harvested specification.
+actions:
+  - target: $.info
+    update:
+      x-apievangelist-provider: nokia-network-as-code
+      x-apievangelist-artifacts:
+        scopes: scopes/nokia-network-as-code-scopes.yml
+        errors: errors/nokia-network-as-code-problem-types.yml
+        webhooks: asyncapi/nokia-network-as-code-webhooks.yml
+        conformance: conformance/nokia-network-as-code-conformance.yml
+      x-apievangelist-note: >-
+        Single-NaC-API-OAS.yaml, published verbatim under Apache 2.0 in
+        nokia/network-as-code-sdks. This is the document that carries the
+        CAMARA contract - Commonalities 0.4.0, the ErrorInfo envelope, the
+        x-correlator header, 65 purpose-based OIDC scopes and the
+        sink/CloudEvents subscription model.
+  - target: $.info
+    update:
+      x-apievangelist-defects:
+        undefined_security_scheme: >-
+          The document-level security requirement names oAuth2ClientCredentials,
+          but that scheme is never defined in components.securitySchemes. Only
+          an openIdConnect scheme named openId is defined. Any generator that
+          resolves security references strictly will fail or silently drop auth.
+        placeholder_issuer: >-
+          components.securitySchemes.openId.openIdConnectUrl is left at the
+          CAMARA template placeholder https://example.com/.well-known/openid-configuration
+          rather than a Nokia issuer.
+        placeholder_servers: >-
+          servers[].variables.apiRoot defaults to http://localhost:9091. The real
+          production root is https://network-as-code.p-eu.rapidapi.com.
+  - target: $.info
+    update:
+      x-apievangelist-runtime-rules:
+        identifier_and_token: >-
+          A phoneNumber (or other device identifier) MUST be supplied with a
+          two-legged token and MUST NOT be supplied with a three-legged token.
+          The two failure modes are 422 MISSING_IDENTIFIER and
+          422 UNNECESSARY_IDENTIFIER.
+        aggregator_boundary: >-
+          422 SERVICE_NOT_APPLICABLE means the serving operator does not offer
+          the capability for that subscriber. Not retryable.
+        correlation: Send and log x-correlator on every request.
+        idempotency: None. Reconcile by listing before retrying a creating call.
+  - target: $.servers
+    update:
+      - url: https://network-as-code.p-eu.rapidapi.com
+        description: >-
+          API Evangelist annotation - the real production apiRoot. The published
+          servers[] entries template apiRoot to http://localhost:9091.

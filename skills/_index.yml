@@ -1,0 +1,45 @@
+generated: '2026-07-25'
+method: generated
+source: >-
+  Grounded in openapi/nokia-network-as-code-platform-openapi.json (every
+  operationId below was verified verbatim in the specification) plus
+  conventions/, errors/, scopes/ and asyncapi/ in this repository. Nokia
+  publishes no AGENTS.md or first-party skill files; nothing was found to save
+  verbatim.
+note: >-
+  One skill per marquee flow across the four product families. Each carries the
+  two rules that decide most calls on this platform - the two-legged versus
+  three-legged identifier rule, and the absence of any idempotency contract -
+  because an agent that gets those wrong will fail on almost every operation
+  regardless of which capability it is calling.
+skills:
+  - file: nokia-network-as-code-verify-phone-number.md
+    name: Verify a phone number against the mobile network (silent network auth)
+    family: Digital Identity and Anti-Fraud
+    api: openapi/nokia-network-as-code-platform-openapi.json
+    operations: [get_client_credentials, phoneNumberVerify-NV-V2, phoneNumberShare-NV-V2]
+  - file: nokia-network-as-code-sim-swap-risk-check.md
+    name: Check SIM swap and device swap risk before a high-value action
+    family: Digital Identity and Anti-Fraud
+    api: openapi/nokia-network-as-code-platform-openapi.json
+    operations: [checkSimSwap, retrieveSimSwapDate, checkDeviceSwap, retrieveDeviceSwapDate, checkNumberRecycling]
+  - file: nokia-network-as-code-verify-device-location.md
+    name: Verify or retrieve a device's location from the network
+    family: Device Intelligence
+    api: openapi/nokia-network-as-code-platform-openapi.json
+    operations: [verifyLocation, verifyLocation-LocV-V0, retrieveLocation]
+  - file: nokia-network-as-code-geofence-subscription.md
+    name: Subscribe to geofence entry and exit events
+    family: Device Intelligence
+    api: openapi/nokia-network-as-code-platform-openapi.json
+    operations: [createSubscription, retrieveGeofencingSubscription, retrieveGeofencingSubscriptionList, deleteGeofencingSubscription]
+  - file: nokia-network-as-code-quality-on-demand-session.md
+    name: Boost network quality for a session with Quality on Demand
+    family: Programmable Connectivity
+    api: openapi/nokia-network-as-code-platform-openapi.json
+    operations: [createSession-QoD-V1, getSession-QoD-V1, retrieveSessions-QoD-V1, extendQosSessionDuration-QoD-V1, deleteSession-QoD-V1]
+  - file: nokia-network-as-code-kyc-from-the-network.md
+    name: Run KYC checks against operator-held subscriber data
+    family: Digital Identity and Anti-Fraud
+    api: openapi/nokia-network-as-code-platform-openapi.json
+    operations: [verifyKYCMatch, verifyAge, checkTenure, kycFillIn, retrieveStatus]

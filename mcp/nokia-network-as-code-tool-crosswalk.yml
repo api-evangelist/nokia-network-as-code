@@ -1,0 +1,176 @@
+generated: '2026-07-25'
+method: derived
+source: openapi/nokia-network-as-code-platform-openapi.json + mcp/nokia-network-as-code-mcp.yml
+summary: 'Nokia publishes a hosted MCP server for Network as Code and two complete OpenAPI documents,
+  but the two surfaces cannot be bound to each other from outside an account. The MCP server at mcp.prodeu.apihub.nokia.io
+  answers only GET / with a version document; every transport path returns 404 anonymously, no OAuth discovery
+  document is served, and Nokia publishes no llms.txt and no static tool list, so there is no published
+  tool inventory to map. This crosswalk therefore records an honest empty binding and a complete REST-only
+  inventory: 78 gateway operations across seven capability families, any of which an authenticated introspection
+  can later be bound to. Nothing here is inferred - no tool name is asserted that Nokia has not published.'
+surfaces:
+  openapi:
+  - file: openapi/nokia-network-as-code-platform-openapi.json
+    operations: 78
+    paths: 58
+    server: https://network-as-code.p-eu.rapidapi.com
+    gated: false
+    note: Published verbatim in the Apache-2.0 repo nokia/network-as-code-sdks; anonymously downloadable.
+  - file: openapi/nokia-network-as-code-camara-openapi.yml
+    operations: 70
+    paths: 52
+    gated: false
+    note: CAMARA-conformant consolidated document, x-camara-commonalities 0.4.0. Carries the OIDC scope
+      requirements the gateway export omits.
+  mcp:
+    url: https://mcp.prodeu.apihub.nokia.io
+    gated: true
+    note: tools/list is not reachable anonymously; transport path appears to be minted per authenticated
+      session.
+  graphql:
+    present: false
+    note: No first-party GraphQL surface. The only GraphQL endpoint in the estate is RapidAPI's own platform
+      API (graphql-platform.p-eu.rapidapi.com), used by Nokia's build script with an authenticated exportOpenApi
+      query - it is not a developer-facing Nokia API.
+crosswalk: []
+mcp_only: []
+rest_only:
+- capability: Identity and anti-fraud
+  tags:
+  - Number Verification v1.0.0
+  - Number Verification v2.1
+  - SIM Swap v1.0.0
+  - Device Swap v1.0.0
+  - Number Recycling v0.2
+  - Call Forwarding Signal v0.3.0
+  operations:
+  - checkDeviceSwap
+  - checkNumberRecycling
+  - checkSimSwap
+  - phoneNumberShare
+  - phoneNumberShare-NV-V2
+  - phoneNumberVerify
+  - phoneNumberVerify-NV-V2
+  - retrieveCallForwarding
+  - retrieveDeviceSwapDate
+  - retrieveSimSwapDate
+  - retrieveUnconditionalCallForwarding
+- capability: KYC
+  tags:
+  - KYC Age Verification v0.1
+  - KYC FIll In v0.4
+  - KYC Match v0.3
+  - KYC Tenure v0.1
+  operations:
+  - checkTenure
+  - kycFillIn
+  - verifyAge
+  - verifyKYCMatch
+- capability: Device location
+  tags:
+  - Location Retrieval v0.2.0
+  - Location Verification v0.2.0
+  - Location Verification v1.0.0
+  - Geofencing v0.3.0
+  operations:
+  - createSubscription
+  - deleteGeofencingSubscription
+  - retrieveGeofencingSubscription
+  - retrieveGeofencingSubscriptionList
+  - retrieveLocation
+  - verifyLocation
+  - verifyLocation-LocV-V0
+- capability: Device status
+  tags:
+  - Device Reachability Status Retrieve v1.1.0
+  - Device Reachability Status Subscriptions v0.7
+  - Device Reachability Status Subscriptions v0.8
+  - Device Roaming Status Retrieve v1.1.0
+  - Device Roaming Status Subscriptions v0.7
+  - Device Roaming Status Subscriptions v0.8
+  - Device Status v0.5.1
+  operations:
+  - createDeviceReachabilityStatusSubscription
+  - createDeviceReachabilityStatusSubscription-DS-RES-V080
+  - createDeviceRoamingStatusSubscription
+  - createDeviceRoamingStatusSubscription-DS-ROS-V080
+  - createDeviceStatusSubscription
+  - deleteDeviceReachabilityStatusSubscription
+  - deleteDeviceReachabilityStatusSubscription-DS-RES-V080
+  - deleteDeviceRoamingStatusSubscription
+  - deleteDeviceRoamingStatusSubscription-DS-ROS-V080
+  - deleteSubscription
+  - getConnectivityStatus
+  - getReachabilityStatus
+  - getRoamingStatus
+  - getRoamingStatus-DS-V0
+  - retrieveDeviceReachabilityStatusSubscription
+  - retrieveDeviceReachabilityStatusSubscription-DS-RES-V080
+  - retrieveDeviceReachabilityStatusSubscriptionList
+  - retrieveDeviceReachabilityStatusSubscriptionList-DS-RES-V080
+  - retrieveDeviceRoamingStatusSubscription
+  - retrieveDeviceRoamingStatusSubscription-DS-ROS-V080
+  - retrieveDeviceRoamingStatusSubscriptionList
+  - retrieveDeviceRoamingStatusSubscriptionList-DS-ROS-V080
+  - retrieveSubscription
+  - retrieveSubscriptionList
+- capability: Programmable connectivity
+  tags:
+  - Quality-of-Service on Demand v0.10.1
+  - Quality-of-Service on Demand v1.0.0
+  - Network Slicing v1.0.0
+  - Slice Device Attach v1.0.0
+  operations:
+  - activate_slice
+  - attachDevice
+  - createSession
+  - createSession-QoD-V1
+  - create_slice
+  - deactivate_slice
+  - deleteSession
+  - deleteSession-QoD-V1
+  - delete_slice
+  - detachDevice
+  - extendQosSessionDuration
+  - extendQosSessionDuration-QoD-V1
+  - getAllAttachmentsStatus
+  - getAllSlices
+  - getAttachmentStatus
+  - getSession
+  - getSession-QoD-V1
+  - get_slice
+  - manageSubscriber
+  - retrieveSessions
+  - retrieveSessions-QoD-V1
+- capability: Network intelligence
+  tags:
+  - Congestion Insights v1.0.0
+  - Consent Info v0.1.0
+  operations:
+  - createSubscription-ConI-V1
+  - deleteSubscription-ConI-V1
+  - fetch
+  - getSubscription
+  - getSubscriptions
+  - retrieveStatus
+- capability: Authorization and discovery
+  tags:
+  - NaC Authorization Server
+  - Well Known Metadata
+  operations:
+  - get_client_credentials
+  - get_jwks_apps__nac_app_ref___well_known_jwks_json_get
+  - get_security_txt_security_txt_get
+  - get_well_known_oauth_oauth_authorization_server_get
+  - get_well_known_oidc_openid_configuration_get
+coverage:
+  tools_named: 0
+  tools_bound: 0
+  mcp_only: 0
+  rest_operations_total: 78
+  rest_operations_with_tool: 0
+  note: tools_named is 0 because the provider publishes no tool inventory anonymously, not because the
+    server has no tools.
+next_step: 'Re-run with an authenticated Network as Code session: POST tools/list against the session
+  MCP endpoint, then bind each returned tool to the operationIds listed in rest_only[] and inherit its
+  inputSchema from that operation.'

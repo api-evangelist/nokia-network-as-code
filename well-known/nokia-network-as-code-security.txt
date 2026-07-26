@@ -1,0 +1,42 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+# Thank you for reporting a vulnerability or other security issue to Nokia.
+
+# Please use the below link to report your Nokia security finding:
+Contact: mailto:security-alert@nokia.com
+
+
+# Nokia PGP Key:
+Encryption: https://www.nokia.com/.well-known/nokia-public-key.asc
+
+# Nokia Hall of Fame:
+Acknowledgments: https://www.nokia.com/we-are-nokia/security/products/cvd/hall-of-fame/
+
+# We accept the reports in English
+Preferred-Languages: en
+
+# Canonical
+Canonical: https://www.nokia.com/.well-known/security.txt
+
+# Nokia Coordinated Vulnerability Disclosure Program
+Policy: https://www.nokia.com/we-are-nokia/security/products/cvd/
+
+# Expiry date
+Expires: 2036-12-31T23:00:00Z
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEuIpbBDp16RPWAfI6y90e/3XhQXgFAmmpm6IACgkQy90e/3Xh
+QXiKmhAAs9INlHIqeWhnC9IOhoUJy7/FnYRX3Tt7sNMEbIHxBGaWlPJYGTPf7lE9
+JGOIYLLzgGbf28NeN9jk+oe8UqaryKb6cXNVj6lwcg15SrXVSzlBd9lotKWxG87w
+ECI3+eF9ZPDJ5d7ogc/klFVQwd9FtfJcmqxkcnfHdvU9WGfjpNd51c4U26pPbQWJ
+KLqfZRBQwijHjoz/ZAUz86d7Qh2Bh9h16MGozt3k0pzfl7hmwn97UZ+QITDMkcIN
+iA28mbZukxiKps6RjGcHRL6sN21BLCRlKW+aQygQK8+qaJHuaQmTqY3NQPH2rEQd
+n1dBMnlMRpTVOjl/g8PQ9DbPFezw7HtLVA+e++OAn8s0oKah6QG1kAfotNijgJ+h
+dZlBFicADajiO9ZhaV3Ktebi6D8IgmAUfBa8NvBI//CKhxTFcdVc6gLXzF+PPdxv
+z5eh9vVQrJ+bZSHBs0eVt3nDfbtWTHaMyx2h9shjXVrBdYPQKqBUqnJnyXVFolDX
+L9q7FECX854uwuGe/R2PDi4+Ag15E+SSeOBiw1lCuJCPC512bbXBCl20Xuk7mkeM
+Ab5PD4AFDHtLNFgdfyl04O6x2lFXdDcLiaeaz5sFdBZyMkEMOMLi+TjNwSy9tc/i
+kIJOkqZR023dA4/wcex7MMSe08wjkBQHf9RNJcR7v4ILuA3lDxM=
+=KtGC
+-----END PGP SIGNATURE-----

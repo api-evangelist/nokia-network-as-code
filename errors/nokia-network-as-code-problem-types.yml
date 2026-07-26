@@ -1,0 +1,609 @@
+generated: '2026-07-25'
+method: derived
+source: openapi/nokia-network-as-code-camara-openapi.yml + openapi/nokia-network-as-code-platform-openapi.json
+  (4xx/5xx response examples)
+format: camara-errorinfo
+format_note: 'Not RFC 9457. Neither specification serves application/problem+json anywhere. Both use the
+  CAMARA Commonalities ErrorInfo envelope - a plain application/json object with three fields: status
+  (the HTTP status repeated in the body), code (a SCREAMING_SNAKE_CASE machine token, dotted with the
+  API name for API-specific errors, e.g. LOCATION_RETRIEVAL.MAXAGE_INVALID_ARGUMENT) and message (human-readable).
+  Each response schema is generated per API version, e.g. ErrorInfo-QoD-V0, so there are hundreds of structurally
+  identical ErrorInfo-* schemas rather than one shared component.'
+envelope:
+  media_type: application/json
+  fields:
+  - name: status
+    type: integer
+    description: HTTP status code, repeated in the body.
+  - name: code
+    type: string
+    description: Machine-readable error token. Generic CAMARA tokens are undotted; API-specific tokens
+      are prefixed with the API name and a dot.
+  - name: message
+    type: string
+    description: Human-readable explanation, safe to log, not intended for end users.
+correlation:
+  header: x-correlator
+  note: CAMARA Commonalities 0.4.0 request/response correlation header; present on operations across both
+    documents. Echo it on every call and quote it in support tickets.
+agent_notes:
+- 'UNNECESSARY_IDENTIFIER (422, 13 operations) and MISSING_IDENTIFIER (422, 14 operations) are the token-model
+  tell: a phoneNumber MUST be supplied with a two-legged (client-credentials) token and MUST NOT be supplied
+  with a three-legged (subscriber-consented) token. An agent that guesses the token type will oscillate
+  between these two errors.'
+- SERVICE_NOT_APPLICABLE (422, 16 operations) is the aggregator boundary - the request is well formed
+  but the serving operator does not offer that capability for that subscriber. It is not retryable and
+  must not be treated as a transient failure.
+- QUOTA_EXCEEDED and TOO_MANY_REQUESTS both map to 429 with no Retry-After header published in either
+  specification; back off on a client-side schedule.
+problems:
+- status: 400
+  code: INVALID_ARGUMENT
+  title: Some parameter combinations or parameter values provided are not schema compliant
+  example_messages:
+  - Schema validation failed at  ...
+  - 'Expected property is missing: device'
+  - 'Insufficient properties specified: device'
+  - 'Multiple inconsistent parameters specified: device'
+  operations: 55
+  example_operations:
+  - checkDeviceSwap
+  - checkNumberRecycling
+  - checkSimSwap
+  - checkTenure
+  sources:
+  - openapi/nokia-network-as-code-camara-openapi.yml
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 400
+  code: INVALID_CREDENTIAL
+  example_messages:
+  - Only Access token is supported
+  operations: 6
+  example_operations:
+  - createDeviceReachabilityStatusSubscription
+  - createDeviceReachabilityStatusSubscription-DS-RES-V080
+  - createDeviceRoamingStatusSubscription
+  - createDeviceRoamingStatusSubscription-DS-ROS-V080
+  sources:
+  - openapi/nokia-network-as-code-camara-openapi.yml
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 400
+  code: INVALID_PROTOCOL
+  example_messages:
+  - Only HTTP is supported
+  operations: 5
+  example_operations:
+  - createDeviceReachabilityStatusSubscription
+  - createDeviceReachabilityStatusSubscription-DS-RES-V080
+  - createDeviceRoamingStatusSubscription
+  - createDeviceRoamingStatusSubscription-DS-ROS-V080
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 400
+  code: INVALID_SINK
+  example_messages:
+  - sink not valid for the specified protocol
+  operations: 2
+  example_operations:
+  - createDeviceReachabilityStatusSubscription-DS-RES-V080
+  - createDeviceRoamingStatusSubscription-DS-ROS-V080
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 400
+  code: INVALID_TOKEN
+  example_messages:
+  - Only bearer token is supported
+  operations: 6
+  example_operations:
+  - createDeviceReachabilityStatusSubscription
+  - createDeviceReachabilityStatusSubscription-DS-RES-V080
+  - createDeviceRoamingStatusSubscription
+  - createDeviceRoamingStatusSubscription-DS-ROS-V080
+  sources:
+  - openapi/nokia-network-as-code-camara-openapi.yml
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 400
+  code: KNOW_YOUR_CUSTOMER.INVALID_PARAM_COMBINATION
+  example_messages:
+  - Indicated parameter combination is invalid
+  operations: 1
+  example_operations:
+  - verifyKYCMatch
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 400
+  code: LOCATION_RETRIEVAL.MAXAGE_INVALID_ARGUMENT
+  example_messages:
+  - maxAge threshold cannot be satisfied
+  operations: 1
+  example_operations:
+  - retrieveLocation
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 400
+  code: OUT_OF_RANGE
+  title: Invalid port specified for device public port
+  example_messages:
+  - 'Invalid port value specified: device.ipv4Address.publicPort'
+  - 'Invalid port ranges specified: devicePorts'
+  - The requested duration is out of the allowed range for the specific QoS profile
+  - Client specified an invalid range.
+  operations: 11
+  example_operations:
+  - checkDeviceSwap
+  - checkNumberRecycling
+  - checkTenure
+  - createDeviceReachabilityStatusSubscription
+  sources:
+  - openapi/nokia-network-as-code-camara-openapi.yml
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 400
+  code: QUALITY_ON_DEMAND.DURATION_OUT_OF_RANGE
+  example_messages:
+  - The requested duration is out of the allowed range for the specific QoS profile
+  operations: 1
+  example_operations:
+  - createSession-QoD-V1
+  sources:
+  - openapi/nokia-network-as-code-camara-openapi.yml
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 401
+  code: AUTHENTICATION_REQUIRED
+  example_messages:
+  - New authentication is required.
+  operations: 16
+  example_operations:
+  - checkTenure
+  - createDeviceReachabilityStatusSubscription
+  - createDeviceRoamingStatusSubscription
+  - deleteDeviceReachabilityStatusSubscription
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 401
+  code: UNAUTHENTICATED
+  example_messages:
+  - Request not authenticated due to missing, invalid, or expired credentials. A new authentication is
+    required.
+  - Request not authenticated due to missing, invalid, or expired credentials
+  - Request not authenticated due to missing, invalid, or expired credentials.
+  - 'Authorization failed: ...'
+  operations: 55
+  example_operations:
+  - checkDeviceSwap
+  - checkNumberRecycling
+  - checkSimSwap
+  - checkTenure
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 403
+  code: CONSENT_INFO.CAPTURE_FREQUENCY_EXCEEDED
+  example_messages:
+  - The frequency of consent capture requests has been exceeded. Please try again later.
+  operations: 1
+  example_operations:
+  - retrieveStatus
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 403
+  code: CONSENT_INFO.NOT_ALLOWED_SCOPES_PURPOSE
+  example_messages:
+  - The requested scope(s) and Purpose combination is not allowed for this API Consumer.
+  operations: 1
+  example_operations:
+  - retrieveStatus
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 403
+  code: INVALID_TOKEN_CONTEXT
+  example_messages:
+  - Phone number cannot be deducted from access token context
+  - phoneNumber is not consistent with access token
+  - '{{field}} is not consistent with access token.'
+  - phoneNumber is not consistent with access token.
+  operations: 6
+  example_operations:
+  - checkSimSwap
+  - phoneNumberShare
+  - phoneNumberVerify
+  - retrieveSimSwapDate
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 403
+  code: KNOW_YOUR_CUSTOMER.ID_DOCUMENT_MISMATCH
+  example_messages:
+  - The idDocument needs to match the one associated with the provided phoneNumber
+  operations: 1
+  example_operations:
+  - verifyKYCMatch
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 403
+  code: KNOW_YOUR_CUSTOMER.ID_DOCUMENT_REQUIRED
+  example_messages:
+  - The idDocument is required to perform the properties validation
+  operations: 1
+  example_operations:
+  - verifyKYCMatch
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 403
+  code: NUMBER_VERIFICATION.USER_NOT_AUTHENTICATED_BY_MOBILE_NETWORK
+  example_messages:
+  - Client must authenticate via the mobile network to use this service
+  operations: 4
+  example_operations:
+  - phoneNumberShare
+  - phoneNumberShare-NV-V2
+  - phoneNumberVerify
+  - phoneNumberVerify-NV-V2
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 403
+  code: PERMISSION_DENIED
+  example_messages:
+  - Client does not have sufficient permissions to perform this action.
+  - Client does not have sufficient permissions to perform this action
+  - 'Operation not allowed: ...'
+  operations: 55
+  example_operations:
+  - checkDeviceSwap
+  - checkNumberRecycling
+  - checkSimSwap
+  - checkTenure
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 403
+  code: SUBSCRIPTION_MISMATCH
+  example_messages:
+  - Inconsistent access token for requested events subscription
+  operations: 4
+  example_operations:
+  - createDeviceReachabilityStatusSubscription
+  - createDeviceReachabilityStatusSubscription-DS-RES-V080
+  - createDeviceRoamingStatusSubscription
+  - createDeviceRoamingStatusSubscription-DS-ROS-V080
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 404
+  code: DEVICE_NOT_FOUND
+  example_messages:
+  - No device found for a provided identifier
+  operations: 1
+  example_operations:
+  - verifyLocation
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 404
+  code: IDENTIFIER_NOT_FOUND
+  example_messages:
+  - The phone number provided is not associated with a customer account
+  - Phone number not found.
+  - Device identifier not found.
+  operations: 12
+  example_operations:
+  - checkDeviceSwap
+  - checkNumberRecycling
+  - checkTenure
+  - getReachabilityStatus
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 404
+  code: NOT_FOUND
+  example_messages:
+  - The specified resource is not found.
+  - The specified resource is not found
+  - Session Id does not exist
+  - '{{resource}} is not found'
+  operations: 33
+  example_operations:
+  - checkDeviceSwap
+  - checkSimSwap
+  - deleteDeviceReachabilityStatusSubscription
+  - deleteDeviceReachabilityStatusSubscription-DS-RES-V080
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 409
+  code: ABORTED
+  example_messages:
+  - Concurrency conflict.
+  operations: 4
+  example_operations:
+  - createDeviceReachabilityStatusSubscription
+  - createDeviceReachabilityStatusSubscription-DS-RES-V080
+  - createDeviceRoamingStatusSubscription
+  - createDeviceRoamingStatusSubscription-DS-ROS-V080
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 409
+  code: ALREADY_EXISTS
+  example_messages:
+  - The resource that a client tried to create already exists.
+  operations: 4
+  example_operations:
+  - createDeviceReachabilityStatusSubscription
+  - createDeviceReachabilityStatusSubscription-DS-RES-V080
+  - createDeviceRoamingStatusSubscription
+  - createDeviceRoamingStatusSubscription-DS-ROS-V080
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 409
+  code: CONFLICT
+  example_messages:
+  - The specified resource is in a conflict
+  - Another session is created for the same device
+  operations: 3
+  example_operations:
+  - createDeviceStatusSubscription
+  - createSession
+  - createSession-QoD-V1
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 422
+  code: AREA_NOT_COVERED
+  example_messages:
+  - The specified area cannot be covered or is too small to be valid
+  operations: 1
+  example_operations:
+  - createSubscription
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 422
+  code: DEVICE_IDENTIFIERS_MISMATCH
+  example_messages:
+  - The provided device identifiers do not match the same device
+  - Provided device identifiers are not consistent.
+  operations: 2
+  example_operations:
+  - createSubscription
+  - verifyLocation
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 422
+  code: DEVICE_NOT_APPLICABLE
+  example_messages:
+  - The device is not applicable for the requested operation
+  - The service is not available for the provided device.
+  operations: 2
+  example_operations:
+  - createSubscription
+  - verifyLocation
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 422
+  code: IDENTIFIER_MISMATCH
+  example_messages:
+  - Provided identifiers are not consistent.
+  operations: 2
+  example_operations:
+  - createDeviceReachabilityStatusSubscription
+  - createDeviceRoamingStatusSubscription
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 422
+  code: LOCATION_VERIFICATION.UNABLE_TO_FULFILL_MAX_AGE
+  example_messages:
+  - Unable to provide expected freshness for location
+  operations: 1
+  example_operations:
+  - verifyLocation
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 422
+  code: MISSING_IDENTIFIER
+  example_messages:
+  - The device cannot be identified.
+  - No phone number has been provided
+  - The phone number cannot be identified
+  - The phone number cannot be identified.
+  operations: 14
+  example_operations:
+  - checkNumberRecycling
+  - checkTenure
+  - createDeviceReachabilityStatusSubscription
+  - createDeviceReachabilityStatusSubscription-DS-RES-V080
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 422
+  code: MULTIEVENT_SUBSCRIPTION_NOT_SUPPORTED
+  example_messages:
+  - Multi event types subscription not managed
+  operations: 5
+  example_operations:
+  - createDeviceReachabilityStatusSubscription
+  - createDeviceReachabilityStatusSubscription-DS-RES-V080
+  - createDeviceRoamingStatusSubscription
+  - createDeviceRoamingStatusSubscription-DS-ROS-V080
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 422
+  code: NOT_SUPPORTED
+  example_messages:
+  - Service not supported for this phoneNumber
+  operations: 2
+  example_operations:
+  - checkSimSwap
+  - retrieveSimSwapDate
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 422
+  code: POI_NOT_SUPPORTED
+  example_messages:
+  - POI areaType only supported on CAMARA CSP
+  operations: 1
+  example_operations:
+  - createSubscription
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 422
+  code: SERVICE_NOT_APPLICABLE
+  example_messages:
+  - The service is not available for the provided identifier.
+  - The service is not applicable for the provided phone number
+  - The service is not available for the provided phone number
+  - The service is not available for the provided phone number.
+  operations: 16
+  example_operations:
+  - checkDeviceSwap
+  - checkNumberRecycling
+  - checkTenure
+  - createDeviceReachabilityStatusSubscription
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 422
+  code: UNIDENTIFIABLE_DEVICE
+  example_messages:
+  - A device must be provided
+  operations: 1
+  example_operations:
+  - verifyLocation
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 422
+  code: UNIDENTIFIABLE_PHONE_NUMBER
+  example_messages:
+  - The phone number cannot be identified
+  operations: 2
+  example_operations:
+  - checkSimSwap
+  - retrieveSimSwapDate
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 422
+  code: UNNECESSARY_IDENTIFIER
+  example_messages:
+  - The device is already identified by the access token.
+  - An explicit phone number has been provided when one is already associated with the access token
+  - The phone number is already identified by the access token
+  - The phone number is already identified by the access token.
+  operations: 13
+  example_operations:
+  - checkNumberRecycling
+  - checkTenure
+  - createDeviceReachabilityStatusSubscription
+  - createDeviceReachabilityStatusSubscription-DS-RES-V080
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 422
+  code: UNPROCESSABLE_ENTITY
+  example_messages:
+  - 'Value not acceptable: ...'
+  operations: 1
+  example_operations:
+  - verifyLocation
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 422
+  code: UNSUPPORTED_DEVICE_IDENTIFIERS
+  example_messages:
+  - 'Supported device supported are: ...'
+  operations: 1
+  example_operations:
+  - verifyLocation
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 422
+  code: UNSUPPORTED_IDENTIFIER
+  example_messages:
+  - The identifier provided is not supported.
+  operations: 5
+  example_operations:
+  - createDeviceReachabilityStatusSubscription
+  - createDeviceReachabilityStatusSubscription-DS-RES-V080
+  - createDeviceRoamingStatusSubscription-DS-ROS-V080
+  - getReachabilityStatus
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 429
+  code: QUOTA_EXCEEDED
+  example_messages:
+  - Out of resource quota.
+  - Either out of resource quota or reaching rate limiting.
+  operations: 13
+  example_operations:
+  - createDeviceReachabilityStatusSubscription
+  - createDeviceReachabilityStatusSubscription-DS-RES-V080
+  - createDeviceRoamingStatusSubscription
+  - createDeviceRoamingStatusSubscription-DS-ROS-V080
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 429
+  code: TOO_MANY_REQUESTS
+  example_messages:
+  - Rate limit reached.
+  - Either out of resource quota or reaching rate limiting.
+  operations: 13
+  example_operations:
+  - createDeviceReachabilityStatusSubscription
+  - createDeviceReachabilityStatusSubscription-DS-RES-V080
+  - createDeviceRoamingStatusSubscription
+  - createDeviceRoamingStatusSubscription-DS-ROS-V080
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 500
+  code: INTERNAL
+  example_messages:
+  - Server error
+  - Unknown server error. Typically a server bug.
+  - Internal server error
+  - 'Internal server error: ...'
+  operations: 25
+  example_operations:
+  - checkSimSwap
+  - createDeviceStatusSubscription
+  - createSession
+  - createSession-QoD-V1
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 501
+  code: NOT_IMPLEMENTED
+  example_messages:
+  - Service not implemented for the specified user device
+  - This functionality is not implemented yet.
+  operations: 3
+  example_operations:
+  - createSession
+  - createSession-QoD-V1
+  - retrieveCallForwarding
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 503
+  code: UNAVAILABLE
+  example_messages:
+  - Service unavailable
+  - Service Unavailable.
+  - Network issue
+  operations: 27
+  example_operations:
+  - checkSimSwap
+  - createDeviceStatusSubscription
+  - createSession
+  - createSession-QoD-V1
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+- status: 504
+  code: TIMEOUT
+  example_messages:
+  - Request timeout exceeded. Try later.
+  - Request timeout exceeded.
+  operations: 4
+  example_operations:
+  - checkSimSwap
+  - phoneNumberShare
+  - phoneNumberVerify
+  - retrieveSimSwapDate
+  sources:
+  - openapi/nokia-network-as-code-platform-openapi.json
+counts:
+  distinct_error_codes: 47
+  by_status:
+    400: 9
+    401: 2
+    403: 8
+    404: 3
+    409: 3
+    422: 16
+    429: 2
+    500: 1
+    501: 1
+    503: 1
+    504: 1

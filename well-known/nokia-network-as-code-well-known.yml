@@ -1,0 +1,60 @@
+generated: '2026-07-25'
+method: searched
+source: live anonymous probes of every apis.yml baseURL host, the OpenAPI servers[] host, the docs/console host and the corporate parent domain
+summary: >-
+  Nothing is anonymously discoverable on the Network as Code product hosts. The
+  RapidAPI gateway that serves every production call answers /.well-known/* with
+  "API doesn't exists" or a rate-limit body, and the white-labelled hub at
+  networkascode.nokia.io is a Next.js SPA that returns its 404 shell for every
+  /.well-known/ path. The only real well-known document in the estate belongs to
+  the corporate parent: Nokia publishes an RFC 9116 security.txt at
+  www.nokia.com, PGP-signed, pointing at the Coordinated Vulnerability
+  Disclosure programme. Note the paradox worth recording - the gateway
+  specification itself declares GET /.well-known/openid-configuration, GET
+  /.well-known/oauth-authorization-server and GET /.well-known/security.txt as
+  real operations, but all three sit behind the gateway API key, so the discovery
+  documents an unauthenticated agent needs most are the ones it cannot read.
+hosts:
+  - host: https://www.nokia.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 200
+        file: nokia-network-as-code-security.txt
+        format: RFC 9116, PGP-signed (SHA512)
+        expires: '2036-12-31T23:00:00Z'
+      - path: /.well-known/nokia-public-key.asc
+        status: 200
+        note: PGP key referenced by the security.txt Encryption field.
+  - host: https://network-as-code.p-eu.rapidapi.com
+    note: RapidAPI Enterprise Hub gateway, the production baseURL for every API in this repo.
+    documents:
+      - path: /.well-known/openid-configuration
+        status: 404
+        body: '{"message":"API doesn''t exists"}'
+        note: Declared in the OpenAPI as operationId get_well_known_oidc_openid_configuration_get but gated behind the x-rapidapi-key.
+      - path: /.well-known/oauth-authorization-server
+        status: 429
+        body: '{"message":"Too many requests"}'
+        note: Declared in the OpenAPI as operationId get_well_known_oauth_oauth_authorization_server_get; gated.
+      - path: /.well-known/security.txt
+        status: 404
+        note: Declared in the OpenAPI as operationId get_security_txt_security_txt_get; gated.
+  - host: https://networkascode.nokia.io
+    documents:
+      - {path: /.well-known/security.txt, status: 404}
+      - {path: /.well-known/openid-configuration, status: 404}
+      - {path: /.well-known/oauth-authorization-server, status: 404}
+      - {path: /.well-known/oauth-protected-resource, status: 404}
+      - {path: /.well-known/api-catalog, status: 404}
+      - {path: /.well-known/ai-plugin.json, status: 404}
+      - {path: /llms.txt, status: 404}
+  - host: https://developer.networkascode.nokia.io
+    documents:
+      - {path: /.well-known/security.txt, status: 404}
+      - {path: /llms.txt, status: 404}
+  - host: https://mcp.prodeu.apihub.nokia.io
+    note: The hosted MCP server host. Root returns {"version":"0.1.12-13474f4"}.
+    documents:
+      - {path: /.well-known/oauth-authorization-server, status: 404}
+      - {path: /.well-known/oauth-protected-resource, status: 404}
+      - {path: /.well-known/mcp, status: 404}

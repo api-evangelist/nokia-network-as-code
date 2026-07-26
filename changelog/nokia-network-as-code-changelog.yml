@@ -1,0 +1,49 @@
+generated: '2026-07-25'
+method: searched
+source: >-
+  https://pypi.org/pypi/network-as-code/json and
+  https://registry.npmjs.org/network-as-code (release timestamps), plus
+  github.com/nokia/network-as-code-sdks for how releases are produced.
+summary: >-
+  Nokia publishes no dated API changelog. The developer portal has a /blog but
+  no release-notes surface, the hub is a client-rendered SPA with no crawlable
+  changelog, and neither specification carries version history. What does exist
+  is a genuine, dated release train: both first-party SDKs are regenerated from
+  the OpenAPI and published in lock step, so their registry histories are the
+  public record of when the contract moved. Twenty-four Python releases and
+  twenty-three TypeScript releases since December 2023, with the two lines
+  converging on a shared version number at 10.0.0 on 2026-06-05.
+scheme: semver, per SDK; the API itself is versioned per capability in the URI path
+current:
+  python: {version: 10.0.0, released: '2026-06-05'}
+  typescript: {version: 10.0.0, released: '2026-06-05'}
+api_changelog_published: false
+probed:
+  - {url: 'https://networkascode.nokia.io/blog', status: 200, note: 'Marketing blog, not release notes.'}
+  - {url: 'https://networkascode.nokia.io/docs', status: 200, note: 'SPA; identical payload for every slug, no crawlable changelog.'}
+entries:
+  - {version: '10.0.0', date: '2026-06-05', line: both, breaking: true, note: 'Version lines unified - Python jumps 8.0.0 to 10.0.0 and TypeScript 7.0.1 to 10.0.0 on the same day, so from this release the SDK version identifies the platform generation for both languages.'}
+  - {version: '7.0.1', date: '2026-05-07', line: typescript, breaking: false}
+  - {version: '8.0.0', date: '2025-12-22', line: python, breaking: true}
+  - {version: '7.0.0', date: '2025-12-23', line: typescript, breaking: true}
+  - {version: '7.0.0 / 6.0.0', date: '2025-10-29', line: both, breaking: true, note: 'Python 7.0.0, TypeScript 6.0.0.'}
+  - {version: '6.2.0 / 5.2.0', date: '2025-09-25', line: both, breaking: false}
+  - {version: '6.1.0 / 5.1.0', date: '2025-08-28', line: both, breaking: false}
+  - {version: '6.0.0 / 5.0.0', date: '2025-07-03', line: both, breaking: true}
+  - {version: '5.2.1 / 4.2.1', date: '2025-06-05', line: both, breaking: false}
+  - {version: '5.2.0 / 4.2.0', date: '2025-05-13', line: both, breaking: false}
+  - {version: '5.1.1 / 4.1.1', date: '2025-04-01', line: both, breaking: false}
+  - {version: '5.1.0 / 4.1.0', date: '2025-03-07', line: both, breaking: false}
+  - {version: '5.0.0 / 4.0.0', date: '2024-12-18', line: both, breaking: true}
+  - {version: '4.1.0 / 3.1.0', date: '2024-11-11', line: both, breaking: false}
+  - {version: '4.0.0 / 3.0.0', date: '2024-09-24', line: both, breaking: true}
+history:
+  first_python_release: {version: 1.0.0, date: '2023-12-07'}
+  first_typescript_release: {version: 1.0.0, date: '2024-03-26'}
+  python_releases: 24
+  typescript_releases: 23
+  note: >-
+    Release notes themselves are not published for either package - the
+    registries carry versions and dates but no per-release description, and the
+    source repository ships no CHANGELOG.md. Breaking flags above are inferred
+    from the semver major bump alone and are recorded as such.

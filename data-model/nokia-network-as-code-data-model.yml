@@ -1,0 +1,142 @@
+generated: '2026-07-25'
+method: derived
+source: openapi/nokia-network-as-code-platform-openapi.json (components.schemas) + openapi/nokia-network-as-code-camara-openapi.yml
+summary: '588 schemas are declared in the gateway export, but the entity graph behind them is small. Because
+  Nokia ships every CAMARA API version side by side in one document, the generator suffixes each schema
+  with its API and version (Device-QoD-V1, Device-DS-ROS-V080, ...), so the same handful of entities repeats
+  dozens of times with no shared component. Device is the hub of the whole model: every capability in
+  the catalogue is a question asked about, or an action taken on, one Device. There are no provider-issued
+  object id prefixes - the only server-minted identifiers are sessionId and subscriptionId, both plain
+  UUIDs.'
+schema_count: 588
+schema_family_count: 291
+duplication_note: 'The 588 schemas collapse to 291 name families once the -<API>-V<version> suffix is
+  stripped. The most duplicated family is the one an integrator cares about most: Device.'
+entities:
+- entity: Device
+  description: The subscriber handset or IoT device. Every capability call resolves to a Device, identified
+    by phoneNumber, networkAccessIdentifier, ipv4Address or ipv6Address. With a three-legged token the
+    device is carried by the token and MUST be omitted from the body.
+  schema_variants: 8
+  example_schemas:
+  - Device-ConI-V1
+  - Device-DS-V0
+  - Device-Geo-V0
+  - Device-LocR-V0
+  fields:
+  - phoneNumber
+  - networkAccessIdentifier
+  - ipv4Address
+  - ipv6Address
+- entity: SessionInfo
+  description: 'A Quality on Demand session: a Device plus a QosProfile bound for a duration, with a status
+    and a sessionId.'
+  schema_variants: 2
+  example_schemas:
+  - SessionInfo-QoD-V0
+  - SessionInfo-QoD-V1
+  fields: []
+- entity: QosProfile
+  description: A named quality tier (e.g. latency/throughput class) that a SessionInfo is created against.
+    Profiles are operator-defined, so the catalogue is not portable between networks.
+  schema_variants: 1
+  example_schemas:
+  - QosProfile-QoD-V0
+  fields:
+  - name
+  - description
+  - status
+  - targetMinUpstreamRate
+  - maxUpstreamRate
+  - maxUpstreamBurstRate
+  - targetMinDownstreamRate
+  - maxDownstreamRate
+  - maxDownstreamBurstRate
+  - minDuration
+  - maxDuration
+  - priority
+  - packetDelayBudget
+  - jitter
+- entity: SubscriptionInfo
+  description: 'A CAMARA event subscription: a Device (or an Area), a set of CloudEvent types, a sink
+    URL, a sinkCredential and an expiry. The unit of consent for every asynchronous surface.'
+  schema_variants: 2
+  example_schemas:
+  - SubscriptionInfo-ConI-V1
+  - SubscriptionInfo-DS-V0
+  fields:
+  - device
+  - webhook
+  - subscriptionExpireTime
+  - subscriptionId
+  - startedAt
+  - expiresAt
+- entity: SinkCredential
+  description: The credential Nokia presents to the consumer-hosted sink when delivering notifications;
+    credentialType ACCESSTOKEN.
+  schema_variants: 2
+  example_schemas:
+  - SinkCredential-Geo-V0
+  - SinkCredential-QoD-V1
+  fields:
+  - credentialType
+- entity: Area
+  description: A geofence, expressed as a Circle with a Point centre and a radius. Consumed by geofencing
+    subscriptions and by location verification.
+  schema_variants: 4
+  example_schemas:
+  - Area-Geo-V0
+  - Area-LocR-V0
+  - Area-LocV-V0
+  - Area-LocV-V1
+  fields:
+  - areaType
+relationships:
+- from: SessionInfo
+  to: Device
+  type: belongs_to
+  via: device
+  evidence: openapi/nokia-network-as-code-platform-openapi.json CreateSession.device
+- from: SessionInfo
+  to: QosProfile
+  type: belongs_to
+  via: qosProfile
+  evidence: CreateSession.qosProfile
+- from: SubscriptionInfo
+  to: Device
+  type: belongs_to
+  via: config.subscriptionDetail.device
+- from: SubscriptionInfo
+  to: SinkCredential
+  type: has_one
+  via: sinkCredential
+- from: SubscriptionInfo
+  to: Area
+  type: belongs_to
+  via: config.subscriptionDetail.area
+  note: Geofencing subscriptions only.
+- from: Area
+  to: Point
+  type: has_one
+  via: center
+  note: Circle areas.
+- from: Slice
+  to: Attachment
+  type: has_many
+  via: sliceId
+  evidence: /device-attach/v0/attachments
+- from: Attachment
+  to: Device
+  type: belongs_to
+  via: device
+identifiers:
+  server_minted:
+  - sessionId (UUID)
+  - subscriptionId (UUID)
+  - nac_app_ref (application reference in the authorization-server paths)
+  consumer_supplied:
+  - phoneNumber (E.164)
+  - networkAccessIdentifier
+  - ipv4Address
+  - ipv6Address
+  id_prefixes: none published

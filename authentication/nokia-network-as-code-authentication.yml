@@ -1,0 +1,90 @@
+generated: '2026-07-25'
+method: derived
+source: >-
+  openapi/nokia-network-as-code-camara-openapi.yml,
+  openapi/nokia-network-as-code-platform-openapi.json. Enriched by hand from the
+  operation-level security requirements and the authorization-server operations
+  that the mechanical deriver does not read. Nokia's own auth documentation is a
+  client-rendered SPA and served no crawlable prose, so nothing here is taken
+  from docs text.
+summary:
+  types: [apiKey, openIdConnect, oauth2]
+  api_key_in: [header]
+  oauth2_flows: [clientCredentials, authorizationCode]
+  layers: 2
+model: >-
+  Two layers, and both are required for a subscriber-scoped call. Layer one is
+  the channel: an x-rapidapi-key header validated by the RapidAPI Enterprise Hub
+  gateway that fronts the whole platform. It is the only security requirement
+  the gateway export declares, which makes the export look far simpler than the
+  API really is. Layer two is the capability: a CAMARA OAuth2 / OpenID Connect
+  access token, either two-legged (client credentials, the developer acting on
+  its own behalf) or three-legged (the subscriber has consented), carrying
+  purpose-based scopes. The CAMARA document is the only place layer two is
+  specified.
+schemes:
+  - name: ApiKeyAuth
+    type: apiKey
+    in: header
+    parameter: x-rapidapi-key
+    description: RapidAPI Enterprise Hub key. Channel authentication, not subscriber authentication.
+    layer: gateway
+    sources: [openapi/nokia-network-as-code-platform-openapi.json]
+    applied: document-level security requirement on all 78 operations
+  - name: openId
+    type: openIdConnect
+    openIdConnectUrl: https://example.com/.well-known/openid-configuration
+    description: OpenID Connect authentication
+    layer: capability
+    sources: [openapi/nokia-network-as-code-camara-openapi.yml]
+    applied: operation-level, carrying all 65 scopes
+    defect: openIdConnectUrl is the CAMARA template placeholder, not a Nokia issuer URL.
+  - name: oAuth2ClientCredentials
+    type: oauth2
+    flow: clientCredentials
+    layer: capability
+    sources: [openapi/nokia-network-as-code-camara-openapi.yml]
+    applied: document-level security requirement
+    defect: Referenced by the global security requirement but never defined in components.securitySchemes.
+token_model:
+  two_legged:
+    grant: client_credentials
+    subject: the developer/application
+    identifier_rule: The subscriber MUST be identified in the request body (phoneNumber, networkAccessIdentifier, ipv4Address or ipv6Address).
+    failure_if_omitted: 422 MISSING_IDENTIFIER
+  three_legged:
+    grant: authorization_code (subscriber consent)
+    subject: the subscriber
+    identifier_rule: The subscriber is carried inside the token and MUST NOT be repeated in the request body.
+    failure_if_supplied: 422 UNNECESSARY_IDENTIFIER
+  purpose_binding: >-
+    CAMARA purpose-based consent. The string "purpose" appears throughout both
+    documents, and subscription scopes name the exact CloudEvent type they
+    authorise, so consent is event-granular rather than API-granular.
+  ciba:
+    supported: false
+    note: >-
+      No CIBA / backchannel-authentication / bc-authorize surface in either
+      specification, so network-initiated authorization is implied by the
+      three-legged model but not documented as a flow.
+endpoints:
+  - {purpose: Issue or return client credentials, method: GET, path: /oauth2/v1/auth/clientcredentials, operationId: get_client_credentials, returns: 'client_id, client_secret'}
+  - {purpose: Per-application JWKS, method: GET, path: '/oauth2/v1/apps/{nac_app_ref}/.well-known/jwks.json', operationId: get_jwks_apps__nac_app_ref___well_known_jwks_json_get}
+  - {purpose: OIDC discovery, method: GET, path: /.well-known/openid-configuration, operationId: get_well_known_oidc_openid_configuration_get, anonymous: false}
+  - {purpose: 'OAuth authorization server metadata (RFC 8414)', method: GET, path: /.well-known/oauth-authorization-server, operationId: get_well_known_oauth_oauth_authorization_server_get, anonymous: false}
+discovery_note: >-
+  All four endpoints above sit behind the gateway API key. An unauthenticated
+  GET against the gateway host returns 404 "API doesn't exists" or 429. The
+  practical consequence for an autonomous client is real: the documents that
+  would let it discover the issuer, the supported flows and the JWKS are the
+  documents it cannot read until it already has a credential.
+webhook_authentication:
+  direction: outbound to a consumer-hosted sink
+  mechanism: sinkCredential object supplied by the consumer at subscription time
+  credential_types: [ACCESSTOKEN]
+  note: >-
+    Nokia authenticates to the consumer's sink with the credential the consumer
+    provided. There is no published request-signing scheme for verifying that a
+    notification came from Nokia.
+scopes: scopes/nokia-network-as-code-scopes.yml
+conventions: conventions/nokia-network-as-code-conventions.yml
