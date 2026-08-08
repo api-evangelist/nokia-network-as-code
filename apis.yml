@@ -319,7 +319,7 @@ common:
     url: https://networkascode.nokia.io/contact-support
   - type: Sales
     url: https://networkascode.nokia.io/contact-sales
-  - type: MCP
+  - type: Documentation
     url: https://networkascode.nokia.io/docs/mcp-server
   - type: SourceCode
     url: https://github.com/nokia/network-as-code-sdks
