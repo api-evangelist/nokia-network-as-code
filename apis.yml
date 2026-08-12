@@ -242,6 +242,13 @@ apis:
       - type: GettingStarted
         url: https://networkascode.nokia.io/docs/getting-started
 common:
+  - type: IssueTracker
+    url: https://github.com/nokia/network-as-code-sdks/issues
+  - type: Releases
+    url: https://github.com/nokia/network-as-code-sdks/releases
+  - type: License
+    name: Apache-2.0
+    url: https://github.com/nokia/network-as-code-sdks/blob/main/LICENSE
   - type: AgenticAccess
     url: agentic-access/nokia-network-as-code-agentic-access.yml
   - type: DomainSecurity
