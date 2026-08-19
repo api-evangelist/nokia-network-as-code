@@ -1,0 +1,1540 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Network as Code",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Geofencing v0.3.0",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve a list of geofencing event subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/geofencing-subscriptions/v0.3/subscriptions",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Retrieve a list of geofencing event subscription(s)"
+        },
+        {
+          "info": {
+            "name": "Create a geofencing subscription for a device",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/geofencing-subscriptions/v0.3/subscriptions",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a subscription for a device to receive notifications when a device enters or exits a specified area"
+        },
+        {
+          "info": {
+            "name": "Operation to retrieve a subscription based on the provided ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/geofencing-subscriptions/v0.3/subscriptions/:subscriptionId",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "subscriptionId",
+                "value": "",
+                "type": "path",
+                "description": "Subscription identifier that was obtained from the create event subscription operation"
+              }
+            ]
+          },
+          "docs": "retrieve Geofencing subscription information for a given subscription ID."
+        },
+        {
+          "info": {
+            "name": "Delete a Geofencing event subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/geofencing-subscriptions/v0.3/subscriptions/:subscriptionId",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "subscriptionId",
+                "value": "",
+                "type": "path",
+                "description": "Subscription identifier that was obtained from the create event subscription operation"
+              }
+            ]
+          },
+          "docs": "delete a given Geofencing subscription."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Location Retrieval v0.2.0",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Execute location retrieval for a user equipment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/location-retrieval/v0/retrieve",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieve the area where a certain user device is localized."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Location Verification v1.0.0",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Verify the location of a device",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/location-verification/v1/verify",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Verify whether the location of a device is within a requested area. The operation returns a verification result and, optionally, a match rate estimation for the location verification in percent.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Location Verification v0.2.0",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Verify the location of a device",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/location-verification/v0/verify",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Verify whether the location of a device is within a requested area. The operation returns a verification result and, optionally, a match rate estimation for the location verification in percent.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Device Reachability Status Retrieve v1",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get the current reachability status information",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/device-status/device-reachability-status/v1/retrieve",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Get the current reachability status information"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Device Roaming Status Retrieve v1",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get the current roaming status and the country information",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/device-status/device-roaming-status/v1/retrieve",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Get the current roaming status and the country information"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Device Reachability Status Subscriptions v0.7",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve a list of device reachability status event subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/device-status/device-reachability-status-subscriptions/v0.7/subscriptions",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Retrieve a list of device reachability status event subscription(s)"
+        },
+        {
+          "info": {
+            "name": "Create a device reachability status event subscription for a device",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/device-status/device-reachability-status-subscriptions/v0.7/subscriptions",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a device reachability status event subscription for a device"
+        },
+        {
+          "info": {
+            "name": "Retrieve a device reachability status event subscription for a device",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/device-status/device-reachability-status-subscriptions/v0.7/subscriptions/:subscriptionId",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "subscriptionId",
+                "value": "",
+                "type": "path",
+                "description": "Subscription identifier that was obtained from the create event subscription operation"
+              }
+            ]
+          },
+          "docs": "Retrieve a given subscription by ID"
+        },
+        {
+          "info": {
+            "name": "Delete a device reachability status event subscription for a device",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/device-status/device-reachability-status-subscriptions/v0.7/subscriptions/:subscriptionId",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "subscriptionId",
+                "value": "",
+                "type": "path",
+                "description": "Subscription identifier that was obtained from the create event subscription operation"
+              }
+            ]
+          },
+          "docs": "Delete a given subscription by ID"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Device Roaming Status Subscriptions v0.7",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve a list of device roaming status event subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/device-status/device-roaming-status-subscriptions/v0.7/subscriptions",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Retrieve a list of device roaming status event subscription(s)"
+        },
+        {
+          "info": {
+            "name": "Create a device roaming status event subscription for a device",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/device-status/device-roaming-status-subscriptions/v0.7/subscriptions",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a device roaming status event subscription for a device"
+        },
+        {
+          "info": {
+            "name": "Retrieve a roaming status event subscription for a device",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/device-status/device-roaming-status-subscriptions/v0.7/subscriptions/:subscriptionId",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "subscriptionId",
+                "value": "",
+                "type": "path",
+                "description": "Subscription identifier that was obtained from the create event subscription operation"
+              }
+            ]
+          },
+          "docs": "retrieve device roaming status subscription information for a given subscription."
+        },
+        {
+          "info": {
+            "name": "Delete a device-roaming-status event subscription for a device",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/device-status/device-roaming-status-subscriptions/v0.7/subscriptions/:subscriptionId",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "subscriptionId",
+                "value": "",
+                "type": "path",
+                "description": "Subscription identifier that was obtained from the create event subscription operation"
+              }
+            ]
+          },
+          "docs": "Delete a given device-roaming-status subscription by ID"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Device Status v0.5.1",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get the current connectivity status information",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/device-status/v0/connectivity",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Get the current connectivity status information"
+        },
+        {
+          "info": {
+            "name": "Get the current roaming status and the country information",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/device-status/v0/roaming",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Get the current roaming status and the country information"
+        },
+        {
+          "info": {
+            "name": "Retrieve a list of device status event subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/device-status/v0/subscriptions"
+          },
+          "docs": "Retrieve a list of device status event subscription(s)"
+        },
+        {
+          "info": {
+            "name": "Create a device status event subscription for a device",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/device-status/v0/subscriptions",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a device status event subscription for a device"
+        },
+        {
+          "info": {
+            "name": "Retrieve a device status event subscription for a device",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/device-status/v0/subscriptions/:subscriptionId",
+            "params": [
+              {
+                "name": "subscriptionId",
+                "value": "",
+                "type": "path",
+                "description": "Subscription identifier that was obtained from the create subscription operation"
+              }
+            ]
+          },
+          "docs": "retrieve event subscription information for a given subscription."
+        },
+        {
+          "info": {
+            "name": "Delete a device status event subscription for a device",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/device-status/v0/subscriptions/:subscriptionId",
+            "params": [
+              {
+                "name": "subscriptionId",
+                "value": "",
+                "type": "path",
+                "description": "Subscription identifier that was obtained from the create event subscription operation"
+              }
+            ]
+          },
+          "docs": "delete a  given event subscription."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Number Verification v1.0.0",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Verifies if the received hashed/plain text phone number matches the phone number associated with the access token",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/passthrough/camara/v1/number-verification/number-verification/v0/verify",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              },
+              {
+                "name": "authorization",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "code",
+                "value": "",
+                "type": "query",
+                "description": "Authorization code received from the CSP"
+              },
+              {
+                "name": "state",
+                "value": "",
+                "type": "query",
+                "description": "Application state"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Verifies if the specified phone number (either in plain text or hashed format) matches the one that the user is currently using. Only one of the plain or hashed formats must be provided.\n- The number verification will be done for the user that has authenticated via mobile network\n- It returns true/false depending on if the hashed phone number received as input matches the authenticated user's `device phone number` associated to the access token\n"
+        },
+        {
+          "info": {
+            "name": "Returns the phone number associated with the access token",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/passthrough/camara/v1/number-verification/number-verification/v0/device-phone-number",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              },
+              {
+                "name": "authorization",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "code",
+                "value": "",
+                "type": "query",
+                "description": "Authorization code received from the CSP"
+              },
+              {
+                "name": "state",
+                "value": "",
+                "type": "query",
+                "description": "Application state"
+              }
+            ]
+          },
+          "docs": "Returns the phone number so the API clients can verify the number themselves:\n- It will be done for the user that has authenticated via mobile network\n- It returns the authenticated user's `device phone number` associated to the access token\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "KYC Age Verification v0.1",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Verify Age Threshold",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/passthrough/camara/v1/kyc-age-verification/kyc-age-verification/v0.1/verify",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              },
+              {
+                "name": "authorization",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Verify that the age of the subscriber associated with a phone number is equal to or greater than the specified age threshold value.\n\nAs it is possible that the person holding the contract and the end-user of the subscription may not be the same, the endpoint also admits a list of optional properties to be included in the request to improve the identification. The response may optionally include the `identityMatchScore` property with a value that indicates how certain it is that the information r"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "KYC Match v0.3",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Matching a customer identity by checking a set of attributes related against the account data bound to their phone number.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/passthrough/camara/v1/kyc-match/kyc-match/v0.3/match",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              },
+              {
+                "name": "authorization",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Verify matching of a number of attributes related to a customer identity against the verified data bound to their phone number in the Operator systems. Regardless of whether the `phoneNumber` is explicitly stated in the request body, at least one of the other fields must be provided, otherwise a `HTTP 400 - KNOW_YOUR_CUSTOMER.INVALID_PARAM_COMBINATION` error will be returned.\n\nIn order to proceed with the match check, some Operators may have the requirement to perform an additional level of vali"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "KYC Tenure v0.1",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "The KYC Tenure service API",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/passthrough/camara/v1/kyc-tenure/kyc-tenure/v0.1/check-tenure",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              },
+              {
+                "name": "authorization",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Verifies a specified length of tenure, based on a provided date, for a network subscriber to establish a level of trust for the network subscription identifier.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "KYC FIll In v0.4",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Providing information related to a customer identity stored the account data bound to the customer's phone number.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/passthrough/camara/v1/kyc-fill-in/kyc-fill-in/v0.4/fill-in",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              },
+              {
+                "name": "authorization",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Providing information related to a customer identity stored the account data bound to the customer's phone number."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Number Recycling v0.2",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Check whether the subscriber of the phone number has changed.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/passthrough/camara/v1/number-recycling/number-recycling/v0.2/check",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              },
+              {
+                "name": "authorization",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Check whether the subscriber of the phone number has changed."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "SIM Swap v1.0.0",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "retrieveSimSwapDate",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/passthrough/camara/v1/sim-swap/sim-swap/v0/retrieve-date",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Get timestamp of last SIM swap event for a mobile user account provided with phone number."
+        },
+        {
+          "info": {
+            "name": "checkSimSwap",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/passthrough/camara/v1/sim-swap/sim-swap/v0/check",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Check if SIM swap has been performed during a past period"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Device Swap v1.0.0",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get last device swap date",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/passthrough/camara/v1/device-swap/device-swap/v1/retrieve-date",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Get timestamp of last device swap for a mobile user account provided with phone number."
+        },
+        {
+          "info": {
+            "name": "Check last device swap date",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/passthrough/camara/v1/device-swap/device-swap/v1/check",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Check if device swap has been performed during a past period"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Quality-of-Service on Demand v0.10.1",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Return QoD settings for your devices.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/qod/v0/sessions"
+          },
+          "docs": "Return device communication Quality-on-Demand settings for your devices."
+        },
+        {
+          "info": {
+            "name": "Creates a new session",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/qod/v0/sessions",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create QoS Session to manage latency/throughput priorities\n\nIf the qosStatus in the API response is \"AVAILABLE\" and a notification callback is provided the client will receive in addition to the response a\n`QOS_STATUS_CHANGED` event notification with `qosStatus` as `AVAILABLE`.\n\nIf the `qosStatus` in the API response is `REQUESTED`, the client will receive either\n- a `QOS_STATUS_CHANGED` event notification with `qosStatus` as `AVAILABLE` after the network notifies that it has created the request"
+        },
+        {
+          "info": {
+            "name": "Get QoS session information",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/qod/v0/sessions/:sessionId",
+            "params": [
+              {
+                "name": "sessionId",
+                "value": "",
+                "type": "path",
+                "description": "Session ID that was obtained from the createSession operation"
+              }
+            ]
+          },
+          "docs": "Querying for QoS session resource information details"
+        },
+        {
+          "info": {
+            "name": "Delete a QoS session",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/qod/v0/sessions/:sessionId",
+            "params": [
+              {
+                "name": "sessionId",
+                "value": "",
+                "type": "path",
+                "description": "Session ID that was obtained from the createSession operation"
+              }
+            ]
+          },
+          "docs": "Release resources related to QoS session\n\nIf the notification callback is provided and the `qosStatus` of the session was `AVAILABLE` the client will receive in addition to the response a `QOS_STATUS_CHANGED` event with\n- `qosStatus` as `UNAVAILABLE` and\n- `statusInfo` as `DELETE_REQUESTED`\nThere will be no notification event if the `qosStatus` was already `UNAVAILABLE`.\n"
+        },
+        {
+          "info": {
+            "name": "Extend the duration of an active session",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/qod/v0/sessions/:sessionId/extend",
+            "params": [
+              {
+                "name": "sessionId",
+                "value": "",
+                "type": "path",
+                "description": "Session ID that was obtained from the createSession operation"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Extend the overall duration of an active QoS session. If this operation is executed successfully, the new duration of the target session will be the original duration plus the additionally requested duration.\nThe new remaining duration of the QoS session shall not exceed the maximum remaining duration limit (currently fixed at 86,400 seconds) where the remaining duration is calculated as the difference between the `expiresAt` and current time when the request to extend the session duration is re"
+        },
+        {
+          "info": {
+            "name": "Retrieve sessions for a specific device",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/qod/v0/retrieve-sessions",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Return all QoD sessions related to the specified device."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Quality-of-Service on Demand v1.0.0",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Return QoD settings for your devices.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/quality-on-demand/v1/sessions"
+          },
+          "docs": "Return device communication Quality-on-Demand settings for your devices."
+        },
+        {
+          "info": {
+            "name": "Creates a new session",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/quality-on-demand/v1/sessions",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create QoS Session to manage latency/throughput priorities\n\nIf the qosStatus in the API response is \"AVAILABLE\" and a notification callback is provided the API consumer will receive in addition to the response a\n`QOS_STATUS_CHANGED` event notification with `qosStatus` as `AVAILABLE`.\n\nIf the `qosStatus` in the API response is `REQUESTED`, the client will receive either\n- a `QOS_STATUS_CHANGED` event notification with `qosStatus` as `AVAILABLE` after the network notifies that it has created the r"
+        },
+        {
+          "info": {
+            "name": "Get QoS session information",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/quality-on-demand/v1/sessions/:sessionId",
+            "params": [
+              {
+                "name": "sessionId",
+                "value": "",
+                "type": "path",
+                "description": "Session ID that was obtained from the createSession operation"
+              }
+            ]
+          },
+          "docs": "Querying for QoS session resource information details"
+        },
+        {
+          "info": {
+            "name": "Delete a QoS session",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/quality-on-demand/v1/sessions/:sessionId",
+            "params": [
+              {
+                "name": "sessionId",
+                "value": "",
+                "type": "path",
+                "description": "Session ID that was obtained from the createSession operation"
+              }
+            ]
+          },
+          "docs": "Release resources related to QoS session\n\nIf the notification callback is provided and the `qosStatus` of the session was `AVAILABLE` the client will receive in addition to the response a `QOS_STATUS_CHANGED` event with\n- `qosStatus` as `UNAVAILABLE` and\n- `statusInfo` as `DELETE_REQUESTED`\nThere will be no notification event if the `qosStatus` was already `UNAVAILABLE`.\n"
+        },
+        {
+          "info": {
+            "name": "Extend the duration of an active session",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/quality-on-demand/v1/sessions/:sessionId/extend",
+            "params": [
+              {
+                "name": "sessionId",
+                "value": "",
+                "type": "path",
+                "description": "Session ID that was obtained from the createSession operation"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Extend the overall duration of an active QoS session. If this operation is executed successfully, the new duration of the target session will be the original duration plus the additionally requested duration.\nThe new remaining duration of the QoS session shall not exceed the maximum remaining duration limit (currently fixed at 86,400 seconds) where the remaining duration is calculated as the difference between the `expiresAt` and current time when the request to extend the session duration is re"
+        },
+        {
+          "info": {
+            "name": "Retrieve sessions for a specific device",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/quality-on-demand/v1/retrieve-sessions",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Return all QoD sessions related to the specified device."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Call Forwarding Signal v0.3.0",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve the information about the status of the unconditional call forwarding service on a phone number (PhoneNumber)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/passthrough/camara/v1/call-forwarding-signal/call-forwarding-signal/v0.3/unconditional-call-forwardings",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint provides information about the status of the unconditional call forwarding, beeing active or not."
+        },
+        {
+          "info": {
+            "name": "Retrieve the information about the type of call forwarding service active on a phone number (PhoneNumber)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/passthrough/camara/v1/call-forwarding-signal/call-forwarding-signal/v0.3/call-forwardings",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint provides information about wich type of call forwarding service is active. More than one service can be active, e.g. conditional and unconditional. This endpoit exceeds the main scope of the CFS API, for this reason an error code 501 can be returned."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Consent Info v0.1.0",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a request to retrieve the validity status of the data processing",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/passthrough/camara/v1/consent-info/consent-info/v0.1/retrieve",
+            "headers": [
+              {
+                "name": "x-correlator",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a request to retrieve the validity status of the API Consumer data processing for a given User, scope(s) and Purpose.\n"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Network Slicing v1.0.0",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Returns All Slices",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/slice/v1/slices"
+          },
+          "docs": "Returns All created Network Slices"
+        },
+        {
+          "info": {
+            "name": "Create a network slice.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/slice/v1/slices",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a network slice."
+        },
+        {
+          "info": {
+            "name": "Get network slice data.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/slice/v1/slices/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "Concert-2029-Big-Arena",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get network slice data."
+        },
+        {
+          "info": {
+            "name": "Delete network slice.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/slice/v1/slices/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "Concert-2029-Big-Arena",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Delete network slice. The slice state must not be active to perform this operation."
+        },
+        {
+          "info": {
+            "name": "Activate a network slice.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/slice/v1/slices/:id/activate",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Activate a network slice."
+        },
+        {
+          "info": {
+            "name": "Deactivate a network slice.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/slice/v1/slices/:id/deactivate",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Deactivate a network slice. The slice state must be active to be able to perform this operation."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Slice Device Attach v1.0.0",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve the given device attach resources associated with the owner.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/device-attach/v0/attachments"
+          },
+          "docs": "Retrieve the given device attach resources associated with the owner."
+        },
+        {
+          "info": {
+            "name": "Attach device to an existing or preconfigured slice.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/device-attach/v0/attachments",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Attach device to a specific network slice."
+        },
+        {
+          "info": {
+            "name": "Retrieve the given device attach resource.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/device-attach/v0/attachments/:resource_id",
+            "params": [
+              {
+                "name": "resource_id",
+                "value": "de87e438-58b4-42c3-9d49-0fbfbd878305",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieve the given device attach resource."
+        },
+        {
+          "info": {
+            "name": "Detach device from given slice.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/device-attach/v0/attachments/:resource_id",
+            "params": [
+              {
+                "name": "resource_id",
+                "value": "de87e438-58b4-42c3-9d49-0fbfbd878305",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Detach device from a specific slice."
+        },
+        {
+          "info": {
+            "name": "Create subscriber in a given slice.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/device-attach/v0/attachments/subscribers/:operation",
+            "params": [
+              {
+                "name": "operation",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create subscriber in a given slice."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Congestion Insights v1.0.0",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get congestion subscriptions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/congestion-insights/v0/subscriptions"
+          },
+          "docs": "Get congestion subscriptions."
+        },
+        {
+          "info": {
+            "name": "Create device congestion subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/congestion-insights/v0/subscriptions",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create device congestion subscription. Notifies if congestion is high, medium, low or none."
+        },
+        {
+          "info": {
+            "name": "Get congestion subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/congestion-insights/v0/subscriptions/:resource_id",
+            "params": [
+              {
+                "name": "resource_id",
+                "value": "de87e438-58b4-42c3-9d49-0fbfbd878305",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get congestion subscription data of the given device."
+        },
+        {
+          "info": {
+            "name": "Unsubscribe from congestion event",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/congestion-insights/v0/subscriptions/:resource_id",
+            "params": [
+              {
+                "name": "resource_id",
+                "value": "de87e438-58b4-42c3-9d49-0fbfbd878305",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Unsubscribe from congestion event of the given device."
+        },
+        {
+          "info": {
+            "name": "Fetch congestion level for a device.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/congestion-insights/v0/query",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Fetch historical or predicted congestion level of a device for a given period."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "NaC Authorization Server",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Endpoint for getting client credentials to user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/oauth2/v1/auth/clientcredentials"
+          },
+          "docs": "Getting client credentials for user. If it exists that is returned, otherwise new created."
+        },
+        {
+          "info": {
+            "name": "Get JWKS for an app.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/oauth2/v1/apps/:nac_app_ref/.well-known/jwks.json",
+            "params": [
+              {
+                "name": "nac_app_ref",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get JWKS for an app."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Well Known Metadata",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Well Known Oidc",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/.well-known/openid-configuration"
+          },
+          "docs": "Get Well Known Oidc"
+        },
+        {
+          "info": {
+            "name": "Get Well Known Oauth",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/.well-known/oauth-authorization-server"
+          },
+          "docs": "Get Well Known Oauth"
+        },
+        {
+          "info": {
+            "name": "Get Security Txt",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{apiRoot}/geofencing-subscriptions/v0.3/.well-known/security.txt"
+          },
+          "docs": "Get Security Txt"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
