@@ -233,6 +233,9 @@ apis:
     humanURL: https://networkascode.nokia.io/docs/getting-started
     baseURL: https://network-as-code.p-eu.rapidapi.com
     tags:
+      - Authentication
+      - OpenID Connect
+    tags_raw:
       - OAuth2
       - OpenID Connect
       - Authentication
