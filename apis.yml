@@ -58,192 +58,989 @@ modified: '2026-07-25'
 enriched: '2026-07-25'
 specificationVersion: '0.23'
 apis:
-  - aid: nokia-network-as-code:network-as-code-platform-api
-    name: Nokia Network as Code Platform API
-    description: >-
-      The single aggregated Network as Code API surface published by Nokia as
-      one OpenAPI 3.0 document. The harvested specification declares 58 paths /
-      78 operations spanning device status, location, geofencing, quality on
-      demand, network slicing, congestion insights, OAuth2 and a
-      /passthrough/camara/v1/* namespace that proxies CAMARA identity and
-      anti-fraud APIs. All traffic is served through the RapidAPI Enterprise
-      Hub gateway host network-as-code.p-eu.rapidapi.com and authenticated with
-      an x-rapidapi-key API key at the gateway, layered over CAMARA two-legged
-      and three-legged OAuth2 access tokens for subscriber-scoped calls.
-    humanURL: https://networkascode.nokia.io/docs
-    baseURL: https://network-as-code.p-eu.rapidapi.com
-    tags:
-      - Network APIs
-      - CAMARA
-      - Aggregator
-      - 5G
-    properties:
-      - type: OpenAPI
-        url: openapi/nokia-network-as-code-platform-openapi.json
-      - type: Documentation
-        url: https://networkascode.nokia.io/docs
-      - type: GettingStarted
-        url: https://networkascode.nokia.io/docs/getting-started
-      - type: SourceCode
-        url: https://github.com/nokia/network-as-code-sdks
-      - type: Overlay
-        url: overlays/nokia-network-as-code-platform-overlay.yaml
-      - type: ErrorCatalog
-        url: errors/nokia-network-as-code-problem-types.yml
-      - type: DataModel
-        url: data-model/nokia-network-as-code-data-model.yml
-  - aid: nokia-network-as-code:camara-network-api
-    name: Nokia Network as Code CAMARA API
-    description: >-
-      Nokia's consolidated CAMARA-conformant network API specification,
-      published as Single-NaC-API-OAS.yaml in the public network-as-code-sdks
-      repository. OpenAPI 3.0.3, 52 paths / 70 operations, declaring
-      x-camara-commonalities 0.4.0 and CAMARA-standard tags for geofencing
-      subscriptions, location retrieval, location verification, device
-      reachability and roaming status (retrieve and subscribe), phone number
-      verify and share, KYC age verification / match / tenure / fill-in, device
-      swap retrieve-date and check, and QoS sessions. Declared security is
-      oAuth2ClientCredentials with an openIdConnect scheme; asynchronous
-      notifications use the CAMARA sink + CloudEvents webhook pattern.
-    humanURL: https://github.com/nokia/network-as-code-sdks
-    baseURL: https://network-as-code.p-eu.rapidapi.com
-    tags:
-      - CAMARA
-      - Network APIs
-      - Standards
-    properties:
-      - type: OpenAPI
-        url: openapi/nokia-network-as-code-camara-openapi.yml
-      - type: SourceCode
-        url: https://github.com/nokia/network-as-code-sdks
-      - type: Documentation
-        url: https://networkascode.nokia.io/docs
-      - type: Overlay
-        url: overlays/nokia-network-as-code-camara-overlay.yaml
-      - type: OAuthScopes
-        url: scopes/nokia-network-as-code-scopes.yml
-  - aid: nokia-network-as-code:digital-identity-and-anti-fraud
-    name: Network as Code Digital Identity and Anti-Fraud APIs
-    description: >-
-      The identity and anti-fraud product family. Capabilities advertised by the
-      platform configuration are Call Forwarding Signal, Device Swap, KYC Age
-      Verification, KYC Fill-in, KYC Match, Location Verification, Number
-      Verification and SIM Swap. Every one of these is present in the harvested
-      OpenAPI, most of them under /passthrough/camara/v1/* — for example
-      /passthrough/camara/v1/sim-swap/sim-swap/v0/check and
-      /passthrough/camara/v1/number-verification/number-verification/v2/verify.
-      Number Recycling v0.2 and Consent Info v0.1.0 also appear.
-    humanURL: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
-    baseURL: https://network-as-code.p-eu.rapidapi.com
-    tags:
-      - Identity Verification
-      - Anti-Fraud
-      - SIM Swap
-      - Number Verification
-      - KYC
-    properties:
-      - type: Documentation
-        url: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
-      - type: OpenAPI
-        url: openapi/nokia-network-as-code-platform-openapi.json
-  - aid: nokia-network-as-code:device-intelligence
-    name: Network as Code Device Intelligence APIs
-    description: >-
-      The device-state product family — Device Reachability Status, Device
-      Reachability Status Subscriptions, Device Roaming Status, Device Roaming
-      Status Subscriptions, Geofencing Subscriptions and Location Retrieval.
-      Confirmed in the harvested specification at
-      /device-status/device-reachability-status/v1/retrieve,
-      /device-status/device-roaming-status/v1/retrieve,
-      /device-status/*-subscriptions/v0.7 and v0.8/subscriptions,
-      /geofencing-subscriptions/v0.3/subscriptions,
-      /location-retrieval/v0/retrieve and /location-verification/v0|v1/verify.
-    humanURL: https://networkascode.nokia.io/products/device-intelligence
-    baseURL: https://network-as-code.p-eu.rapidapi.com
-    tags:
-      - Device Status
-      - Device Location
-      - Geofencing
-      - Roaming
-    properties:
-      - type: Documentation
-        url: https://networkascode.nokia.io/products/device-intelligence
-      - type: OpenAPI
-        url: openapi/nokia-network-as-code-platform-openapi.json
-  - aid: nokia-network-as-code:programmable-connectivity
-    name: Network as Code Programmable Connectivity APIs
-    description: >-
-      The network-control product family — Quality on Demand, Specialized
-      Networks / Network Slice Management, Network Slice Device Attachment,
-      Network Slice Application Attachment and eSIM Provisioning. The harvested
-      specification confirms /quality-on-demand/v1/sessions (plus extend and
-      retrieve-sessions), the older /qod/v0/sessions, /slice/v1/slices with
-      activate and deactivate, and /device-attach/v0/attachments. eSIM
-      provisioning is advertised as a capability but no eSIM path appears in the
-      harvested specification.
-    humanURL: https://networkascode.nokia.io/products/programmable-connectivity
-    baseURL: https://network-as-code.p-eu.rapidapi.com
-    tags:
-      - Quality on Demand
-      - Network Slicing
-      - 5G
-      - eSIM
-    properties:
-      - type: Documentation
-        url: https://networkascode.nokia.io/products/programmable-connectivity
-      - type: OpenAPI
-        url: openapi/nokia-network-as-code-platform-openapi.json
-  - aid: nokia-network-as-code:network-intelligence
-    name: Network as Code Network Intelligence APIs
-    description: >-
-      The network-analytics product family. Advertised capabilities are
-      Congestion Insights, Network Aware Route Optimization, Population Density
-      Data and Consent and Identity Management. Only two are callable in the
-      harvested specification — /congestion-insights/v0/query and
-      /congestion-insights/v0/subscriptions, and consent via
-      /passthrough/camara/v1/consent-info/consent-info/v0.1/retrieve. No
-      population-density or route-optimization path exists in the harvested
-      specification, so those two are marketed capabilities without a published
-      contract.
-    humanURL: https://networkascode.nokia.io/products/network-intelligence
-    baseURL: https://network-as-code.p-eu.rapidapi.com
-    tags:
-      - Network Intelligence
-      - Congestion
-      - Consent
-    properties:
-      - type: Documentation
-        url: https://networkascode.nokia.io/products/network-intelligence
-      - type: OpenAPI
-        url: openapi/nokia-network-as-code-platform-openapi.json
-  - aid: nokia-network-as-code:authorization-server
-    name: Network as Code Authorization Server
-    description: >-
-      The platform's OAuth2 / OpenID Connect surface, tagged "NaC Authorization
-      Server" and "Well Known Metadata" in the harvested specification. Real
-      operations are GET /oauth2/v1/auth/clientcredentials (issue or return the
-      caller's client credentials), GET
-      /oauth2/v1/apps/{nac_app_ref}/.well-known/jwks.json, GET
-      /.well-known/openid-configuration and GET
-      /.well-known/oauth-authorization-server. The well-known documents are
-      served behind the RapidAPI gateway and are not anonymously retrievable —
-      an unauthenticated GET returns HTTP 404 or 429. CAMARA CIBA
-      (Client-Initiated Backchannel Authentication) does not appear anywhere in
-      either harvested specification.
-    humanURL: https://networkascode.nokia.io/docs/getting-started
-    baseURL: https://network-as-code.p-eu.rapidapi.com
-    tags:
-      - Authentication
-      - OpenID Connect
-    tags_raw:
-      - OAuth2
-      - OpenID Connect
-      - Authentication
-    properties:
-      - type: OpenAPI
-        url: openapi/nokia-network-as-code-platform-openapi.json
-      - type: GettingStarted
-        url: https://networkascode.nokia.io/docs/getting-started
+- aid: nokia-network-as-code:nokia-network-as-code-call-forwarding-signal-v0-3-0-api
+  name: Nokia Network as Code Call Forwarding Signal v0.3.0 API
+  description: >-
+    The Call Forwarding Signal v0.3.0 API from Nokia Network as Code — 2 operation(s) for call forwarding
+    signal v0.3.0.
+  humanURL: https://networkascode.nokia.io/docs
+  baseURL: https://network-as-code.p-eu.rapidapi.com
+  tags:
+  - Call Forwarding Signal v0.3.0
+  properties:
+  - type: OpenAPI
+    url: openapi/nokia-network-as-code-call-forwarding-signal-v0-3-0-api-openapi.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/docs
+  - type: GettingStarted
+    url: https://networkascode.nokia.io/docs/getting-started
+  - type: SourceCode
+    url: https://github.com/nokia/network-as-code-sdks
+  - type: ErrorCatalog
+    url: errors/nokia-network-as-code-problem-types.yml
+  - type: DataModel
+    url: data-model/nokia-network-as-code-data-model.yml
+  - type: OAuthScopes
+    url: scopes/nokia-network-as-code-scopes.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/device-intelligence
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/programmable-connectivity
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/network-intelligence
+- aid: nokia-network-as-code:nokia-network-as-code-congestion-insights-v1-0-0-api
+  name: Nokia Network as Code Congestion Insights v1.0.0 API
+  description: >-
+    The Congestion Insights v1.0.0 API from Nokia Network as Code — 3 operation(s) for congestion insights
+    v1.0.0.
+  humanURL: https://networkascode.nokia.io/docs
+  baseURL: https://network-as-code.p-eu.rapidapi.com
+  tags:
+  - Congestion Insights v1.0.0
+  properties:
+  - type: OpenAPI
+    url: openapi/nokia-network-as-code-congestion-insights-v1-0-0-api-openapi.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/docs
+  - type: GettingStarted
+    url: https://networkascode.nokia.io/docs/getting-started
+  - type: SourceCode
+    url: https://github.com/nokia/network-as-code-sdks
+  - type: ErrorCatalog
+    url: errors/nokia-network-as-code-problem-types.yml
+  - type: DataModel
+    url: data-model/nokia-network-as-code-data-model.yml
+  - type: OAuthScopes
+    url: scopes/nokia-network-as-code-scopes.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/device-intelligence
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/programmable-connectivity
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/network-intelligence
+- aid: nokia-network-as-code:nokia-network-as-code-consent-info-v0-1-0-api
+  name: Nokia Network as Code Consent Info v0.1.0 API
+  description: >-
+    The Consent Info v0.1.0 API from Nokia Network as Code — 1 operation(s) for consent info v0.1.0.
+  humanURL: https://networkascode.nokia.io/docs
+  baseURL: https://network-as-code.p-eu.rapidapi.com
+  tags:
+  - Consent Info v0.1.0
+  properties:
+  - type: OpenAPI
+    url: openapi/nokia-network-as-code-consent-info-v0-1-0-api-openapi.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/docs
+  - type: GettingStarted
+    url: https://networkascode.nokia.io/docs/getting-started
+  - type: SourceCode
+    url: https://github.com/nokia/network-as-code-sdks
+  - type: ErrorCatalog
+    url: errors/nokia-network-as-code-problem-types.yml
+  - type: DataModel
+    url: data-model/nokia-network-as-code-data-model.yml
+  - type: OAuthScopes
+    url: scopes/nokia-network-as-code-scopes.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/device-intelligence
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/programmable-connectivity
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/network-intelligence
+- aid: >-
+    nokia-network-as-code:nokia-network-as-code-device-reachability-status-retrieve-v1-1-0-api
+  name: Nokia Network as Code Device Reachability Status Retrieve v1.1.0 API
+  description: >-
+    The Device Reachability Status Retrieve v1.1.0 API from Nokia Network as Code — 1 operation(s) for
+    device reachability status retrieve v1.1.0.
+  humanURL: https://networkascode.nokia.io/docs
+  baseURL: https://network-as-code.p-eu.rapidapi.com
+  tags:
+  - Device Reachability Status Retrieve v1.1.0
+  properties:
+  - type: OpenAPI
+    url: openapi/nokia-network-as-code-device-reachability-status-retrieve-v1-1-0-api-openapi.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/docs
+  - type: GettingStarted
+    url: https://networkascode.nokia.io/docs/getting-started
+  - type: SourceCode
+    url: https://github.com/nokia/network-as-code-sdks
+  - type: ErrorCatalog
+    url: errors/nokia-network-as-code-problem-types.yml
+  - type: DataModel
+    url: data-model/nokia-network-as-code-data-model.yml
+  - type: OAuthScopes
+    url: scopes/nokia-network-as-code-scopes.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/device-intelligence
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/programmable-connectivity
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/network-intelligence
+- aid: nokia-network-as-code:nokia-network-as-code-device-reachability-status-retrieve-v1-api
+  name: Nokia Network as Code Device Reachability Status Retrieve v1 API
+  description: >-
+    The Device Reachability Status Retrieve v1 API from Nokia Network as Code — 1 operation(s) for device
+    reachability status retrieve v1.
+  humanURL: https://networkascode.nokia.io/docs
+  baseURL: https://network-as-code.p-eu.rapidapi.com
+  tags:
+  - Device Reachability Status Retrieve v1
+  properties:
+  - type: OpenAPI
+    url: openapi/nokia-network-as-code-device-reachability-status-retrieve-v1-api-openapi.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/docs
+  - type: GettingStarted
+    url: https://networkascode.nokia.io/docs/getting-started
+  - type: SourceCode
+    url: https://github.com/nokia/network-as-code-sdks
+  - type: ErrorCatalog
+    url: errors/nokia-network-as-code-problem-types.yml
+  - type: DataModel
+    url: data-model/nokia-network-as-code-data-model.yml
+  - type: OAuthScopes
+    url: scopes/nokia-network-as-code-scopes.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/device-intelligence
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/programmable-connectivity
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/network-intelligence
+- aid: >-
+    nokia-network-as-code:nokia-network-as-code-device-reachability-status-subscriptions-v0-7-api
+  name: Nokia Network as Code Device Reachability Status Subscriptions v0.7 API
+  description: >-
+    The Device Reachability Status Subscriptions v0.7 API from Nokia Network as Code — 2 operation(s)
+    for device reachability status subscriptions v0.7.
+  humanURL: https://networkascode.nokia.io/docs
+  baseURL: https://network-as-code.p-eu.rapidapi.com
+  tags:
+  - Device Reachability Status Subscriptions v0.7
+  properties:
+  - type: OpenAPI
+    url: >-
+      openapi/nokia-network-as-code-device-reachability-status-subscriptions-v0-7-api-openapi.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/docs
+  - type: GettingStarted
+    url: https://networkascode.nokia.io/docs/getting-started
+  - type: SourceCode
+    url: https://github.com/nokia/network-as-code-sdks
+  - type: ErrorCatalog
+    url: errors/nokia-network-as-code-problem-types.yml
+  - type: DataModel
+    url: data-model/nokia-network-as-code-data-model.yml
+  - type: OAuthScopes
+    url: scopes/nokia-network-as-code-scopes.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/device-intelligence
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/programmable-connectivity
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/network-intelligence
+- aid: >-
+    nokia-network-as-code:nokia-network-as-code-device-reachability-status-subscriptions-v0-8-api
+  name: Nokia Network as Code Device Reachability Status Subscriptions v0.8 API
+  description: >-
+    The Device Reachability Status Subscriptions v0.8 API from Nokia Network as Code — 2 operation(s)
+    for device reachability status subscriptions v0.8.
+  humanURL: https://networkascode.nokia.io/docs
+  baseURL: https://network-as-code.p-eu.rapidapi.com
+  tags:
+  - Device Reachability Status Subscriptions v0.8
+  properties:
+  - type: OpenAPI
+    url: >-
+      openapi/nokia-network-as-code-device-reachability-status-subscriptions-v0-8-api-openapi.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/docs
+  - type: GettingStarted
+    url: https://networkascode.nokia.io/docs/getting-started
+  - type: SourceCode
+    url: https://github.com/nokia/network-as-code-sdks
+  - type: ErrorCatalog
+    url: errors/nokia-network-as-code-problem-types.yml
+  - type: DataModel
+    url: data-model/nokia-network-as-code-data-model.yml
+  - type: OAuthScopes
+    url: scopes/nokia-network-as-code-scopes.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/device-intelligence
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/programmable-connectivity
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/network-intelligence
+- aid: nokia-network-as-code:nokia-network-as-code-device-roaming-status-retrieve-v1-1-0-api
+  name: Nokia Network as Code Device Roaming Status Retrieve v1.1.0 API
+  description: >-
+    The Device Roaming Status Retrieve v1.1.0 API from Nokia Network as Code — 1 operation(s) for device
+    roaming status retrieve v1.1.0.
+  humanURL: https://networkascode.nokia.io/docs
+  baseURL: https://network-as-code.p-eu.rapidapi.com
+  tags:
+  - Device Roaming Status Retrieve v1.1.0
+  properties:
+  - type: OpenAPI
+    url: openapi/nokia-network-as-code-device-roaming-status-retrieve-v1-1-0-api-openapi.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/docs
+  - type: GettingStarted
+    url: https://networkascode.nokia.io/docs/getting-started
+  - type: SourceCode
+    url: https://github.com/nokia/network-as-code-sdks
+  - type: ErrorCatalog
+    url: errors/nokia-network-as-code-problem-types.yml
+  - type: DataModel
+    url: data-model/nokia-network-as-code-data-model.yml
+  - type: OAuthScopes
+    url: scopes/nokia-network-as-code-scopes.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/device-intelligence
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/programmable-connectivity
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/network-intelligence
+- aid: nokia-network-as-code:nokia-network-as-code-device-roaming-status-retrieve-v1-api
+  name: Nokia Network as Code Device Roaming Status Retrieve v1 API
+  description: >-
+    The Device Roaming Status Retrieve v1 API from Nokia Network as Code — 1 operation(s) for device roaming
+    status retrieve v1.
+  humanURL: https://networkascode.nokia.io/docs
+  baseURL: https://network-as-code.p-eu.rapidapi.com
+  tags:
+  - Device Roaming Status Retrieve v1
+  properties:
+  - type: OpenAPI
+    url: openapi/nokia-network-as-code-device-roaming-status-retrieve-v1-api-openapi.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/docs
+  - type: GettingStarted
+    url: https://networkascode.nokia.io/docs/getting-started
+  - type: SourceCode
+    url: https://github.com/nokia/network-as-code-sdks
+  - type: ErrorCatalog
+    url: errors/nokia-network-as-code-problem-types.yml
+  - type: DataModel
+    url: data-model/nokia-network-as-code-data-model.yml
+  - type: OAuthScopes
+    url: scopes/nokia-network-as-code-scopes.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/device-intelligence
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/programmable-connectivity
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/network-intelligence
+- aid: nokia-network-as-code:nokia-network-as-code-device-roaming-status-subscriptions-v0-7-api
+  name: Nokia Network as Code Device Roaming Status Subscriptions v0.7 API
+  description: >-
+    The Device Roaming Status Subscriptions v0.7 API from Nokia Network as Code — 2 operation(s) for device
+    roaming status subscriptions v0.7.
+  humanURL: https://networkascode.nokia.io/docs
+  baseURL: https://network-as-code.p-eu.rapidapi.com
+  tags:
+  - Device Roaming Status Subscriptions v0.7
+  properties:
+  - type: OpenAPI
+    url: openapi/nokia-network-as-code-device-roaming-status-subscriptions-v0-7-api-openapi.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/docs
+  - type: GettingStarted
+    url: https://networkascode.nokia.io/docs/getting-started
+  - type: SourceCode
+    url: https://github.com/nokia/network-as-code-sdks
+  - type: ErrorCatalog
+    url: errors/nokia-network-as-code-problem-types.yml
+  - type: DataModel
+    url: data-model/nokia-network-as-code-data-model.yml
+  - type: OAuthScopes
+    url: scopes/nokia-network-as-code-scopes.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/device-intelligence
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/programmable-connectivity
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/network-intelligence
+- aid: nokia-network-as-code:nokia-network-as-code-device-roaming-status-subscriptions-v0-8-api
+  name: Nokia Network as Code Device Roaming Status Subscriptions v0.8 API
+  description: >-
+    The Device Roaming Status Subscriptions v0.8 API from Nokia Network as Code — 2 operation(s) for device
+    roaming status subscriptions v0.8.
+  humanURL: https://networkascode.nokia.io/docs
+  baseURL: https://network-as-code.p-eu.rapidapi.com
+  tags:
+  - Device Roaming Status Subscriptions v0.8
+  properties:
+  - type: OpenAPI
+    url: openapi/nokia-network-as-code-device-roaming-status-subscriptions-v0-8-api-openapi.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/docs
+  - type: GettingStarted
+    url: https://networkascode.nokia.io/docs/getting-started
+  - type: SourceCode
+    url: https://github.com/nokia/network-as-code-sdks
+  - type: ErrorCatalog
+    url: errors/nokia-network-as-code-problem-types.yml
+  - type: DataModel
+    url: data-model/nokia-network-as-code-data-model.yml
+  - type: OAuthScopes
+    url: scopes/nokia-network-as-code-scopes.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/device-intelligence
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/programmable-connectivity
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/network-intelligence
+- aid: nokia-network-as-code:nokia-network-as-code-device-status-v0-5-1-api
+  name: Nokia Network as Code Device Status v0.5.1 API
+  description: >-
+    The Device Status v0.5.1 API from Nokia Network as Code — 4 operation(s) for device status v0.5.1.
+  humanURL: https://networkascode.nokia.io/docs
+  baseURL: https://network-as-code.p-eu.rapidapi.com
+  tags:
+  - Device Status v0.5.1
+  properties:
+  - type: OpenAPI
+    url: openapi/nokia-network-as-code-device-status-v0-5-1-api-openapi.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/docs
+  - type: GettingStarted
+    url: https://networkascode.nokia.io/docs/getting-started
+  - type: SourceCode
+    url: https://github.com/nokia/network-as-code-sdks
+  - type: ErrorCatalog
+    url: errors/nokia-network-as-code-problem-types.yml
+  - type: DataModel
+    url: data-model/nokia-network-as-code-data-model.yml
+  - type: OAuthScopes
+    url: scopes/nokia-network-as-code-scopes.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/device-intelligence
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/programmable-connectivity
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/network-intelligence
+- aid: nokia-network-as-code:nokia-network-as-code-device-swap-v1-0-0-api
+  name: Nokia Network as Code Device Swap v1.0.0 API
+  description: >-
+    The Device Swap v1.0.0 API from Nokia Network as Code — 2 operation(s) for device swap v1.0.0.
+  humanURL: https://networkascode.nokia.io/docs
+  baseURL: https://network-as-code.p-eu.rapidapi.com
+  tags:
+  - Device Swap v1.0.0
+  properties:
+  - type: OpenAPI
+    url: openapi/nokia-network-as-code-device-swap-v1-0-0-api-openapi.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/docs
+  - type: GettingStarted
+    url: https://networkascode.nokia.io/docs/getting-started
+  - type: SourceCode
+    url: https://github.com/nokia/network-as-code-sdks
+  - type: ErrorCatalog
+    url: errors/nokia-network-as-code-problem-types.yml
+  - type: DataModel
+    url: data-model/nokia-network-as-code-data-model.yml
+  - type: OAuthScopes
+    url: scopes/nokia-network-as-code-scopes.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/device-intelligence
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/programmable-connectivity
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/network-intelligence
+- aid: nokia-network-as-code:nokia-network-as-code-geofencing-v0-3-0-api
+  name: Nokia Network as Code Geofencing v0.3.0 API
+  description: >-
+    The Geofencing v0.3.0 API from Nokia Network as Code — 2 operation(s) for geofencing v0.3.0.
+  humanURL: https://networkascode.nokia.io/docs
+  baseURL: https://network-as-code.p-eu.rapidapi.com
+  tags:
+  - Geofencing v0.3.0
+  properties:
+  - type: OpenAPI
+    url: openapi/nokia-network-as-code-geofencing-v0-3-0-api-openapi.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/docs
+  - type: GettingStarted
+    url: https://networkascode.nokia.io/docs/getting-started
+  - type: SourceCode
+    url: https://github.com/nokia/network-as-code-sdks
+  - type: ErrorCatalog
+    url: errors/nokia-network-as-code-problem-types.yml
+  - type: DataModel
+    url: data-model/nokia-network-as-code-data-model.yml
+  - type: OAuthScopes
+    url: scopes/nokia-network-as-code-scopes.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/device-intelligence
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/programmable-connectivity
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/network-intelligence
+- aid: nokia-network-as-code:nokia-network-as-code-kyc-age-verification-v0-1-api
+  name: Nokia Network as Code KYC Age Verification v0.1 API
+  description: >-
+    The KYC Age Verification v0.1 API from Nokia Network as Code — 1 operation(s) for kyc age verification
+    v0.1.
+  humanURL: https://networkascode.nokia.io/docs
+  baseURL: https://network-as-code.p-eu.rapidapi.com
+  tags:
+  - KYC Age Verification v0.1
+  properties:
+  - type: OpenAPI
+    url: openapi/nokia-network-as-code-kyc-age-verification-v0-1-api-openapi.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/docs
+  - type: GettingStarted
+    url: https://networkascode.nokia.io/docs/getting-started
+  - type: SourceCode
+    url: https://github.com/nokia/network-as-code-sdks
+  - type: ErrorCatalog
+    url: errors/nokia-network-as-code-problem-types.yml
+  - type: DataModel
+    url: data-model/nokia-network-as-code-data-model.yml
+  - type: OAuthScopes
+    url: scopes/nokia-network-as-code-scopes.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/device-intelligence
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/programmable-connectivity
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/network-intelligence
+- aid: nokia-network-as-code:nokia-network-as-code-kyc-fill-in-v0-4-api
+  name: Nokia Network as Code KYC FIll In v0.4 API
+  description: >-
+    The KYC FIll In v0.4 API from Nokia Network as Code — 1 operation(s) for kyc fill in v0.4.
+  humanURL: https://networkascode.nokia.io/docs
+  baseURL: https://network-as-code.p-eu.rapidapi.com
+  tags:
+  - KYC FIll In v0.4
+  properties:
+  - type: OpenAPI
+    url: openapi/nokia-network-as-code-kyc-fill-in-v0-4-api-openapi.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/docs
+  - type: GettingStarted
+    url: https://networkascode.nokia.io/docs/getting-started
+  - type: SourceCode
+    url: https://github.com/nokia/network-as-code-sdks
+  - type: ErrorCatalog
+    url: errors/nokia-network-as-code-problem-types.yml
+  - type: DataModel
+    url: data-model/nokia-network-as-code-data-model.yml
+  - type: OAuthScopes
+    url: scopes/nokia-network-as-code-scopes.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/device-intelligence
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/programmable-connectivity
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/network-intelligence
+- aid: nokia-network-as-code:nokia-network-as-code-kyc-match-v0-3-api
+  name: Nokia Network as Code KYC Match v0.3 API
+  description: The KYC Match v0.3 API from Nokia Network as Code — 1 operation(s) for kyc match v0.3.
+  humanURL: https://networkascode.nokia.io/docs
+  baseURL: https://network-as-code.p-eu.rapidapi.com
+  tags:
+  - KYC Match v0.3
+  properties:
+  - type: OpenAPI
+    url: openapi/nokia-network-as-code-kyc-match-v0-3-api-openapi.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/docs
+  - type: GettingStarted
+    url: https://networkascode.nokia.io/docs/getting-started
+  - type: SourceCode
+    url: https://github.com/nokia/network-as-code-sdks
+  - type: ErrorCatalog
+    url: errors/nokia-network-as-code-problem-types.yml
+  - type: DataModel
+    url: data-model/nokia-network-as-code-data-model.yml
+  - type: OAuthScopes
+    url: scopes/nokia-network-as-code-scopes.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/device-intelligence
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/programmable-connectivity
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/network-intelligence
+- aid: nokia-network-as-code:nokia-network-as-code-kyc-tenure-v0-1-api
+  name: Nokia Network as Code KYC Tenure v0.1 API
+  description: The KYC Tenure v0.1 API from Nokia Network as Code — 1 operation(s) for kyc tenure v0.1.
+  humanURL: https://networkascode.nokia.io/docs
+  baseURL: https://network-as-code.p-eu.rapidapi.com
+  tags:
+  - KYC Tenure v0.1
+  properties:
+  - type: OpenAPI
+    url: openapi/nokia-network-as-code-kyc-tenure-v0-1-api-openapi.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/docs
+  - type: GettingStarted
+    url: https://networkascode.nokia.io/docs/getting-started
+  - type: SourceCode
+    url: https://github.com/nokia/network-as-code-sdks
+  - type: ErrorCatalog
+    url: errors/nokia-network-as-code-problem-types.yml
+  - type: DataModel
+    url: data-model/nokia-network-as-code-data-model.yml
+  - type: OAuthScopes
+    url: scopes/nokia-network-as-code-scopes.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/device-intelligence
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/programmable-connectivity
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/network-intelligence
+- aid: nokia-network-as-code:nokia-network-as-code-location-retrieval-v0-2-0-api
+  name: Nokia Network as Code Location Retrieval v0.2.0 API
+  description: >-
+    The Location Retrieval v0.2.0 API from Nokia Network as Code — 1 operation(s) for location retrieval
+    v0.2.0.
+  humanURL: https://networkascode.nokia.io/docs
+  baseURL: https://network-as-code.p-eu.rapidapi.com
+  tags:
+  - Location Retrieval v0.2.0
+  properties:
+  - type: OpenAPI
+    url: openapi/nokia-network-as-code-location-retrieval-v0-2-0-api-openapi.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/docs
+  - type: GettingStarted
+    url: https://networkascode.nokia.io/docs/getting-started
+  - type: SourceCode
+    url: https://github.com/nokia/network-as-code-sdks
+  - type: ErrorCatalog
+    url: errors/nokia-network-as-code-problem-types.yml
+  - type: DataModel
+    url: data-model/nokia-network-as-code-data-model.yml
+  - type: OAuthScopes
+    url: scopes/nokia-network-as-code-scopes.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/device-intelligence
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/programmable-connectivity
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/network-intelligence
+- aid: nokia-network-as-code:nokia-network-as-code-location-verification-v0-2-0-api
+  name: Nokia Network as Code Location Verification v0.2.0 API
+  description: >-
+    The Location Verification v0.2.0 API from Nokia Network as Code — 1 operation(s) for location verification
+    v0.2.0.
+  humanURL: https://networkascode.nokia.io/docs
+  baseURL: https://network-as-code.p-eu.rapidapi.com
+  tags:
+  - Location Verification v0.2.0
+  properties:
+  - type: OpenAPI
+    url: openapi/nokia-network-as-code-location-verification-v0-2-0-api-openapi.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/docs
+  - type: GettingStarted
+    url: https://networkascode.nokia.io/docs/getting-started
+  - type: SourceCode
+    url: https://github.com/nokia/network-as-code-sdks
+  - type: ErrorCatalog
+    url: errors/nokia-network-as-code-problem-types.yml
+  - type: DataModel
+    url: data-model/nokia-network-as-code-data-model.yml
+  - type: OAuthScopes
+    url: scopes/nokia-network-as-code-scopes.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/device-intelligence
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/programmable-connectivity
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/network-intelligence
+- aid: nokia-network-as-code:nokia-network-as-code-location-verification-v1-0-0-api
+  name: Nokia Network as Code Location Verification v1.0.0 API
+  description: >-
+    The Location Verification v1.0.0 API from Nokia Network as Code — 1 operation(s) for location verification
+    v1.0.0.
+  humanURL: https://networkascode.nokia.io/docs
+  baseURL: https://network-as-code.p-eu.rapidapi.com
+  tags:
+  - Location Verification v1.0.0
+  properties:
+  - type: OpenAPI
+    url: openapi/nokia-network-as-code-location-verification-v1-0-0-api-openapi.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/docs
+  - type: GettingStarted
+    url: https://networkascode.nokia.io/docs/getting-started
+  - type: SourceCode
+    url: https://github.com/nokia/network-as-code-sdks
+  - type: ErrorCatalog
+    url: errors/nokia-network-as-code-problem-types.yml
+  - type: DataModel
+    url: data-model/nokia-network-as-code-data-model.yml
+  - type: OAuthScopes
+    url: scopes/nokia-network-as-code-scopes.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/device-intelligence
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/programmable-connectivity
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/network-intelligence
+- aid: nokia-network-as-code:nokia-network-as-code-nac-authorization-server-api
+  name: Nokia Network as Code NaC Authorization Server API
+  description: >-
+    The NaC Authorization Server API from Nokia Network as Code — 2 operation(s) for nac authorization
+    server.
+  humanURL: https://networkascode.nokia.io/docs
+  baseURL: https://network-as-code.p-eu.rapidapi.com
+  tags:
+  - NaC Authorization Server
+  properties:
+  - type: OpenAPI
+    url: openapi/nokia-network-as-code-nac-authorization-server-api-openapi.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/docs
+  - type: GettingStarted
+    url: https://networkascode.nokia.io/docs/getting-started
+  - type: SourceCode
+    url: https://github.com/nokia/network-as-code-sdks
+  - type: ErrorCatalog
+    url: errors/nokia-network-as-code-problem-types.yml
+  - type: DataModel
+    url: data-model/nokia-network-as-code-data-model.yml
+  - type: OAuthScopes
+    url: scopes/nokia-network-as-code-scopes.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/device-intelligence
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/programmable-connectivity
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/network-intelligence
+- aid: nokia-network-as-code:nokia-network-as-code-network-slicing-v1-0-0-api
+  name: Nokia Network as Code Network Slicing v1.0.0 API
+  description: >-
+    The Network Slicing v1.0.0 API from Nokia Network as Code — 4 operation(s) for network slicing v1.0.0.
+  humanURL: https://networkascode.nokia.io/docs
+  baseURL: https://network-as-code.p-eu.rapidapi.com
+  tags:
+  - Network Slicing v1.0.0
+  properties:
+  - type: OpenAPI
+    url: openapi/nokia-network-as-code-network-slicing-v1-0-0-api-openapi.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/docs
+  - type: GettingStarted
+    url: https://networkascode.nokia.io/docs/getting-started
+  - type: SourceCode
+    url: https://github.com/nokia/network-as-code-sdks
+  - type: ErrorCatalog
+    url: errors/nokia-network-as-code-problem-types.yml
+  - type: DataModel
+    url: data-model/nokia-network-as-code-data-model.yml
+  - type: OAuthScopes
+    url: scopes/nokia-network-as-code-scopes.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/device-intelligence
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/programmable-connectivity
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/network-intelligence
+- aid: nokia-network-as-code:nokia-network-as-code-number-recycling-v0-2-api
+  name: Nokia Network as Code Number Recycling v0.2 API
+  description: >-
+    The Number Recycling v0.2 API from Nokia Network as Code — 1 operation(s) for number recycling v0.2.
+  humanURL: https://networkascode.nokia.io/docs
+  baseURL: https://network-as-code.p-eu.rapidapi.com
+  tags:
+  - Number Recycling v0.2
+  properties:
+  - type: OpenAPI
+    url: openapi/nokia-network-as-code-number-recycling-v0-2-api-openapi.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/docs
+  - type: GettingStarted
+    url: https://networkascode.nokia.io/docs/getting-started
+  - type: SourceCode
+    url: https://github.com/nokia/network-as-code-sdks
+  - type: ErrorCatalog
+    url: errors/nokia-network-as-code-problem-types.yml
+  - type: DataModel
+    url: data-model/nokia-network-as-code-data-model.yml
+  - type: OAuthScopes
+    url: scopes/nokia-network-as-code-scopes.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/device-intelligence
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/programmable-connectivity
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/network-intelligence
+- aid: nokia-network-as-code:nokia-network-as-code-number-verification-v1-0-0-api
+  name: Nokia Network as Code Number Verification v1.0.0 API
+  description: >-
+    The Number Verification v1.0.0 API from Nokia Network as Code — 2 operation(s) for number verification
+    v1.0.0.
+  humanURL: https://networkascode.nokia.io/docs
+  baseURL: https://network-as-code.p-eu.rapidapi.com
+  tags:
+  - Number Verification v1.0.0
+  properties:
+  - type: OpenAPI
+    url: openapi/nokia-network-as-code-number-verification-v1-0-0-api-openapi.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/docs
+  - type: GettingStarted
+    url: https://networkascode.nokia.io/docs/getting-started
+  - type: SourceCode
+    url: https://github.com/nokia/network-as-code-sdks
+  - type: ErrorCatalog
+    url: errors/nokia-network-as-code-problem-types.yml
+  - type: DataModel
+    url: data-model/nokia-network-as-code-data-model.yml
+  - type: OAuthScopes
+    url: scopes/nokia-network-as-code-scopes.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/device-intelligence
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/programmable-connectivity
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/network-intelligence
+- aid: nokia-network-as-code:nokia-network-as-code-number-verification-v2-1-api
+  name: Nokia Network as Code Number Verification v2.1 API
+  description: >-
+    The Number Verification v2.1 API from Nokia Network as Code — 2 operation(s) for number verification
+    v2.1.
+  humanURL: https://networkascode.nokia.io/docs
+  baseURL: https://network-as-code.p-eu.rapidapi.com
+  tags:
+  - Number Verification v2.1
+  properties:
+  - type: OpenAPI
+    url: openapi/nokia-network-as-code-number-verification-v2-1-api-openapi.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/docs
+  - type: GettingStarted
+    url: https://networkascode.nokia.io/docs/getting-started
+  - type: SourceCode
+    url: https://github.com/nokia/network-as-code-sdks
+  - type: ErrorCatalog
+    url: errors/nokia-network-as-code-problem-types.yml
+  - type: DataModel
+    url: data-model/nokia-network-as-code-data-model.yml
+  - type: OAuthScopes
+    url: scopes/nokia-network-as-code-scopes.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/device-intelligence
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/programmable-connectivity
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/network-intelligence
+- aid: nokia-network-as-code:nokia-network-as-code-quality-of-service-on-demand-v0-10-1-api
+  name: Nokia Network as Code Quality-of-Service on Demand v0.10.1 API
+  description: >-
+    The Quality-of-Service on Demand v0.10.1 API from Nokia Network as Code — 4 operation(s) for quality-of-service
+    on demand v0.10.1.
+  humanURL: https://networkascode.nokia.io/docs
+  baseURL: https://network-as-code.p-eu.rapidapi.com
+  tags:
+  - Quality-of-Service on Demand v0.10.1
+  properties:
+  - type: OpenAPI
+    url: openapi/nokia-network-as-code-quality-of-service-on-demand-v0-10-1-api-openapi.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/docs
+  - type: GettingStarted
+    url: https://networkascode.nokia.io/docs/getting-started
+  - type: SourceCode
+    url: https://github.com/nokia/network-as-code-sdks
+  - type: ErrorCatalog
+    url: errors/nokia-network-as-code-problem-types.yml
+  - type: DataModel
+    url: data-model/nokia-network-as-code-data-model.yml
+  - type: OAuthScopes
+    url: scopes/nokia-network-as-code-scopes.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/device-intelligence
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/programmable-connectivity
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/network-intelligence
+- aid: nokia-network-as-code:nokia-network-as-code-quality-of-service-on-demand-v1-0-0-api
+  name: Nokia Network as Code Quality-of-Service on Demand v1.0.0 API
+  description: >-
+    The Quality-of-Service on Demand v1.0.0 API from Nokia Network as Code — 4 operation(s) for quality-of-service
+    on demand v1.0.0.
+  humanURL: https://networkascode.nokia.io/docs
+  baseURL: https://network-as-code.p-eu.rapidapi.com
+  tags:
+  - Quality-of-Service on Demand v1.0.0
+  properties:
+  - type: OpenAPI
+    url: openapi/nokia-network-as-code-quality-of-service-on-demand-v1-0-0-api-openapi.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/docs
+  - type: GettingStarted
+    url: https://networkascode.nokia.io/docs/getting-started
+  - type: SourceCode
+    url: https://github.com/nokia/network-as-code-sdks
+  - type: ErrorCatalog
+    url: errors/nokia-network-as-code-problem-types.yml
+  - type: DataModel
+    url: data-model/nokia-network-as-code-data-model.yml
+  - type: OAuthScopes
+    url: scopes/nokia-network-as-code-scopes.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/device-intelligence
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/programmable-connectivity
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/network-intelligence
+- aid: nokia-network-as-code:nokia-network-as-code-sim-swap-v1-0-0-api
+  name: Nokia Network as Code SIM Swap v1.0.0 API
+  description: The SIM Swap v1.0.0 API from Nokia Network as Code — 2 operation(s) for sim swap v1.0.0.
+  humanURL: https://networkascode.nokia.io/docs
+  baseURL: https://network-as-code.p-eu.rapidapi.com
+  tags:
+  - SIM Swap v1.0.0
+  properties:
+  - type: OpenAPI
+    url: openapi/nokia-network-as-code-sim-swap-v1-0-0-api-openapi.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/docs
+  - type: GettingStarted
+    url: https://networkascode.nokia.io/docs/getting-started
+  - type: SourceCode
+    url: https://github.com/nokia/network-as-code-sdks
+  - type: ErrorCatalog
+    url: errors/nokia-network-as-code-problem-types.yml
+  - type: DataModel
+    url: data-model/nokia-network-as-code-data-model.yml
+  - type: OAuthScopes
+    url: scopes/nokia-network-as-code-scopes.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/device-intelligence
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/programmable-connectivity
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/network-intelligence
+- aid: nokia-network-as-code:nokia-network-as-code-slice-device-attach-v1-0-0-api
+  name: Nokia Network as Code Slice Device Attach v1.0.0 API
+  description: >-
+    The Slice Device Attach v1.0.0 API from Nokia Network as Code — 3 operation(s) for slice device attach
+    v1.0.0.
+  humanURL: https://networkascode.nokia.io/docs
+  baseURL: https://network-as-code.p-eu.rapidapi.com
+  tags:
+  - Slice Device Attach v1.0.0
+  properties:
+  - type: OpenAPI
+    url: openapi/nokia-network-as-code-slice-device-attach-v1-0-0-api-openapi.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/docs
+  - type: GettingStarted
+    url: https://networkascode.nokia.io/docs/getting-started
+  - type: SourceCode
+    url: https://github.com/nokia/network-as-code-sdks
+  - type: ErrorCatalog
+    url: errors/nokia-network-as-code-problem-types.yml
+  - type: DataModel
+    url: data-model/nokia-network-as-code-data-model.yml
+  - type: OAuthScopes
+    url: scopes/nokia-network-as-code-scopes.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/device-intelligence
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/programmable-connectivity
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/network-intelligence
+- aid: nokia-network-as-code:nokia-network-as-code-well-known-metadata-api
+  name: Nokia Network as Code Well Known Metadata API
+  description: >-
+    The Well Known Metadata API from Nokia Network as Code — 3 operation(s) for well known metadata.
+  humanURL: https://networkascode.nokia.io/docs
+  baseURL: https://network-as-code.p-eu.rapidapi.com
+  tags:
+  - Well Known Metadata
+  properties:
+  - type: OpenAPI
+    url: openapi/nokia-network-as-code-well-known-metadata-api-openapi.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/docs
+  - type: GettingStarted
+    url: https://networkascode.nokia.io/docs/getting-started
+  - type: SourceCode
+    url: https://github.com/nokia/network-as-code-sdks
+  - type: ErrorCatalog
+    url: errors/nokia-network-as-code-problem-types.yml
+  - type: DataModel
+    url: data-model/nokia-network-as-code-data-model.yml
+  - type: OAuthScopes
+    url: scopes/nokia-network-as-code-scopes.yml
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/digital-identity-and-anti-fraud
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/device-intelligence
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/programmable-connectivity
+  - type: Documentation
+    url: https://networkascode.nokia.io/products/network-intelligence
 common:
   - type: IssueTracker
     url: https://github.com/nokia/network-as-code-sdks/issues
