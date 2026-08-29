@@ -31,6 +31,20 @@ description: >-
   Nokia-owned API hostname. Nokia reaches the market directly and through Google
   Cloud Marketplace rather than through Aduna, the rival Ericsson-led carrier
   joint venture.
+deliveryModel:
+  model: open-core
+  license: Apache-2.0
+  open_source: true
+  commercial: true
+  callable_host: true
+  label: Open core · an OSS project plus a commercial hosted product
+  confidence: high
+  source:
+  - license
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
 tags:
   - Telecommunications
