@@ -1,0 +1,36 @@
+slug: nokia-network-as-code
+provider: Nokia Network as Code
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Telecommunications
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 2
+edges:
+- tag: Consent Info v0.1.0
+  spec_file: nokia-network-as-code-consent-info-v0-1-0-api-openapi.yml
+  capability_id: BC-130.50
+  capability_id_l1: BC-130
+  capability_name: Privacy & Data Protection Management
+  confidence: 0.7
+  evidence: 'retrieveStatus  Create a request to retrieve the validity status of the data processing (schemas:
+    Purpose-ConsentInfo-V0, Scopes-ConsentInfo-V0)'
+  reason: Checks the validity of a subscriber's consent for a stated data-processing purpose and scope
+    — a privacy/data-protection consent control surface rather than a network or billing function.
+- tag: Network Slicing v1.0.0
+  spec_file: nokia-network-as-code-network-slicing-v1-0-0-api-openapi.yml
+  capability_id: BC-2620.30
+  capability_id_l1: BC-2620
+  capability_name: Service Provisioning
+  confidence: 0.7
+  evidence: POST /slice/v1/slices  create_slice  'Create a network slice.'; POST /slice/v1/slices/{id}/activate  'Activate
+    a network slice.'; schemas SliceData-Slice-V1, ServiceOrderClientNotif-Slice-V1
+  reason: Creates, activates, deactivates and deletes network slices with service-order semantics — allocation
+    of network resources and orchestration of configuration to instantiate a service. Some ambiguity with
+    network configuration management, hence 0.7.
