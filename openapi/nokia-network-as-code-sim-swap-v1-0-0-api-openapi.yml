@@ -1,0 +1,402 @@
+openapi: 3.2.0
+info:
+  title: Nokia Network As Code SIM Swap v1.0.0 API
+  version: 1.0.0
+  termsOfService: https://developer.networkascode.nokia.io/legal/terms-of-service
+  x-refined-note:
+  - x-badges differs across the merged source definitions and was not carried
+  - x-camara-commonalities differs across the merged source definitions and was not carried
+  - x-category differs across the merged source definitions and was not carried
+  - x-collections differs across the merged source definitions and was not carried
+  - x-long-description differs across the merged source definitions and was not carried
+  - x-public differs across the merged source definitions and was not carried
+  - x-thumbnail differs across the merged source definitions and was not carried
+  - x-version-lifecycle differs across the merged source definitions and was not carried
+  - x-website differs across the merged source definitions and was not carried
+  description: 'Operations tagged SIM Swap v1.0.0 across 2 of this provider''s published API definitions: nokia-network-as-code-camara-openapi.yml, nokia-network-as-code-platform-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: '{apiRoot}/geofencing-subscriptions/v0.3'
+  variables:
+    apiRoot:
+      default: http://localhost:9091
+      description: API root
+- url: '{apiRoot}/geofencing-subscriptions/v0.4'
+  variables:
+    apiRoot:
+      default: http://localhost:9091
+      description: API root
+- url: https://network-as-code.p-eu.rapidapi.com
+tags:
+- name: SIM Swap v1.0.0
+paths:
+  /passthrough/camara/v1/sim-swap/sim-swap/v0/retrieve-date:
+    post:
+      security:
+      - openId:
+        - sim-swap:retrieve-date
+      - openId:
+        - sim-swap
+      tags:
+      - SIM Swap v1.0.0
+      description: Get timestamp of last SIM swap event for a mobile user account provided with phone number.
+      operationId: retrieveSimSwapDate
+      parameters:
+      - $ref: '#/components/parameters/x-correlator-SIM-V1'
+      requestBody:
+        description: 'Create a SIM swap date request for a phone number.
+
+          '
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSimSwapDate-SIM-V1'
+            examples:
+              SIM_SWAP_RETRIEVE_PHONE_NUMBER:
+                value:
+                  phoneNumber: '+99999991000'
+        required: true
+      responses:
+        '200':
+          description: Contains information about SIM swap change
+          headers:
+            x-correlator:
+              $ref: '#/components/headers/x-correlator-SIM-V1'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimSwapInfo-SIM-V1'
+        '400':
+          $ref: '#/components/responses/Generic400-SIM-V1'
+        '401':
+          $ref: '#/components/responses/Generic401-SIM-V1'
+        '403':
+          $ref: '#/components/responses/Generic403-SIM-V1'
+        '404':
+          $ref: '#/components/responses/Generic404-SIM-V1'
+        '422':
+          $ref: '#/components/responses/Generic422-SIM-V1'
+        '500':
+          $ref: '#/components/responses/Generic500-SIM-V1'
+        '503':
+          $ref: '#/components/responses/Generic503-SIM-V1'
+        '504':
+          $ref: '#/components/responses/Generic504-SIM-V1'
+    servers:
+    - url: '{apiRoot}/geofencing-subscriptions/v0.3'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+    - url: '{apiRoot}/geofencing-subscriptions/v0.4'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+  /passthrough/camara/v1/sim-swap/sim-swap/v0/check:
+    post:
+      security:
+      - openId:
+        - sim-swap:check
+      - openId:
+        - sim-swap
+      tags:
+      - SIM Swap v1.0.0
+      description: Check if SIM swap has been performed during a past period
+      operationId: checkSimSwap
+      parameters:
+      - $ref: '#/components/parameters/x-correlator-SIM-V1'
+      requestBody:
+        description: 'Create a check SIM swap request for a phone number.
+
+          '
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCheckSimSwap-SIM-V1'
+            examples:
+              SIM_SWAP_CHECK_TRUE_PHONE_NUMBER:
+                value:
+                  phoneNumber: '+99999991000'
+                  maxAge: 240
+              SIM_SWAP_CHECK_FALSE_PHONE_NUMBER:
+                value:
+                  phoneNumber: '+99999991001'
+                  maxAge: 240
+        required: true
+      responses:
+        '200':
+          description: Returns whether a SIM swap has been performed during a past period
+          headers:
+            x-correlator:
+              $ref: '#/components/headers/x-correlator-SIM-V1'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckSimSwapInfo-SIM-V1'
+        '400':
+          $ref: '#/components/responses/Generic400-SIM-V1'
+        '401':
+          $ref: '#/components/responses/Generic401-SIM-V1'
+        '403':
+          $ref: '#/components/responses/Generic403-SIM-V1'
+        '404':
+          $ref: '#/components/responses/Generic404-SIM-V1'
+        '422':
+          $ref: '#/components/responses/Generic422-SIM-V1'
+        '500':
+          $ref: '#/components/responses/Generic500-SIM-V1'
+        '503':
+          $ref: '#/components/responses/Generic503-SIM-V1'
+        '504':
+          $ref: '#/components/responses/Generic504-SIM-V1'
+    servers:
+    - url: '{apiRoot}/geofencing-subscriptions/v0.3'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+    - url: '{apiRoot}/geofencing-subscriptions/v0.4'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+components:
+  responses:
+    Generic504-SIM-V1:
+      description: Gateway Timeout
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-SIM-V1'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-SIM-V1'
+          examples:
+            GENERIC_504_TIMEOUT:
+              description: API Server Timeout
+              value:
+                status: 504
+                code: TIMEOUT
+                message: Request timeout exceeded.
+    Generic400-SIM-V1:
+      description: Bad Request
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-SIM-V1'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-SIM-V1'
+          examples:
+            GENERIC_400_INVALID_ARGUMENT:
+              description: Invalid Argument. Generic Syntax Exception
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Client specified an invalid argument, request body or query param.
+    Generic422-SIM-V1:
+      description: Unprocessable Content
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-SIM-V1'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-SIM-V1'
+          examples:
+            GENERIC_422_NOT_SUPPORTED:
+              description: Not Supported
+              value:
+                status: 422
+                code: NOT_SUPPORTED
+                message: Service not supported for this phoneNumber
+            UNIDENTIFIABLE_PHONE_NUMBER:
+              description: The phone number is not included in the request and the phone number information cannot be derived from the 3-legged access token
+              value:
+                status: 422
+                code: UNIDENTIFIABLE_PHONE_NUMBER
+                message: The phone number cannot be identified
+    Generic403-SIM-V1:
+      description: Forbidden
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-SIM-V1'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-SIM-V1'
+          examples:
+            GENERIC_403_PERMISSION_DENIED:
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action.
+            GENERIC_403_INVALID_TOKEN_CONTEXT:
+              description: Reflect some inconsistency between information in some field of the API and the related OAuth2 Token
+              value:
+                status: 403
+                code: INVALID_TOKEN_CONTEXT
+                message: phoneNumber is not consistent with access token
+    Generic404-SIM-V1:
+      description: Not found
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-SIM-V1'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-SIM-V1'
+          examples:
+            GENERIC_404_NOT_FOUND:
+              description: Resource is not found
+              value:
+                status: 404
+                code: NOT_FOUND
+                message: The specified resource is not found.
+    Generic401-SIM-V1:
+      description: Unauthorized
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-SIM-V1'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-SIM-V1'
+          examples:
+            GENERIC_401_UNAUTHENTICATED:
+              description: Request cannot be authenticated
+              value:
+                status: 401
+                code: UNAUTHENTICATED
+                message: Request not authenticated due to missing, invalid, or expired credentials.
+    Generic503-SIM-V1:
+      description: Service Unavailable
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-SIM-V1'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-SIM-V1'
+          examples:
+            GENERIC_503_UNAVAILABLE:
+              description: Service is not available. Temporary situation usually related to maintenance process in the server side
+              value:
+                status: 503
+                code: UNAVAILABLE
+                message: Service Unavailable.
+    Generic500-SIM-V1:
+      description: Internal Server Error
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-SIM-V1'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-SIM-V1'
+          examples:
+            GENERIC_500_INTERNAL:
+              description: Problem in Server side. Regular Server Exception
+              value:
+                status: 500
+                code: INTERNAL
+                message: Unknown server error. Typically a server bug.
+  schemas:
+    ErrorInfo-SIM-V1:
+      type: object
+      required:
+      - status
+      - code
+      - message
+      properties:
+        status:
+          type: integer
+          description: HTTP response status code
+        code:
+          type: string
+          description: Code given to this error
+        message:
+          type: string
+          description: Detailed error description
+    SimSwapInfo-SIM-V1:
+      type: object
+      required:
+      - latestSimChange
+      properties:
+        latestSimChange:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Timestamp of latest SIM swap performed. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z)
+          example: '2023-07-03T14:27:08.312+02:00'
+    CreateCheckSimSwap-SIM-V1:
+      type: object
+      properties:
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber-SIM-V1'
+        maxAge:
+          type: integer
+          example: 240
+          description: 'Period in hours to be checked for SIM swap.
+
+            '
+          format: int32
+          minimum: 1
+          maximum: 2400
+          default: 240
+    CheckSimSwapInfo-SIM-V1:
+      type: object
+      required:
+      - swapped
+      properties:
+        swapped:
+          type: boolean
+          description: Indicates whether the SIM card has been swapped during the period within the provided age.
+    CreateSimSwapDate-SIM-V1:
+      type: object
+      properties:
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber-SIM-V1'
+    PhoneNumber-SIM-V1:
+      type: string
+      pattern: ^\+[1-9][0-9]{4,14}$
+      example: '+346661113334'
+      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+  headers:
+    x-correlator-SIM-V1:
+      description: Correlation id for the different services
+      schema:
+        type: string
+  parameters:
+    x-correlator-SIM-V1:
+      name: x-correlator
+      in: header
+      description: Correlation id for the different services
+      schema:
+        type: string
+    x-rapidapi-host:
+      name: x-rapidapi-host
+      in: header
+      required: true
+      description: The API's Host value as defined in the RapidAPI Hub.
+      schema:
+        type: string
+        example: network-as-code.p-eu.rapidapi.com
+  securitySchemes:
+    openId:
+      description: OpenID Connect authentication
+      type: openIdConnect
+      openIdConnectUrl: https://example.com/.well-known/openid-configuration
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-rapidapi-key
+      description: Your RapidAPI key
+externalDocs:
+  description: Project documentation at Camara
+  url: https://github.com/camaraproject/DeviceLocation
+x-refined-from:
+- nokia-network-as-code-camara-openapi.yml
+- nokia-network-as-code-platform-openapi.json

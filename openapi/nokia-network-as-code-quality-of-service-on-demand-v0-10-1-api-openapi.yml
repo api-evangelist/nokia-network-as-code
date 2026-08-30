@@ -1,0 +1,987 @@
+openapi: 3.2.0
+info:
+  title: Nokia Network As Code Quality-of-Service on Demand v0.10.1 API
+  version: 1.0.0
+  termsOfService: https://developer.networkascode.nokia.io/legal/terms-of-service
+  x-refined-note:
+  - x-badges differs across the merged source definitions and was not carried
+  - x-camara-commonalities differs across the merged source definitions and was not carried
+  - x-category differs across the merged source definitions and was not carried
+  - x-collections differs across the merged source definitions and was not carried
+  - x-long-description differs across the merged source definitions and was not carried
+  - x-public differs across the merged source definitions and was not carried
+  - x-thumbnail differs across the merged source definitions and was not carried
+  - x-version-lifecycle differs across the merged source definitions and was not carried
+  - x-website differs across the merged source definitions and was not carried
+  description: 'Operations tagged Quality-of-Service on Demand v0.10.1 across 2 of this provider''s published API definitions: nokia-network-as-code-camara-openapi.yml, nokia-network-as-code-platform-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: '{apiRoot}/geofencing-subscriptions/v0.3'
+  variables:
+    apiRoot:
+      default: http://localhost:9091
+      description: API root
+- url: '{apiRoot}/geofencing-subscriptions/v0.4'
+  variables:
+    apiRoot:
+      default: http://localhost:9091
+      description: API root
+- url: https://network-as-code.p-eu.rapidapi.com
+tags:
+- name: Quality-of-Service on Demand v0.10.1
+paths:
+  /qod/v0/sessions:
+    get:
+      tags:
+      - Quality-of-Service on Demand v0.10.1
+      summary: Return QoD settings for your devices.
+      deprecated: true
+      description: Return device communication Quality-on-Demand settings for your devices.
+      operationId: getAllSessions
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SessionInfo-QoD-V0'
+                type: array
+                title: Response Getallsessions
+      security:
+      - oAuth2ClientCredentials: []
+    post:
+      tags:
+      - Quality-of-Service on Demand v0.10.1
+      summary: Creates a new session
+      deprecated: true
+      description: 'Create QoS Session to manage latency/throughput priorities
+
+
+        If the qosStatus in the API response is "AVAILABLE" and a notification callback is provided the client will receive in addition to the response a
+
+        `QOS_STATUS_CHANGED` event notification with `qosStatus` as `AVAILABLE`.
+
+
+        If the `qosStatus` in the API response is `REQUESTED`, the client will receive either
+
+        - a `QOS_STATUS_CHANGED` event notification with `qosStatus` as `AVAILABLE` after the network notifies that it has created the requested session, or
+
+        - a `QOS_STATUS_CHANGED` event notification with `qosStatus` as `UNAVAILABLE` and `statusInfo` as `NETWORK_TERMINATED` after the network notifies that it has failed to provide the requested session.
+
+
+        A `QOS_STATUS_CHANGED` event notification with `qosStatus` as `UNAVAILABLE` will also be send if the network terminates the session before the requested duration expired
+
+
+        NOTE: in case of a `QOS_STATUS_CHANGED` event with `qosStatus` as `UNAVAILABLE` and `statusInfo` as `NETWORK_TERMINATED` the resources of the QoS session
+
+        are not directly released, but will get deleted automatically at earliest 360 seconds after the event.
+
+        This behavior allows clients which are not receiving notification events but are polling to get the session information with
+
+        the `qosStatus` `UNAVAILABLE` (the `statusInfo` parameter is not included in the current version but will be adding to `SessionInfo` in an upcoming release). Before a client can attempt to create a new QoD session
+
+        for the same device and flow period they must release the session resources with an explicit `delete` operation if not yet automatically deleted.
+
+        '
+      operationId: createSession
+      requestBody:
+        description: Parameters to create a new session
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSession-QoD-V0'
+            examples:
+              QOS_STATUS_AVAILABLE_NO_INFO_PHONE_NUMBER:
+                value:
+                  device:
+                    phoneNumber: '+99999991001'
+                    ipv4Address:
+                      publicAddress: 233.252.0.2
+                      privateAddress: 192.0.2.25
+                      publicPort: 80
+                  applicationServer:
+                    ipv4Address: 8.8.8.8
+                  qosProfile: DOWNLINK_M_UPLINK_L
+                  duration: 60
+        required: true
+      callbacks:
+        notifications:
+          '{$request.body#/webhook/notificationUrl}':
+            post:
+              tags:
+              - Session notifications callback
+              summary: Session notifications callback
+              deprecated: true
+              description: 'Important: this endpoint is to be implemented by the API consumer.
+
+                The QoD server will call this endpoint whenever any QoS session change (e.g. network termination) related event occurs.
+
+                Currently only QOS_STATUS_CHANGED event is defined.
+
+                '
+              operationId: postNotification
+              requestBody:
+                required: true
+                content:
+                  application/cloudevents+json:
+                    schema:
+                      $ref: '#/components/schemas/CloudEvent-QoD-V0'
+                    examples:
+                      QOS_STATUS_CHANGED_EXAMPLE:
+                        $ref: '#/components/examples/QOS_STATUS_CHANGED_EXAMPLE-QoD-V0'
+              responses:
+                '204':
+                  description: Successful notification
+                '400':
+                  $ref: '#/components/responses/Generic400-QoD-V0'
+                '401':
+                  $ref: '#/components/responses/Generic401-QoD-V0'
+                '403':
+                  $ref: '#/components/responses/Generic403-QoD-V0'
+                '500':
+                  $ref: '#/components/responses/Generic500-QoD-V0'
+                '503':
+                  $ref: '#/components/responses/Generic503-QoD-V0'
+              security:
+              - {}
+              - notificationsBearerAuth: []
+      responses:
+        '201':
+          description: Session created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionInfo-QoD-V0'
+        '400':
+          description: Invalid input for createSession operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorInfo-QoD-V0'
+              examples:
+                Generic400:
+                  summary: Some parameter combinations or parameter values provided are not schema compliant
+                  value:
+                    status: 400
+                    code: INVALID_ARGUMENT
+                    message: Schema validation failed at  ...
+                DeviceMissing:
+                  summary: Device must be specified
+                  value:
+                    status: 400
+                    code: INVALID_ARGUMENT
+                    message: 'Expected property is missing: device'
+                InsufficientDeviceProperties:
+                  summary: Device must be identified by at least one parameter
+                  value:
+                    status: 400
+                    code: INVALID_ARGUMENT
+                    message: 'Insufficient properties specified: device'
+                InconsistentDeviceProperties:
+                  summary: Device parameters provided identify different devices
+                  value:
+                    status: 400
+                    code: INVALID_ARGUMENT
+                    message: 'Multiple inconsistent parameters specified: device'
+                CannotIdentifyDevice:
+                  summary: No device can be identified from provided parameters
+                  value:
+                    status: 400
+                    code: INVALID_ARGUMENT
+                    message: 'Unable to identify device from specified parameters: device'
+                InvalidDevicePublicPortValue:
+                  summary: Invalid port specified for device public port
+                  value:
+                    status: 400
+                    code: OUT_OF_RANGE
+                    message: 'Invalid port value specified: device.ipv4Address.publicPort'
+                ApplicationServerMissing:
+                  summary: Application server must be specified
+                  value:
+                    status: 400
+                    code: INVALID_ARGUMENT
+                    message: 'Expected property is missing: applicationServer'
+                QoSProfileMissing:
+                  summary: Required QoS profile must be specified
+                  value:
+                    status: 400
+                    code: INVALID_ARGUMENT
+                    message: 'Expected property is missing: qosProfile'
+                InvalidDevicePortsRanges:
+                  summary: Invalid port ranges specified for devicePorts
+                  value:
+                    status: 400
+                    code: OUT_OF_RANGE
+                    message: 'Invalid port ranges specified: devicePorts'
+                DurationOutOfRangeForQoSProfile:
+                  summary: The requested duration is out of the allowed range for the specific QoS profile
+                  value:
+                    status: 400
+                    code: OUT_OF_RANGE
+                    message: The requested duration is out of the allowed range for the specific QoS profile
+        '401':
+          $ref: '#/components/responses/Generic401-QoD-V0'
+        '403':
+          $ref: '#/components/responses/Generic403-QoD-V0'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorInfo-QoD-V0'
+              example:
+                status: 409
+                code: CONFLICT
+                message: Another session is created for the same device
+        '500':
+          $ref: '#/components/responses/Generic500-QoD-V0'
+        '501':
+          $ref: '#/components/responses/Generic501-QoD-V0'
+        '503':
+          $ref: '#/components/responses/Generic503-QoD-V0'
+      security:
+      - oAuth2ClientCredentials: []
+    servers:
+    - url: '{apiRoot}/geofencing-subscriptions/v0.3'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+    - url: '{apiRoot}/geofencing-subscriptions/v0.4'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+  /qod/v0/sessions/{sessionId}:
+    get:
+      tags:
+      - Quality-of-Service on Demand v0.10.1
+      summary: Get QoS session information
+      deprecated: true
+      description: Querying for QoS session resource information details
+      operationId: getSession
+      parameters:
+      - name: sessionId
+        in: path
+        description: Session ID that was obtained from the createSession operation
+        required: true
+        schema:
+          $ref: '#/components/schemas/SessionId-QoD-V0'
+      responses:
+        '200':
+          description: Contains information about active session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionInfo-QoD-V0'
+        '400':
+          $ref: '#/components/responses/Generic400-QoD-V0'
+        '401':
+          $ref: '#/components/responses/Generic401-QoD-V0'
+        '403':
+          $ref: '#/components/responses/Generic403-QoD-V0'
+        '404':
+          $ref: '#/components/responses/SessionNotFound404-QoD-V0'
+        '500':
+          $ref: '#/components/responses/Generic500-QoD-V0'
+        '503':
+          $ref: '#/components/responses/Generic503-QoD-V0'
+      security:
+      - oAuth2ClientCredentials: []
+    delete:
+      tags:
+      - Quality-of-Service on Demand v0.10.1
+      summary: Delete a QoS session
+      deprecated: true
+      description: 'Release resources related to QoS session
+
+
+        If the notification callback is provided and the `qosStatus` of the session was `AVAILABLE` the client will receive in addition to the response a `QOS_STATUS_CHANGED` event with
+
+        - `qosStatus` as `UNAVAILABLE` and
+
+        - `statusInfo` as `DELETE_REQUESTED`
+
+        There will be no notification event if the `qosStatus` was already `UNAVAILABLE`.
+
+        '
+      operationId: deleteSession
+      parameters:
+      - name: sessionId
+        in: path
+        description: Session ID that was obtained from the createSession operation
+        required: true
+        schema:
+          $ref: '#/components/schemas/SessionId-QoD-V0'
+      responses:
+        '204':
+          description: Session deleted
+        '400':
+          $ref: '#/components/responses/Generic400-QoD-V0'
+        '401':
+          $ref: '#/components/responses/Generic401-QoD-V0'
+        '403':
+          $ref: '#/components/responses/Generic403-QoD-V0'
+        '404':
+          $ref: '#/components/responses/SessionNotFound404-QoD-V0'
+        '500':
+          $ref: '#/components/responses/Generic500-QoD-V0'
+        '503':
+          $ref: '#/components/responses/Generic503-QoD-V0'
+      security:
+      - oAuth2ClientCredentials: []
+    servers:
+    - url: '{apiRoot}/geofencing-subscriptions/v0.3'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+    - url: '{apiRoot}/geofencing-subscriptions/v0.4'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+  /qod/v0/sessions/{sessionId}/extend:
+    post:
+      tags:
+      - Quality-of-Service on Demand v0.10.1
+      summary: Extend the duration of an active session
+      deprecated: true
+      description: 'Extend the overall duration of an active QoS session. If this operation is executed successfully, the new duration of the target session will be the original duration plus the additionally requested duration.
+
+        The new remaining duration of the QoS session shall not exceed the maximum remaining duration limit (currently fixed at 86,400 seconds) where the remaining duration is calculated as the difference between the `expiresAt` and current time when the request to extend the session duration is received. If this maximum limit would be exceeded, the overall duration shall be set such that the remaining duration is equal to this limit.
+
+        An example: A QoD session was originally created with duration 80,000 seconds. 10,000 seconds later, the developer requested to extend the session by 20,000 seconds.
+
+        - Original duration: 80,000 seconds
+
+        - Elapsed time: 10,000 seconds
+
+        - Remaining duration: 70,000 seconds
+
+        - New remaining duration: 86,400 seconds (the maximum allowed)
+
+        - New overall session duration: 96,400 seconds
+
+        '
+      operationId: extendQosSessionDuration
+      parameters:
+      - name: sessionId
+        in: path
+        description: Session ID that was obtained from the createSession operation
+        required: true
+        schema:
+          $ref: '#/components/schemas/SessionId-QoD-V0'
+      requestBody:
+        description: Parameters to extend the duration of an active session
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExtendSessionDuration-QoD-V0'
+        required: true
+      responses:
+        '200':
+          description: Contains information about active session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionInfo-QoD-V0'
+        '400':
+          description: Invalid input for extendQosSessionDuration operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorInfo-QoD-V0'
+              examples:
+                Generic400:
+                  summary: Some parameter combinations or parameter values provided are not schema compliant
+                  value:
+                    status: 400
+                    code: INVALID_ARGUMENT
+                    message: Schema validation failed at  ...
+                InactiveSession:
+                  summary: The target session is inactive
+                  value:
+                    status: 400
+                    code: INVALID_ARGUMENT
+                    message: The target session is inactive
+        '401':
+          $ref: '#/components/responses/Generic401-QoD-V0'
+        '403':
+          $ref: '#/components/responses/Generic403-QoD-V0'
+        '404':
+          $ref: '#/components/responses/SessionNotFound404-QoD-V0'
+        '500':
+          $ref: '#/components/responses/Generic500-QoD-V0'
+        '503':
+          $ref: '#/components/responses/Generic503-QoD-V0'
+      security:
+      - oAuth2ClientCredentials: []
+    servers:
+    - url: '{apiRoot}/geofencing-subscriptions/v0.3'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+    - url: '{apiRoot}/geofencing-subscriptions/v0.4'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+  /qod/v0/retrieve-sessions:
+    post:
+      summary: Retrieve sessions for a specific device
+      deprecated: true
+      description: Return all QoD sessions related to the specified device.
+      operationId: retrieveSessions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RetrieveSessionInput-QoD-V0'
+            examples:
+              QOS_RETRIEVE_SESSION_PHONE_NUMBER:
+                value:
+                  device:
+                    phoneNumber: '+99999991001'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SessionInfo-QoD-V0'
+                type: array
+                title: Response Retrievesessions
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError-QoD-V0'
+      tags:
+      - Quality-of-Service on Demand v0.10.1
+      security:
+      - oAuth2ClientCredentials: []
+    servers:
+    - url: '{apiRoot}/geofencing-subscriptions/v0.3'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+    - url: '{apiRoot}/geofencing-subscriptions/v0.4'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+components:
+  schemas:
+    RetrieveSessionInput-QoD-V0:
+      properties:
+        device:
+          $ref: '#/components/schemas/Device-QoD-V0'
+      type: object
+      required:
+      - device
+      title: RetrieveSessionInput
+    HTTPValidationError-QoD-V0:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError-QoD-V0'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    NetworkAccessIdentifier-QoD-V0:
+      description: A public identifier addressing a subscription in a mobile network. In 3GPP terminology, it corresponds to the GPSI formatted with the External Identifier ({Local Identifier}@{Domain Identifier}). Unlike the telephone number, the network access identifier is not subjected to portability ruling in force, and is individually managed by each operator.
+      type: string
+      example: 123456789@domain.com
+    SessionId-QoD-V0:
+      description: Session ID in UUID format
+      type: string
+      format: uuid
+    ApplicationServerIpv4Address-QoD-V0:
+      type: string
+      example: 192.168.0.1/24
+      description: "IPv4 address may be specified in form <address/mask> as:\n  - address - an IPv4 number in dotted-quad form 1.2.3.4. Only this exact IP number will match the flow control rule.\n  - address/mask - an IP number as above with a mask width of the form 1.2.3.4/24.\n    In this case, all IP numbers from 1.2.3.0 to 1.2.3.255 will match. The bit width MUST be valid for the IP version.\n"
+    ApplicationServerIpv6Address-QoD-V0:
+      type: string
+      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
+      description: "IPv6 address may be specified in form <address/mask> as:\n  - address - The /128 subnet is optional for single addresses:\n    - 2001:db8:85a3:8d3:1319:8a2e:370:7344\n    - 2001:db8:85a3:8d3:1319:8a2e:370:7344/128\n  - address/mask - an IP v6 number with a mask:\n    - 2001:db8:85a3:8d3::0/64\n    - 2001:db8:85a3:8d3::/64\n"
+    QosProfileName-QoD-V0:
+      description: "A unique name for identifying a specific QoS profile.\nThis may follow different formats depending on the service providers implementation.\nSome options addresses:\n\n\n\n\n  - A UUID style string\n  - Support for predefined profiles QOS_S, QOS_M, QOS_L, and QOS_E\n  - A searchable descriptive name\n"
+      type: string
+      example: QCI_1_voice
+      minLength: 3
+      maxLength: 256
+      format: string
+      pattern: ^[a-zA-Z0-9_.-]+$
+    SessionInfo-QoD-V0:
+      description: Session related information.
+      allOf:
+      - $ref: '#/components/schemas/BaseSessionInfo-QoD-V0'
+      - type: object
+        properties:
+          sessionId:
+            $ref: '#/components/schemas/SessionId-QoD-V0'
+          duration:
+            type: integer
+            format: int32
+            minimum: 1
+            example: 86400
+          startedAt:
+            type: integer
+            example: 1639479600
+            description: Timestamp of session start in seconds since Unix epoch
+            format: int64
+          expiresAt:
+            type: integer
+            example: 1639566000
+            description: Timestamp of session expiration if the session was not deleted, in seconds since Unix epoch
+            format: int64
+          qosStatus:
+            $ref: '#/components/schemas/QosStatus-QoD-V0'
+          messages:
+            type: array
+            items:
+              $ref: '#/components/schemas/Message-QoD-V0'
+        required:
+        - sessionId
+        - duration
+        - startedAt
+        - expiresAt
+        - qosStatus
+    Device-QoD-V0:
+      description: 'End-user equipment able to connect to a mobile network. Examples of devices include smartphones or IoT sensors/actuators.
+
+
+        The developer can choose to provide the below specified device identifiers:
+
+
+        * `ipv4Address`
+
+        * `ipv6Address`
+
+        * `phoneNumber`
+
+        * `networkAccessIdentifier`
+
+
+        NOTE: the MNO might support only a subset of these options. The API invoker can provide multiple identifiers to be compatible across different MNOs. In this case the identifiers MUST belong to the same device
+
+        '
+      type: object
+      properties:
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber-QoD-V0'
+        networkAccessIdentifier:
+          $ref: '#/components/schemas/NetworkAccessIdentifier-QoD-V0'
+        ipv4Address:
+          $ref: '#/components/schemas/DeviceIpv4Addr-QoD-V0'
+        ipv6Address:
+          $ref: '#/components/schemas/DeviceIpv6Address-QoD-V0'
+      minProperties: 1
+    Message-QoD-V0:
+      type: object
+      properties:
+        severity:
+          description: Message severity
+          type: string
+          enum:
+          - INFO
+          - WARNING
+        description:
+          description: Detailed message text
+          type: string
+      required:
+      - severity
+      - description
+    PortsSpec-QoD-V0:
+      type: object
+      minProperties: 1
+      properties:
+        ranges:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required:
+            - from
+            - to
+            properties:
+              from:
+                $ref: '#/components/schemas/Port-QoD-V0'
+              to:
+                $ref: '#/components/schemas/Port-QoD-V0'
+        ports:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/Port-QoD-V0'
+      example:
+        ranges:
+        - from: 5010
+          to: 5020
+        ports:
+        - 5060
+        - 5070
+    ValidationError-QoD-V0:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    PhoneNumber-QoD-V0:
+      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, optionally prefixed with '+'.
+      type: string
+      pattern: ^\+?[0-9]{5,15}$
+      example: '123456789'
+    CloudEvent-QoD-V0:
+      description: Event compliant with the CloudEvents specification
+      required:
+      - id
+      - source
+      - specversion
+      - type
+      - time
+      properties:
+        id:
+          description: Identifier of this event, that must be unique in the source context.
+          type: string
+        source:
+          description: Identifies the context in which an event happened in the specific Provider Implementation.
+          type: string
+          format: uri-reference
+        type:
+          description: The type of the event.
+          type: string
+          enum:
+          - org.camaraproject.qod.v0.qos-status-changed
+        specversion:
+          description: Version of the specification to which this event conforms (must be 1.0 if it conforms to cloudevents 1.0.2 version)
+          type: string
+          enum:
+          - '1.0'
+        datacontenttype:
+          description: media-type that describes the event payload encoding, must be "application/json" for CAMARA APIs
+          type: string
+          enum:
+          - application/json
+        data:
+          description: Event notification details payload, which depends on the event type
+          type: object
+        time:
+          description: 'Timestamp of when the occurrence happened. It must follow RFC 3339
+
+            '
+          type: string
+          format: date-time
+      discriminator:
+        propertyName: type
+        mapping:
+          org.camaraproject.qod.v0.qos-status-changed: '#/components/schemas/EventQosStatusChanged'
+    BaseSessionInfo-QoD-V0:
+      description: Common attributes of a QoD session
+      type: object
+      properties:
+        device:
+          $ref: '#/components/schemas/Device-QoD-V0'
+        applicationServer:
+          $ref: '#/components/schemas/ApplicationServer-QoD-V0'
+        devicePorts:
+          description: The ports used locally by the device for flows to which the requested QoS profile should apply. If omitted, then the qosProfile will apply to all flows between the device and the specified application server address and ports
+          allOf:
+          - $ref: '#/components/schemas/PortsSpec-QoD-V0'
+        applicationServerPorts:
+          description: A list of single ports or port ranges on the application server
+          allOf:
+          - $ref: '#/components/schemas/PortsSpec-QoD-V0'
+        qosProfile:
+          $ref: '#/components/schemas/QosProfileName-QoD-V0'
+        webhook:
+          type: object
+          required:
+          - notificationUrl
+          properties:
+            notificationUrl:
+              type: string
+              format: uri
+              example: https://application-server.com
+              description: Allows asynchronous delivery of session related events
+            notificationAuthToken:
+              type: string
+              minLength: 20
+              maxLength: 256
+              example: c8974e592c2fa383d4a3960714
+              description: Authentication token for callback API
+      required:
+      - device
+      - applicationServer
+      - qosProfile
+    ApplicationServer-QoD-V0:
+      description: 'A server hosting backend applications to deliver some business logic to clients.
+
+
+        The developer can choose to provide the below specified device identifiers:
+
+
+        * `ipv4Address`
+
+        * `ipv6Address`
+
+        '
+      type: object
+      properties:
+        ipv4Address:
+          $ref: '#/components/schemas/ApplicationServerIpv4Address-QoD-V0'
+        ipv6Address:
+          $ref: '#/components/schemas/ApplicationServerIpv6Address-QoD-V0'
+      minProperties: 1
+    QosStatus-QoD-V0:
+      description: 'The current status of the requested QoS session. The status can be one of the following:
+
+        * `REQUESTED` - QoS has been requested by creating a session
+
+        * `AVAILABLE` - The requested QoS has been provided by the network
+
+        * `UNAVAILABLE` - The requested QoS cannot be provided by the network due to some reason
+
+        '
+      type: string
+      enum:
+      - REQUESTED
+      - AVAILABLE
+      - UNAVAILABLE
+    DeviceIpv4Addr-QoD-V0:
+      type: object
+      description: 'The device should be identified by either the public (observed) IP address and port as seen by the application server, or the private (local) and any public (observed) IP addresses in use by the device (this information can be obtained by various means, for example from some DNS servers).
+
+
+        If the allocated and observed IP addresses are the same (i.e. NAT is not in use) then  the same address should be specified for both publicAddress and privateAddress.
+
+
+        If NAT64 is in use, the device should be identified by its publicAddress and publicPort, or separately by its allocated IPv6 address (field ipv6Address of the Device object)
+
+
+        In all cases, publicAddress must be specified, along with at least one of either privateAddress or publicPort, dependent upon which is known. In general, mobile devices cannot be identified by their public IPv4 address alone.
+
+        '
+      properties:
+        publicAddress:
+          $ref: '#/components/schemas/SingleIpv4Addr-QoD-V0'
+        privateAddress:
+          $ref: '#/components/schemas/SingleIpv4Addr-QoD-V0'
+        publicPort:
+          $ref: '#/components/schemas/Port-QoD-V0'
+      anyOf:
+      - required:
+        - publicAddress
+        - privateAddress
+      - required:
+        - publicAddress
+        - publicPort
+      example:
+        publicAddress: 84.125.93.10
+        publicPort: 59765
+    DeviceIpv6Address-QoD-V0:
+      description: 'The device should be identified by the observed IPv6 address, or by any single IPv6 address from within the subnet allocated to the device (e.g. adding ::0 to the /64 prefix).
+
+
+        The session shall apply to all IP flows between the device subnet and the specified application server, unless further restricted by the optional parameters devicePorts or applicationServerPorts.
+
+        '
+      type: string
+      format: ipv6
+      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
+    Port-QoD-V0:
+      description: TCP or UDP port number
+      type: integer
+      minimum: 0
+      maximum: 65535
+    ExtendSessionDuration-QoD-V0:
+      description: Attributes required to extend the duration of an active session
+      type: object
+      properties:
+        requestedAdditionalDuration:
+          description: 'Additional duration in seconds to be extended.
+
+            '
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 86399
+          example: 60
+      required:
+      - requestedAdditionalDuration
+    ErrorInfo-QoD-V0:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: HTTP status code returned along with this error response
+        code:
+          type: string
+          description: Code given to this error
+        message:
+          type: string
+          description: Detailed error description
+      required:
+      - status
+      - code
+      - message
+    CreateSession-QoD-V0:
+      description: Attributes required to create a session
+      allOf:
+      - $ref: '#/components/schemas/BaseSessionInfo-QoD-V0'
+      - type: object
+        properties:
+          duration:
+            description: 'Session duration in seconds. Maximal value of 24 hours is used if not set.
+
+              After session is expired the, client will receive a `QOS_STATUS_CHANGED` event with
+
+              - `qosStatus` as `UNAVAILABLE`, and,
+
+              - `statusInfo` as `DURATION_EXPIRED`.
+
+              See notification callback.
+
+              '
+            type: integer
+            format: int32
+            minimum: 1
+            maximum: 86400
+            default: 86400
+            example: 86400
+    SingleIpv4Addr-QoD-V0:
+      description: A single IPv4 address with no subnet mask
+      type: string
+      format: ipv4
+      example: 84.125.93.10
+  responses:
+    SessionNotFound404-QoD-V0:
+      description: Session not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-QoD-V0'
+          example:
+            status: 404
+            code: NOT_FOUND
+            message: Session Id does not exist
+    Generic403-QoD-V0:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-QoD-V0'
+          example:
+            status: 403
+            code: PERMISSION_DENIED
+            message: 'Operation not allowed: ...'
+    Generic400-QoD-V0:
+      description: Invalid input
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-QoD-V0'
+          example:
+            status: 400
+            code: INVALID_ARGUMENT
+            message: Schema validation failed at  ...
+    Generic503-QoD-V0:
+      description: Service unavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-QoD-V0'
+          example:
+            status: 503
+            code: UNAVAILABLE
+            message: Service unavailable
+    Generic501-QoD-V0:
+      description: Not Implemented
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-QoD-V0'
+          example:
+            status: 501
+            code: NOT_IMPLEMENTED
+            message: Service not implemented for the specified user device
+    Generic401-QoD-V0:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-QoD-V0'
+          example:
+            status: 401
+            code: UNAUTHENTICATED
+            message: 'Authorization failed: ...'
+    Generic500-QoD-V0:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-QoD-V0'
+          example:
+            status: 500
+            code: INTERNAL
+            message: 'Internal server error: ...'
+  examples:
+    QOS_STATUS_CHANGED_EXAMPLE-QoD-V0:
+      summary: QoS status changed
+      value:
+        id: 83a0d986-0866-4f38-b8c0-fc65bfcda452
+        source: https://api.example.com/qod/v0/sessions/123e4567-e89b-12d3-a456-426614174000
+        specversion: '1.0'
+        type: org.camaraproject.qod.v0.qos-status-changed
+        time: '2021-12-12T00:00:00Z'
+        data:
+          sessionId: 123e4567-e89b-12d3-a456-426614174000
+          qosStatus: UNAVAILABLE
+          statusInfo: DURATION_EXPIRED
+  parameters:
+    x-rapidapi-host:
+      name: x-rapidapi-host
+      in: header
+      required: true
+      description: The API's Host value as defined in the RapidAPI Hub.
+      schema:
+        type: string
+        example: network-as-code.p-eu.rapidapi.com
+  securitySchemes:
+    openId:
+      description: OpenID Connect authentication
+      type: openIdConnect
+      openIdConnectUrl: https://example.com/.well-known/openid-configuration
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-rapidapi-key
+      description: Your RapidAPI key
+externalDocs:
+  description: Project documentation at Camara
+  url: https://github.com/camaraproject/DeviceLocation
+x-refined-from:
+- nokia-network-as-code-camara-openapi.yml
+- nokia-network-as-code-platform-openapi.json

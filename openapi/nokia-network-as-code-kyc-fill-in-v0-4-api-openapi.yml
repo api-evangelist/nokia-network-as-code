@@ -1,0 +1,471 @@
+openapi: 3.2.0
+info:
+  title: Nokia Network As Code KYC FIll In v0.4 API
+  version: 1.0.0
+  termsOfService: https://developer.networkascode.nokia.io/legal/terms-of-service
+  x-refined-note:
+  - x-badges differs across the merged source definitions and was not carried
+  - x-camara-commonalities differs across the merged source definitions and was not carried
+  - x-category differs across the merged source definitions and was not carried
+  - x-collections differs across the merged source definitions and was not carried
+  - x-long-description differs across the merged source definitions and was not carried
+  - x-public differs across the merged source definitions and was not carried
+  - x-thumbnail differs across the merged source definitions and was not carried
+  - x-version-lifecycle differs across the merged source definitions and was not carried
+  - x-website differs across the merged source definitions and was not carried
+  description: 'Operations tagged KYC FIll In v0.4 across 2 of this provider''s published API definitions: nokia-network-as-code-camara-openapi.yml, nokia-network-as-code-platform-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: '{apiRoot}/geofencing-subscriptions/v0.3'
+  variables:
+    apiRoot:
+      default: http://localhost:9091
+      description: API root
+- url: '{apiRoot}/geofencing-subscriptions/v0.4'
+  variables:
+    apiRoot:
+      default: http://localhost:9091
+      description: API root
+- url: https://network-as-code.p-eu.rapidapi.com
+tags:
+- name: KYC FIll In v0.4
+paths:
+  /passthrough/camara/v1/kyc-fill-in/kyc-fill-in/v0.4/fill-in:
+    post:
+      tags:
+      - KYC FIll In v0.4
+      summary: Providing information related to a customer identity stored the account data bound to the customer's phone number.
+      operationId: kycFillIn
+      security:
+      - openId:
+        - kyc-fill-in:set-all
+      - openId:
+        - kyc-fill-in:phoneNumber
+      - openId:
+        - kyc-fill-in:idDocument
+      - openId:
+        - kyc-fill-in:idDocumentType
+      - openId:
+        - kyc-fill-in:idDocumentExpiryDate
+      - openId:
+        - kyc-fill-in:name
+      - openId:
+        - kyc-fill-in:givenName
+      - openId:
+        - kyc-fill-in:familyName
+      - openId:
+        - kyc-fill-in:nameKanaHankaku
+      - openId:
+        - kyc-fill-in:nameKanaZenkaku
+      - openId:
+        - kyc-fill-in:middleNames
+      - openId:
+        - kyc-fill-in:familyNameAtBirth
+      - openId:
+        - kyc-fill-in:address
+      - openId:
+        - kyc-fill-in:streetName
+      - openId:
+        - kyc-fill-in:streetNumber
+      - openId:
+        - kyc-fill-in:postalCode
+      - openId:
+        - kyc-fill-in:region
+      - openId:
+        - kyc-fill-in:locality
+      - openId:
+        - kyc-fill-in:country
+      - openId:
+        - kyc-fill-in:houseNumberExtension
+      - openId:
+        - kyc-fill-in:birthdate
+      - openId:
+        - kyc-fill-in:email
+      - openId:
+        - kyc-fill-in:gender
+      - openId:
+        - kyc-fill-in:cityOfBirth
+      - openId:
+        - kyc-fill-in:countryOfBirth
+      - openId:
+        - kyc-fill-in:nationality
+      parameters:
+      - $ref: '#/components/parameters/x-correlator-KYC-FIN-V0'
+      - in: header
+        name: authorization
+        required: false
+        description: authorization header for token
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KYC_FillinRequest-KYC-FIN-V0'
+            examples:
+              KYC_Fill_In:
+                value:
+                  phoneNumber: '+99999991000'
+              KYC_Fill_In_3_Legged:
+                summary: Example request without phone number when using three-legged access token
+                value: {}
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-correlator:
+              $ref: '#/components/headers/X-Correlator-KYC-FIN-V0'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KYC_FillinResponse-KYC-FIN-V0'
+              examples:
+                KYC_Fillin200Example:
+                  value:
+                    phoneNumber: '+99999991000'
+                    idDocument: 66666666q
+                    idDocumentType: passport
+                    idDocumentExpiryDate: '2027-07-12'
+                    name: Federica Sanchez Arjona
+                    givenName: Federica
+                    familyName: Sanchez Arjona
+                    nameKanaHankaku: federica
+                    nameKanaZenkaku: Ｆｅｄｅｒｉｃａ
+                    middleNames: Sanchez
+                    familyNameAtBirth: YYYY
+                    address: Tokyo-to Chiyoda-ku Iidabashi 3-10-10
+                    streetName: Nicolas Salmeron
+                    streetNumber: '4'
+                    postalCode: '1028460'
+                    region: Tokyo
+                    locality: ZZZZ
+                    country: JP
+                    houseNumberExtension: '36'
+                    birthdate: '1978-08-22'
+                    email: abc@example.com
+                    gender: MALE
+                    cityOfBirth: Madrid
+                    countryOfBirth: ES
+                    nationality: ES
+        '400':
+          $ref: '#/components/responses/Generic400-KYC-FIN-V0'
+        '401':
+          $ref: '#/components/responses/Generic401-KYC-FIN-V0'
+        '403':
+          $ref: '#/components/responses/Generic403-KYC-FIN-V0'
+        '404':
+          $ref: '#/components/responses/Generic404-KYC-FIN-V0'
+        '422':
+          $ref: '#/components/responses/Generic422-KYC-FIN-V0'
+    servers:
+    - url: '{apiRoot}/geofencing-subscriptions/v0.3'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+    - url: '{apiRoot}/geofencing-subscriptions/v0.4'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+components:
+  schemas:
+    ErrorInfo-KYC-FIN-V0:
+      type: object
+      required:
+      - status
+      - code
+      - message
+      properties:
+        status:
+          type: integer
+          description: HTTP response status code
+        code:
+          type: string
+          description: A human-readable code to describe the error
+        message:
+          type: string
+          description: A human-readable description of what the event represents
+    KYC_FillinResponse-KYC-FIN-V0:
+      type: object
+      properties:
+        phoneNumber:
+          type: string
+          description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+          pattern: ^\+[1-9][0-9]{4,14}$
+          example: '+99999991000'
+        idDocument:
+          type: string
+          description: Id number associated to the id_document of the customer stored on the Operator's system.
+        idDocumentType:
+          type: string
+          enum:
+          - passport
+          - national_id_card
+          - residence_permit
+          - diplomatic_id
+          - driver_licence
+          - social_security_id
+          - other
+          description: Type of the official identity document provided.
+        idDocumentExpiryDate:
+          type: string
+          format: date
+          description: Expiration date of the identity document (ISO 8601).
+        name:
+          type: string
+          description: Complete name of the customer stored on the Operator's system.  It is usually composed of first/given name and last/family/sur- name in a country.  Depending on the country, the order of first/give name and last/family/sur- name varies, and middle name could be included.  It can use givenName, middleNames, familyName and/or familyNameAtBirth. For example, in ESP, name+familyName; in NLD, it can be name+middleNames+familyName or name+middleNames+familyNameAtBirth, etc.
+        givenName:
+          type: string
+          description: First/given name or compound first/given name of the customer on the Operator's system.
+        familyName:
+          type: string
+          description: Last name, family name, or surname of the customer stored on the Operator's system.
+        nameKanaHankaku:
+          type: string
+          description: Complete name of the customer in Hankaku-Kana format (reading of name) for Japan, stored on the Operator's system.
+        nameKanaZenkaku:
+          type: string
+          description: Complete name of the customer in Zenkaku-Kana format (reading of name) for Japan, stored on the Operator's system.
+        middleNames:
+          type: string
+          description: Middle name/s of the customer stored on the Operator's system.
+        familyNameAtBirth:
+          type: string
+          description: Last/family/sur- name at birth of the customer stored on the Operator's system.
+        address:
+          type: string
+          description: Complete address of the customer stored on the Operator's system.  For some countries, it is built following the usual concatenation of parameters in a country, but for other countries, this is not the case.  For some countries, it can use streetName, streetNumber and/or houseNumberExtension. For example, in ESP, streetName+streetNumber; in NLD, it can be streetName+streetNumber or streetName+streetNumber+houseNumberExtension.
+        streetName:
+          type: string
+          description: Name of the street of the customer's address on the Operator's system.  It should not include the type of the street.
+        streetNumber:
+          type: string
+          description: The street number of the customer's address on the Operator's system.  Number identifying a specific property on the 'streetName'.
+        postalCode:
+          type: string
+          description: The postal code or Zip code of the customer's address, stored on the Operator's system.
+        region:
+          type: string
+          description: Region/prefecture of the customer's address, stored on the Operator's system.
+        locality:
+          type: string
+          description: Locality of the customer's address, stored on the Operator's system.
+        country:
+          type: string
+          description: Country of the customer's address stored on the Operator's system. Format ISO 3166-1 alpha-2.
+        houseNumberExtension:
+          type: string
+          description: House number extension of the customer stored on the Operator's system.  Specific identifier of the house needed depending on the property type. For example, number of apartment in an apartment building.
+        birthdate:
+          type: string
+          format: date
+          description: Birthdate of the customer, in ISO 8601 calendar date format (YYYY-MM-DD), stored on the Operator's system.
+        email:
+          type: string
+          format: email
+          description: Email address of the customer in the RFC specified format (local-part@domain), stored on the Operator's system.
+        gender:
+          type: string
+          description: Gender of the customer stored on the Operator's system (Male/Female/Other).
+          enum:
+          - MALE
+          - FEMALE
+          - OTHER
+        cityOfBirth:
+          type: string
+          description: City where the customer was born.
+        countryOfBirth:
+          type: string
+          description: Country where the customer was born. Format ISO 3166-1 alpha-2.
+        nationality:
+          type: string
+          description: ISO 3166-1 alpha-2 code of the customer’s nationality. In the case a customer has more than one nationality, it is supposed to be the nationality related to the ID document provided in the match request.
+    KYC_FillinRequest-KYC-FIN-V0:
+      type: object
+      properties:
+        phoneNumber:
+          type: string
+          description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+          pattern: ^\+[1-9][0-9]{4,14}$
+          example: '+99999991000'
+    XCorrelator-KYC-FIN-V0:
+      type: string
+      pattern: ^[a-zA-Z0-9-_:;.\/<>{}]{0,256}$
+      example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
+  headers:
+    X-Correlator-KYC-FIN-V0:
+      description: Correlation id for the different services
+      required: false
+      schema:
+        $ref: '#/components/schemas/XCorrelator-KYC-FIN-V0'
+  responses:
+    Generic401-KYC-FIN-V0:
+      description: Unauthorized
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/X-Correlator-KYC-FIN-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-KYC-FIN-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 401
+                code:
+                  enum:
+                  - UNAUTHENTICATED
+          examples:
+            GENERIC_401_UNAUTHENTICATED:
+              description: Request cannot be authenticated and a new authentication is required
+              value:
+                status: 401
+                code: UNAUTHENTICATED
+                message: Request not authenticated due to missing, invalid, or expired credentials. A new authentication is required.
+    Generic404-KYC-FIN-V0:
+      description: Not found
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/X-Correlator-KYC-FIN-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-KYC-FIN-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 404
+                code:
+                  enum:
+                  - IDENTIFIER_NOT_FOUND
+          examples:
+            GENERIC_404_IDENTIFIER_NOT_FOUND:
+              description: The phone number is not associated with a CSP customer account
+              value:
+                status: 404
+                code: IDENTIFIER_NOT_FOUND
+                message: The phone number provided is not associated with a customer account
+    Generic422-KYC-FIN-V0:
+      description: Unprocessable Content
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/X-Correlator-KYC-FIN-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-KYC-FIN-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 422
+                code:
+                  enum:
+                  - SERVICE_NOT_APPLICABLE
+                  - MISSING_IDENTIFIER
+                  - UNNECESSARY_IDENTIFIER
+          examples:
+            GENERIC_422_SERVICE_NOT_APPLICABLE:
+              description: Service is not applicable for the provided phone number
+              value:
+                status: 422
+                code: SERVICE_NOT_APPLICABLE
+                message: The service is not applicable for the provided phone number
+            GENERIC_422_MISSING_IDENTIFIER:
+              description: No phone number has been provided either explicitly or associated with the access token
+              value:
+                status: 422
+                code: MISSING_IDENTIFIER
+                message: No phone number has been provided
+            GENERIC_422_UNNECESSARY_IDENTIFIER:
+              description: An explicit phone number has been provided when one is already associated with the access token
+              value:
+                status: 422
+                code: UNNECESSARY_IDENTIFIER
+                message: An explicit phone number has been provided when one is already associated with the access token
+    Generic403-KYC-FIN-V0:
+      description: Forbidden
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/X-Correlator-KYC-FIN-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-KYC-FIN-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 403
+                code:
+                  enum:
+                  - PERMISSION_DENIED
+          examples:
+            GENERIC_403_PERMISSION_DENIED:
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action.
+    Generic400-KYC-FIN-V0:
+      description: Bad Request
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/X-Correlator-KYC-FIN-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-KYC-FIN-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 400
+                code:
+                  enum:
+                  - INVALID_ARGUMENT
+          examples:
+            GENERIC_400_INVALID_ARGUMENT:
+              description: Invalid Argument. Generic Syntax Exception
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Client specified an invalid argument, request body or query param.
+  parameters:
+    x-correlator-KYC-FIN-V0:
+      name: x-correlator
+      in: header
+      description: Correlation id for the different services
+      schema:
+        $ref: '#/components/schemas/XCorrelator-KYC-FIN-V0'
+    x-rapidapi-host:
+      name: x-rapidapi-host
+      in: header
+      required: true
+      description: The API's Host value as defined in the RapidAPI Hub.
+      schema:
+        type: string
+        example: network-as-code.p-eu.rapidapi.com
+  securitySchemes:
+    openId:
+      description: OpenID Connect authentication
+      type: openIdConnect
+      openIdConnectUrl: https://example.com/.well-known/openid-configuration
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-rapidapi-key
+      description: Your RapidAPI key
+externalDocs:
+  description: Project documentation at Camara
+  url: https://github.com/camaraproject/DeviceLocation
+x-refined-from:
+- nokia-network-as-code-camara-openapi.yml
+- nokia-network-as-code-platform-openapi.json

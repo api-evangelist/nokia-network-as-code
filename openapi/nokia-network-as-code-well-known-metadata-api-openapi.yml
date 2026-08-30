@@ -1,0 +1,156 @@
+openapi: 3.2.0
+info:
+  title: Nokia Network As Code Well Known Metadata API
+  version: 1.0.0
+  termsOfService: https://developer.networkascode.nokia.io/legal/terms-of-service
+  x-refined-note:
+  - x-badges differs across the merged source definitions and was not carried
+  - x-camara-commonalities differs across the merged source definitions and was not carried
+  - x-category differs across the merged source definitions and was not carried
+  - x-collections differs across the merged source definitions and was not carried
+  - x-long-description differs across the merged source definitions and was not carried
+  - x-public differs across the merged source definitions and was not carried
+  - x-thumbnail differs across the merged source definitions and was not carried
+  - x-version-lifecycle differs across the merged source definitions and was not carried
+  - x-website differs across the merged source definitions and was not carried
+  description: 'Operations tagged Well Known Metadata across 2 of this provider''s published API definitions: nokia-network-as-code-camara-openapi.yml, nokia-network-as-code-platform-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: '{apiRoot}/geofencing-subscriptions/v0.3'
+  variables:
+    apiRoot:
+      default: http://localhost:9091
+      description: API root
+- url: '{apiRoot}/geofencing-subscriptions/v0.4'
+  variables:
+    apiRoot:
+      default: http://localhost:9091
+      description: API root
+- url: https://network-as-code.p-eu.rapidapi.com
+tags:
+- name: Well Known Metadata
+paths:
+  /.well-known/openid-configuration:
+    get:
+      tags:
+      - Well Known Metadata
+      summary: Get Well Known Oidc
+      operationId: get_well_known_oidc_openid_configuration_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Metadata-WellKnown-V0'
+      security:
+      - oAuth2ClientCredentials: []
+    servers:
+    - url: '{apiRoot}/geofencing-subscriptions/v0.3'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+    - url: '{apiRoot}/geofencing-subscriptions/v0.4'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+  /.well-known/oauth-authorization-server:
+    get:
+      tags:
+      - Well Known Metadata
+      summary: Get Well Known Oauth
+      operationId: get_well_known_oauth_oauth_authorization_server_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Metadata-WellKnown-V0'
+      security:
+      - oAuth2ClientCredentials: []
+    servers:
+    - url: '{apiRoot}/geofencing-subscriptions/v0.3'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+    - url: '{apiRoot}/geofencing-subscriptions/v0.4'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+  /.well-known/security.txt:
+    get:
+      tags:
+      - Well Known Metadata
+      summary: Get Security Txt
+      operationId: get_security_txt_security_txt_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/plain:
+              schema:
+                type: string
+      security:
+      - oAuth2ClientCredentials: []
+    servers:
+    - url: '{apiRoot}/geofencing-subscriptions/v0.3'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+    - url: '{apiRoot}/geofencing-subscriptions/v0.4'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+components:
+  schemas:
+    Metadata-WellKnown-V0:
+      properties:
+        authorization_endpoint:
+          type: string
+          maxLength: 255
+          title: Authorization Endpoint
+        token_endpoint:
+          type: string
+          maxLength: 255
+          title: Token Endpoint
+        fast_flow_csp_auth_endpoint:
+          type: string
+          maxLength: 255
+          title: Fast Flow Csp Auth Endpoint
+      type: object
+      required:
+      - authorization_endpoint
+      - token_endpoint
+      - fast_flow_csp_auth_endpoint
+      title: Metadata
+  parameters:
+    x-rapidapi-host:
+      name: x-rapidapi-host
+      in: header
+      required: true
+      description: The API's Host value as defined in the RapidAPI Hub.
+      schema:
+        type: string
+        example: network-as-code.p-eu.rapidapi.com
+  securitySchemes:
+    openId:
+      description: OpenID Connect authentication
+      type: openIdConnect
+      openIdConnectUrl: https://example.com/.well-known/openid-configuration
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-rapidapi-key
+      description: Your RapidAPI key
+externalDocs:
+  description: Project documentation at Camara
+  url: https://github.com/camaraproject/DeviceLocation
+x-refined-from:
+- nokia-network-as-code-camara-openapi.yml
+- nokia-network-as-code-platform-openapi.json

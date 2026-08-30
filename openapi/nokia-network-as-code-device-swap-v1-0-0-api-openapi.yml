@@ -1,0 +1,436 @@
+openapi: 3.2.0
+info:
+  title: Nokia Network As Code Device Swap v1.0.0 API
+  version: 1.0.0
+  termsOfService: https://developer.networkascode.nokia.io/legal/terms-of-service
+  x-refined-note:
+  - x-badges differs across the merged source definitions and was not carried
+  - x-camara-commonalities differs across the merged source definitions and was not carried
+  - x-category differs across the merged source definitions and was not carried
+  - x-collections differs across the merged source definitions and was not carried
+  - x-long-description differs across the merged source definitions and was not carried
+  - x-public differs across the merged source definitions and was not carried
+  - x-thumbnail differs across the merged source definitions and was not carried
+  - x-version-lifecycle differs across the merged source definitions and was not carried
+  - x-website differs across the merged source definitions and was not carried
+  description: 'Operations tagged Device Swap v1.0.0 across 2 of this provider''s published API definitions: nokia-network-as-code-camara-openapi.yml, nokia-network-as-code-platform-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: '{apiRoot}/geofencing-subscriptions/v0.3'
+  variables:
+    apiRoot:
+      default: http://localhost:9091
+      description: API root
+- url: '{apiRoot}/geofencing-subscriptions/v0.4'
+  variables:
+    apiRoot:
+      default: http://localhost:9091
+      description: API root
+- url: https://network-as-code.p-eu.rapidapi.com
+tags:
+- name: Device Swap v1.0.0
+paths:
+  /passthrough/camara/v1/device-swap/device-swap/v1/retrieve-date:
+    post:
+      tags:
+      - Device Swap v1.0.0
+      summary: Get last device swap date
+      description: Get timestamp of last device swap for a mobile user account provided with phone number.
+      operationId: retrieveDeviceSwapDate
+      security:
+      - openId:
+        - device-swap
+      - openId:
+        - device-swap:retrieve-date
+      parameters:
+      - $ref: '#/components/parameters/x-correlator-DSWAP-V1'
+      requestBody:
+        description: 'Create a device swap date request for a phone number.
+
+          '
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDeviceSwapDate-DSWAP-V1'
+            examples:
+              RETRIEVE:
+                summary: Retrieve request without 3-legged access tokens
+                value:
+                  phoneNumber: '+99999991001'
+      responses:
+        '200':
+          description: Contains information about Device swap change
+          headers:
+            x-correlator:
+              $ref: '#/components/headers/x-correlator-DSWAP-V1'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceSwapInfo-DSWAP-V1'
+              examples:
+                RETRIEVE_DATE:
+                  $ref: '#/components/examples/RETRIEVE_DATE-DSWAP-V1'
+                RETRIEVE_MONITORED_PERIOD:
+                  $ref: '#/components/examples/RETRIEVE_MONITORED_PERIOD-DSWAP-V1'
+                RETRIEVE_MONITORED_NULL:
+                  $ref: '#/components/examples/RETRIEVE_MONITORED_NULL-DSWAP-V1'
+        '400':
+          $ref: '#/components/responses/Generic400-DSWAP-V1'
+        '401':
+          $ref: '#/components/responses/Generic401-DSWAP-V1'
+        '403':
+          $ref: '#/components/responses/Generic403-DSWAP-V1'
+        '404':
+          $ref: '#/components/responses/Generic404-DSWAP-V1'
+        '422':
+          $ref: '#/components/responses/Generic422-DSWAP-V1'
+    servers:
+    - url: '{apiRoot}/geofencing-subscriptions/v0.3'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+    - url: '{apiRoot}/geofencing-subscriptions/v0.4'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+  /passthrough/camara/v1/device-swap/device-swap/v1/check:
+    post:
+      tags:
+      - Device Swap v1.0.0
+      summary: Check last device swap date
+      description: Check if device swap has been performed during a past period
+      operationId: checkDeviceSwap
+      security:
+      - openId:
+        - device-swap
+      - openId:
+        - device-swap:check
+      parameters:
+      - $ref: '#/components/parameters/x-correlator-DSWAP-V1'
+      requestBody:
+        required: true
+        description: Create a check device swap request for a phone number.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCheckDeviceSwap-DSWAP-V1'
+            examples:
+              DEVICE_SWAP_CHECK_TRUE_PHONE_NUMBER:
+                summary: Example request where device swap is simulated as True (phoneNumber ending in 1000)
+                value:
+                  phoneNumber: '+99999991000'
+                  maxAge: 120
+              DEVICE_SWAP_CHECK_FALSE_PHONE_NUMBER:
+                summary: Example request where device swap is simulated as False (phoneNumber ending in 1001)
+                value:
+                  phoneNumber: '+99999991001'
+                  maxAge: 120
+      responses:
+        '200':
+          description: Returns whether a device swap has been performed during a past period
+          headers:
+            x-correlator:
+              $ref: '#/components/headers/x-correlator-DSWAP-V1'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckDeviceSwapInfo-DSWAP-V1'
+        '400':
+          $ref: '#/components/responses/Generic400Check-DSWAP-V1'
+        '401':
+          $ref: '#/components/responses/Generic401-DSWAP-V1'
+        '403':
+          $ref: '#/components/responses/Generic403-DSWAP-V1'
+        '404':
+          $ref: '#/components/responses/Generic404-DSWAP-V1'
+        '422':
+          $ref: '#/components/responses/Generic422-DSWAP-V1'
+    servers:
+    - url: '{apiRoot}/geofencing-subscriptions/v0.3'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+    - url: '{apiRoot}/geofencing-subscriptions/v0.4'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+components:
+  schemas:
+    CreateCheckDeviceSwap-DSWAP-V1:
+      type: object
+      properties:
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber-DSWAP-V1'
+        maxAge:
+          type: integer
+          example: 240
+          description: 'Period in hours to be checked for device swap.
+
+            '
+          format: int32
+          minimum: 1
+          maximum: 2400
+          default: 240
+    ErrorInfo-DSWAP-V1:
+      type: object
+      required:
+      - status
+      - code
+      - message
+      properties:
+        status:
+          type: integer
+          description: HTTP response status code
+        code:
+          type: string
+          description: Code given to this error
+        message:
+          type: string
+          description: Detailed error description
+    CheckDeviceSwapInfo-DSWAP-V1:
+      type: object
+      required:
+      - swapped
+      properties:
+        swapped:
+          type: boolean
+          description: Indicates whether the device has been swapped during the period within the provided age.
+    XCorrelator-DSWAP-V1:
+      type: string
+      pattern: ^[a-zA-Z0-9-_:;.\/<>{}]{0,256}$
+      example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
+    CreateDeviceSwapDate-DSWAP-V1:
+      type: object
+      properties:
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber-DSWAP-V1'
+    PhoneNumber-DSWAP-V1:
+      type: string
+      pattern: ^\+[1-9][0-9]{4,14}$
+      example: '+34666111333'
+      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+    DeviceSwapInfo-DSWAP-V1:
+      type: object
+      required:
+      - latestDeviceChange
+      properties:
+        latestDeviceChange:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Timestamp of latest device swap performed. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z)
+          example: '2023-07-03T14:27:08.312+02:00'
+        monitoredPeriod:
+          type: integer
+          description: Timeframe in days for device change supervision for the phone number. It could be valued in the response if the latest Device swap occurred before this monitored period.
+          example: 120
+  responses:
+    Generic403-DSWAP-V1:
+      description: Forbidden
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-DSWAP-V1'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-DSWAP-V1'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 403
+                code:
+                  enum:
+                  - PERMISSION_DENIED
+          examples:
+            GENERIC_403_PERMISSION_DENIED:
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action.
+    Generic400Check-DSWAP-V1:
+      description: "Bad Request \n\nIn addition to regular scenario of INVALID_ARGUMENT, other scenarios may exist:\n- Out of Range. Specific Syntax Exception used when a given field has a pre-defined range or a invalid filter criteria combination is requested (\"code\": \"OUT_OF_RANGE\",\"message\": \"Client specified an invalid range.\")"
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-DSWAP-V1'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-DSWAP-V1'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 400
+                code:
+                  enum:
+                  - INVALID_ARGUMENT
+                  - OUT_OF_RANGE
+          examples:
+            GENERIC_400_INVALID_ARGUMENT:
+              description: Invalid Argument. Generic Syntax Exception
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Client specified an invalid argument, request body or query param.
+            GENERIC_400_OUT_OF_RANGE:
+              description: Out of Range. Specific Syntax Exception used when a given field has a pre-defined range or a invalid filter criteria combination is requested
+              value:
+                status: 400
+                code: OUT_OF_RANGE
+                message: Client specified an invalid range.
+    Generic401-DSWAP-V1:
+      description: Unauthorized
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-DSWAP-V1'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-DSWAP-V1'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 401
+                code:
+                  enum:
+                  - UNAUTHENTICATED
+          examples:
+            GENERIC_401_UNAUTHENTICATED:
+              description: Request cannot be authenticated
+              value:
+                status: 401
+                code: UNAUTHENTICATED
+                message: Request not authenticated due to missing, invalid, or expired credentials.
+    Generic400-DSWAP-V1:
+      description: Bad Request
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-DSWAP-V1'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-DSWAP-V1'
+          examples:
+            GENERIC_400_INVALID_ARGUMENT:
+              description: Invalid Argument. Generic Syntax Exception
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Client specified an invalid argument, request body or query param.
+    Generic422-DSWAP-V1:
+      description: Unprocessable Content
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-DSWAP-V1'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-DSWAP-V1'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 422
+                code:
+                  enum:
+                  - SERVICE_NOT_APPLICABLE
+          examples:
+            GENERIC_422_SERVICE_NOT_APPLICABLE:
+              description: Service not applicable for the provided identifier
+              value:
+                status: 422
+                code: SERVICE_NOT_APPLICABLE
+                message: The service is not available for the provided identifier.
+    Generic404-DSWAP-V1:
+      description: Not found
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-DSWAP-V1'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-DSWAP-V1'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 404
+                code:
+                  enum:
+                  - NOT_FOUND
+                  - IDENTIFIER_NOT_FOUND
+          examples:
+            GENERIC_404_NOT_FOUND:
+              description: Resource is not found
+              value:
+                status: 404
+                code: NOT_FOUND
+                message: The specified resource is not found.
+            GENERIC_404_IDENTIFIER_NOT_FOUND:
+              description: Some identifier cannot be matched to a device
+              value:
+                status: 404
+                code: IDENTIFIER_NOT_FOUND
+                message: Device identifier not found.
+  headers:
+    x-correlator-DSWAP-V1:
+      description: Correlation id for the different services
+      schema:
+        $ref: '#/components/schemas/XCorrelator-DSWAP-V1'
+  parameters:
+    x-correlator-DSWAP-V1:
+      name: x-correlator
+      in: header
+      description: Correlation id for the different services
+      schema:
+        $ref: '#/components/schemas/XCorrelator-DSWAP-V1'
+    x-rapidapi-host:
+      name: x-rapidapi-host
+      in: header
+      required: true
+      description: The API's Host value as defined in the RapidAPI Hub.
+      schema:
+        type: string
+        example: network-as-code.p-eu.rapidapi.com
+  examples:
+    RETRIEVE_MONITORED_NULL-DSWAP-V1:
+      summary: Only null value is retrieved
+      value:
+        latestDeviceChange: null
+    RETRIEVE_DATE-DSWAP-V1:
+      summary: Lastest Device swap date is send back
+      value:
+        latestDeviceChange: '2024-09-18T07:37:53.471Z'
+    RETRIEVE_MONITORED_PERIOD-DSWAP-V1:
+      summary: null returned for date, monitoredPeriod provided
+      value:
+        latestDeviceChange: null
+        monitoredPeriod: 120
+  securitySchemes:
+    openId:
+      description: OpenID Connect authentication
+      type: openIdConnect
+      openIdConnectUrl: https://example.com/.well-known/openid-configuration
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-rapidapi-key
+      description: Your RapidAPI key
+externalDocs:
+  description: Project documentation at Camara
+  url: https://github.com/camaraproject/DeviceLocation
+x-refined-from:
+- nokia-network-as-code-camara-openapi.yml
+- nokia-network-as-code-platform-openapi.json

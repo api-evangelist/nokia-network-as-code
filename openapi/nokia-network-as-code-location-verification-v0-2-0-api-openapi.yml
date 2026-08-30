@@ -1,0 +1,388 @@
+openapi: 3.2.0
+info:
+  title: Nokia Network As Code Location Verification v0.2.0 API
+  version: 1.0.0
+  termsOfService: https://developer.networkascode.nokia.io/legal/terms-of-service
+  x-refined-note:
+  - x-badges differs across the merged source definitions and was not carried
+  - x-camara-commonalities differs across the merged source definitions and was not carried
+  - x-category differs across the merged source definitions and was not carried
+  - x-collections differs across the merged source definitions and was not carried
+  - x-long-description differs across the merged source definitions and was not carried
+  - x-public differs across the merged source definitions and was not carried
+  - x-thumbnail differs across the merged source definitions and was not carried
+  - x-version-lifecycle differs across the merged source definitions and was not carried
+  - x-website differs across the merged source definitions and was not carried
+  description: 'Operations tagged Location Verification v0.2.0 across 2 of this provider''s published API definitions: nokia-network-as-code-camara-openapi.yml, nokia-network-as-code-platform-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: '{apiRoot}/geofencing-subscriptions/v0.3'
+  variables:
+    apiRoot:
+      default: http://localhost:9091
+      description: API root
+- url: '{apiRoot}/geofencing-subscriptions/v0.4'
+  variables:
+    apiRoot:
+      default: http://localhost:9091
+      description: API root
+- url: https://network-as-code.p-eu.rapidapi.com
+tags:
+- name: Location Verification v0.2.0
+paths:
+  /location-verification/v0/verify:
+    post:
+      tags:
+      - Location Verification v0.2.0
+      summary: Verify the location of a device
+      description: 'Verify whether the location of a device is within a requested area. The operation returns a verification result and, optionally, a match rate estimation for the location verification in percent.
+
+        '
+      operationId: verifyLocation-LocV-V0
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyLocationRequest-LocV-V0'
+            examples:
+              DEVICE_INSIDE_AREA_FALSE_PHONE_NUMBER:
+                value:
+                  device:
+                    phoneNumber: '+99999991000'
+                  area:
+                    areaType: CIRCLE
+                    center:
+                      latitude: 50.735851
+                      longitude: 7.10066
+                    radius: 50000
+              DEVICE_INSIDE_AREA_TRUE_PHONE_NUMBER:
+                value:
+                  device:
+                    phoneNumber: '+99999991001'
+                  area:
+                    areaType: CIRCLE
+                    center:
+                      latitude: 50.735851
+                      longitude: 7.10066
+                    radius: 50000
+      responses:
+        '200':
+          description: Location verification result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerifyLocationResponse-LocV-V0'
+              examples:
+                VERIFICATION_TRUE:
+                  summary: Match
+                  description: The network locates the device within the requested area
+                  value:
+                    verificationResult: 'TRUE'
+                    lastLocationTime: '2023-09-07T10:40:52.000Z'
+                VERIFICATION_FALSE:
+                  summary: No match
+                  description: The requested area does not match the area where the network locates the device
+                  value:
+                    verificationResult: 'FALSE'
+                    lastLocationTime: '2023-09-07T10:40:52.000Z'
+                VERIFICATION_UNKNOWN_WITH_LAST_LOCATION_TIME:
+                  summary: Unknown with last location time
+                  description: The network cannot locate the device after the requested maxAge
+                  value:
+                    verificationResult: UNKNOWN
+                    lastLocationTime: '2023-09-07T10:40:52.000Z'
+                VERIFICATION_UNKNOWN_WITHOUT_LAST_LOCATION_TIME:
+                  summary: Unknown without last location time
+                  description: The network cannot locate the device and there is no history available
+                  value:
+                    verificationResult: UNKNOWN
+                VERIFICATION_PARTIAL:
+                  summary: Partial match
+                  description: The requested area partially matches the area where the network locates the device
+                  value:
+                    verificationResult: PARTIAL
+                    matchRate: 74
+                    lastLocationTime: '2023-09-07T10:40:52.000Z'
+        '400':
+          $ref: '#/components/responses/Generic400-LocV-V0'
+        '401':
+          $ref: '#/components/responses/Generic401-LocV-V0'
+        '403':
+          $ref: '#/components/responses/Generic403-LocV-V0'
+        '404':
+          $ref: '#/components/responses/Generic404-LocV-V0'
+        '500':
+          $ref: '#/components/responses/Generic500-LocV-V0'
+        '503':
+          $ref: '#/components/responses/Generic503-LocV-V0'
+      security:
+      - openId:
+        - location-verification:verify
+    servers:
+    - url: '{apiRoot}/geofencing-subscriptions/v0.3'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+    - url: '{apiRoot}/geofencing-subscriptions/v0.4'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+components:
+  schemas:
+    PhoneNumber-LocV-V0:
+      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, optionally prefixed with '+'.
+      type: string
+      pattern: ^\+?[0-9]{5,15}$
+      example: '123456789'
+    Device-LocV-V0:
+      description: 'End-user equipment able to connect to a mobile network. Examples of devices include smartphones or IoT sensors/actuators.
+
+
+        The developer can choose to provide the below specified device identifiers:
+
+
+        * `ipv4Address`
+
+        * `ipv6Address`
+
+        * `phoneNumber`
+
+        * `networkAccessIdentifier`
+
+
+        NOTE: the MNO might support only a subset of these options. The API invoker can provide multiple identifiers to be compatible across different MNOs. In this case the identifiers MUST belong to the same device.
+
+        '
+      type: object
+      properties:
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber-LocV-V0'
+        networkAccessIdentifier:
+          $ref: '#/components/schemas/NetworkAccessIdentifier-LocV-V0'
+        ipv4Address:
+          $ref: '#/components/schemas/DeviceIpv4Addr-LocV-V0'
+        ipv6Address:
+          $ref: '#/components/schemas/DeviceIpv6Address-LocV-V0'
+      minProperties: 1
+    VerificationResult-LocV-V0:
+      description: "Result of a verification request:\n  - `TRUE`: when the network locates the device within the requested area, \n  - `FALSE`: when the requested area does not match the area where the network locates the device,\n  - `UNKNOWN`: when the network cannot locate the device,\n  - `PARTIAL`: when the requested area partially match the area where the network locates the device. A `match_rate` could be included in the response.\n"
+      type: string
+      enum:
+      - 'TRUE'
+      - 'FALSE'
+      - UNKNOWN
+      - PARTIAL
+    VerifyLocationRequest-LocV-V0:
+      type: object
+      properties:
+        device:
+          $ref: '#/components/schemas/Device-LocV-V0'
+        area:
+          $ref: '#/components/schemas/Area-LocV-V0'
+        maxAge:
+          $ref: '#/components/schemas/MaxAge-LocV-V0'
+      required:
+      - device
+      - area
+    Port-LocV-V0:
+      description: TCP or UDP port number
+      type: integer
+      minimum: 0
+      maximum: 65535
+    MatchRate-LocV-V0:
+      description: Estimation of the match rate between the area in the request (R), and area where the network locates the device (N), calculated as the percent value of the intersection of both areas divided by the network area, that is (R ∩ N) / N * 100. Included only if VerificationResult is PARTIAL.
+      type: integer
+      minimum: 1
+      maximum: 99
+    Area-LocV-V0:
+      type: object
+      properties:
+        areaType:
+          $ref: '#/components/schemas/AreaType-LocV-V0'
+      required:
+      - areaType
+      discriminator:
+        propertyName: areaType
+        mapping:
+          CIRCLE: '#/components/schemas/Circle'
+    MaxAge-LocV-V0:
+      description: The maximum age (in seconds) of the available location, which is accepted for the verification.
+      type: integer
+      minimum: 60
+      example: 120
+    SingleIpv4Addr-LocV-V0:
+      description: A single IPv4 address with no subnet mask
+      type: string
+      format: ipv4
+      example: 84.125.93.10
+    NetworkAccessIdentifier-LocV-V0:
+      description: A public identifier addressing a subscription in a mobile network. In 3GPP terminology, it corresponds to the GPSI formatted with the External Identifier ({Local Identifier}@{Domain Identifier}). Unlike the telephone number, the network access identifier is not subjected to portability ruling in force, and is individually managed by each operator.
+      type: string
+      example: 123456789@domain.com
+    DeviceIpv4Addr-LocV-V0:
+      type: object
+      description: 'The device should be identified by either the public (observed) IP address and port as seen by the application server, or the private (local) and any public (observed) IP addresses in use by the device (this information can be obtained by various means, for example from some DNS servers).
+
+
+        If the allocated and observed IP addresses are the same (i.e. NAT is not in use) then  the same address should be specified for both publicAddress and privateAddress.
+
+
+        If NAT64 is in use, the device should be identified by its publicAddress and publicPort, or separately by its allocated IPv6 address (field ipv6Address of the Device object)
+
+
+        In all cases, publicAddress must be specified, along with at least one of either privateAddress or publicPort, dependent upon which is known. In general, mobile devices cannot be identified by their public IPv4 address alone.
+
+        '
+      properties:
+        publicAddress:
+          $ref: '#/components/schemas/SingleIpv4Addr-LocV-V0'
+        privateAddress:
+          $ref: '#/components/schemas/SingleIpv4Addr-LocV-V0'
+        publicPort:
+          $ref: '#/components/schemas/Port-LocV-V0'
+      anyOf:
+      - required:
+        - publicAddress
+        - privateAddress
+      - required:
+        - publicAddress
+        - publicPort
+      example:
+        publicAddress: 84.125.93.10
+        publicPort: 59765
+    AreaType-LocV-V0:
+      type: string
+      description: 'Type of this area.
+
+        CIRCLE - The area is defined as a circle.
+
+        '
+      enum:
+      - CIRCLE
+    ErrorInfo-LocV-V0:
+      type: object
+      required:
+      - status
+      - code
+      - message
+      properties:
+        status:
+          type: integer
+          description: HTTP status code returned along with this error response
+        code:
+          type: string
+          description: Code given to this error
+        message:
+          type: string
+          description: Detailed error description
+    DeviceIpv6Address-LocV-V0:
+      description: 'The device should be identified by the observed IPv6 address, or by any single IPv6 address from within the subnet allocated to the device (e.g. adding ::0 to the /64 prefix).
+
+        '
+      type: string
+      format: ipv6
+      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
+    VerifyLocationResponse-LocV-V0:
+      type: object
+      required:
+      - verificationResult
+      properties:
+        lastLocationTime:
+          $ref: '#/components/schemas/LastLocationTime-LocV-V0'
+        verificationResult:
+          $ref: '#/components/schemas/VerificationResult-LocV-V0'
+        matchRate:
+          $ref: '#/components/schemas/MatchRate-LocV-V0'
+    LastLocationTime-LocV-V0:
+      description: Timestamp of the last location information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z)
+      example: '2023-09-07T10:40:52Z'
+      format: date-time
+      type: string
+  responses:
+    Generic500-LocV-V0:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-LocV-V0'
+          example:
+            status: 500
+            code: INTERNAL
+            message: Internal server error
+    Generic503-LocV-V0:
+      description: Service unavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-LocV-V0'
+          example:
+            status: 503
+            code: UNAVAILABLE
+            message: Service unavailable
+    Generic403-LocV-V0:
+      description: Permission denied
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-LocV-V0'
+          example:
+            status: 403
+            code: PERMISSION_DENIED
+            message: 'Operation not allowed: ...'
+    Generic400-LocV-V0:
+      description: Invalid argument
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-LocV-V0'
+          example:
+            status: 400
+            code: INVALID_ARGUMENT
+            message: Invalid argument
+    Generic404-LocV-V0:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-LocV-V0'
+          example:
+            status: 404
+            code: NOT_FOUND
+            message: The specified resource is not found
+    Generic401-LocV-V0:
+      description: Unauthenticated
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-LocV-V0'
+          example:
+            status: 401
+            code: UNAUTHENTICATED
+            message: 'Authorization failed: ...'
+  parameters:
+    x-rapidapi-host:
+      name: x-rapidapi-host
+      in: header
+      required: true
+      description: The API's Host value as defined in the RapidAPI Hub.
+      schema:
+        type: string
+        example: network-as-code.p-eu.rapidapi.com
+  securitySchemes:
+    openId:
+      description: OpenID Connect authentication
+      type: openIdConnect
+      openIdConnectUrl: https://example.com/.well-known/openid-configuration
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-rapidapi-key
+      description: Your RapidAPI key
+externalDocs:
+  description: Project documentation at Camara
+  url: https://github.com/camaraproject/DeviceLocation
+x-refined-from:
+- nokia-network-as-code-camara-openapi.yml
+- nokia-network-as-code-platform-openapi.json

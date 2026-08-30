@@ -1,0 +1,587 @@
+openapi: 3.2.0
+info:
+  title: Network as Code Device Reachability Status Retrieve v1.1.0 API
+  version: 1.0.0
+  description: Nokia's Network as Code API for programmable networks.
+  x-category: Other
+  x-long-description: Nokia's Network as Code API for programmable networks
+  x-website: ''
+  x-public: true
+  x-thumbnail: https://rapidapi-prod-prodeu-apis.s3.eu-central-1.amazonaws.com/87fa562b-c40b-4a8f-9847-108b8973ce6f.png
+  x-version-lifecycle: active
+  x-badges: []
+  termsOfService: https://developer.networkascode.nokia.io/legal/terms-of-service
+  x-collections: []
+servers:
+- url: https://network-as-code.p-eu.rapidapi.com
+security:
+- ApiKeyAuth: []
+tags:
+- name: Device Reachability Status Retrieve v1.1.0
+paths:
+  /device-status/device-reachability-status/v1/retrieve:
+    post:
+      tags:
+      - Device Reachability Status Retrieve v1.1.0
+      summary: Get the current reachability status information
+      parameters:
+      - name: x-correlator
+        in: header
+        required: false
+        description: Correlation id for the different services
+        schema: {}
+      - $ref: '#/components/parameters/x-rapidapi-host'
+      operationId: getReachabilityStatus
+      description: Get the current reachability status information
+      responses:
+        '200':
+          content:
+            application/json:
+              examples:
+                Reachable Using SMS:
+                  value:
+                    lastStatusTime: '2024-02-20T10:41:38.657Z'
+                    reachable: true
+                    connectivity:
+                    - SMS
+                Reachable Using Data:
+                  value:
+                    lastStatusTime: '2024-02-20T10:41:38.657Z'
+                    reachable: true
+                    connectivity:
+                    - DATA
+                Not Reachable Over The Mobile Network:
+                  value:
+                    lastStatusTime: '2024-02-20T10:41:38.657Z'
+                    reachable: false
+                Reachable Using SMS With Device Disambguation:
+                  value:
+                    device:
+                      phoneNumber: '+99999991000'
+                    lastStatusTime: '2024-02-20T10:41:38.657Z'
+                    reachable: true
+                    connectivity:
+                    - SMS
+                Reachable Using Data and SMS:
+                  value:
+                    lastStatusTime: '2024-02-20T10:41:38.657Z'
+                    reachable: true
+                    connectivity:
+                    - DATA
+                    - SMS
+              schema:
+                type: object
+                required:
+                - lastStatusTime
+                - reachable
+                properties:
+                  device:
+                    description: 'An identifier for the end-user equipment able to connect to the network that the response refers to. This parameter is only returned when the API consumer includes the `device` parameter in their request (i.e. they are using a two-legged access token), and is relevant when more than one device identifier is specified, as only one of those device identifiers is allowed in the response.
+
+
+                      If the API consumer provides more than one device identifier in their request, the API provider must return a single identifier which is the one they are using to fulfil the request, even if the identifiers do not match the same device. API provider does not perform any logic to validate/correlate that the indicated device identifiers match the same device. No error should be returned if the identifiers are otherwise valid to prevent API consumers correlating different identifiers with a given end user.
+
+                      '
+                    allOf:
+                    - description: 'End-user equipment able to connect to a mobile network. Examples of devices include smartphones or IoT sensors/actuators.
+
+
+                        The developer can choose to provide the below specified device identifiers:
+
+
+                        * `ipv4Address`
+
+                        * `ipv6Address`
+
+                        * `phoneNumber`
+
+                        * `networkAccessIdentifier`
+
+
+                        NOTE: the MNO might support only a subset of these options. The API invoker can provide multiple identifiers to be compatible across different MNOs. In this case the identifiers MUST belong to the same device.
+
+                        '
+                      type: object
+                      properties:
+                        phoneNumber:
+                          description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+                          type: string
+                          pattern: ^\+[1-9][0-9]{4,14}$
+                        networkAccessIdentifier:
+                          description: A public identifier addressing a subscription in a mobile network. In 3GPP terminology, it corresponds to the GPSI formatted with the External Identifier ({Local Identifier}@{Domain Identifier}). Unlike the telephone number, the network access identifier is not subjected to portability ruling in force, and is individually managed by each operator.
+                          type: string
+                        ipv4Address:
+                          type: object
+                          description: 'The device should be identified by either the public (observed) IP address and port as seen by the application server, or the private (local) and any public (observed) IP addresses in use by the device (this information can be obtained by various means, for example from some DNS servers).
+
+
+                            If the allocated and observed IP addresses are the same (i.e. NAT is not in use) then  the same address should be specified for both publicAddress and privateAddress.
+
+
+                            If NAT64 is in use, the device should be identified by its publicAddress and publicPort, or separately by its allocated IPv6 address (field ipv6Address of the Device object)
+
+
+                            In all cases, publicAddress must be specified, along with at least one of either privateAddress or publicPort, dependent upon which is known. In general, mobile devices cannot be identified by their public IPv4 address alone.
+
+                            '
+                          properties:
+                            publicAddress:
+                              description: A single IPv4 address with no subnet mask
+                              type: string
+                              format: ipv4
+                            privateAddress:
+                              description: A single IPv4 address with no subnet mask
+                              type: string
+                              format: ipv4
+                            publicPort:
+                              description: TCP or UDP port number
+                              type: integer
+                              minimum: 0
+                              maximum: 65535
+                          anyOf:
+                          - required:
+                            - publicAddress
+                            - privateAddress
+                          - required:
+                            - publicAddress
+                            - publicPort
+                        ipv6Address:
+                          description: 'The device should be identified by the observed IPv6 address, or by any single IPv6 address from within the subnet allocated to the device (e.g. adding ::0 to the /64 prefix).
+
+                            '
+                          type: string
+                          format: ipv6
+                      minProperties: 1
+                    - maxProperties: 1
+                  lastStatusTime:
+                    description: 'Last time that the associated device reachability status was updated.
+
+                      It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
+
+                      Recommended format is yyyy-MM-dd''T''HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z)
+
+                      '
+                    type: string
+                    format: date-time
+                  reachable:
+                    description: Indicates overall device reachability
+                    type: boolean
+                  connectivity:
+                    type: array
+                    items:
+                      description: 'DATA: The device is connected to the network for Data usage (regardless of the SMS reachability)
+
+
+                        SMS: The device is connected to the network only for SMS usage
+
+                        '
+                      type: string
+                      enum:
+                      - DATA
+                      - SMS
+          description: ''
+        '400':
+          content:
+            application/json:
+              examples:
+                GENERIC_400_INVALID_ARGUMENT:
+                  description: Invalid Argument. Generic Syntax Exception
+                  value:
+                    status: 400
+                    code: INVALID_ARGUMENT
+                    message: Client specified an invalid argument, request body or query param.
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - status
+                  - code
+                  - message
+                  properties:
+                    status:
+                      type: integer
+                      description: HTTP response status code
+                    code:
+                      type: string
+                      description: A human-readable code to describe the error
+                    message:
+                      type: string
+                      description: A human-readable description of what the event represents
+                - type: object
+                  properties:
+                    status:
+                      enum:
+                      - 400
+                    code:
+                      enum:
+                      - INVALID_ARGUMENT
+          description: ''
+        '401':
+          content:
+            application/json:
+              examples:
+                GENERIC_401_UNAUTHENTICATED:
+                  description: Request cannot be authenticated and a new authentication is required
+                  value:
+                    status: 401
+                    code: UNAUTHENTICATED
+                    message: Request not authenticated due to missing, invalid, or expired credentials. A new authentication is required.
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - status
+                  - code
+                  - message
+                  properties:
+                    status:
+                      type: integer
+                      description: HTTP response status code
+                    code:
+                      type: string
+                      description: A human-readable code to describe the error
+                    message:
+                      type: string
+                      description: A human-readable description of what the event represents
+                - type: object
+                  properties:
+                    status:
+                      enum:
+                      - 401
+                    code:
+                      enum:
+                      - UNAUTHENTICATED
+          description: ''
+        '403':
+          content:
+            application/json:
+              examples:
+                GENERIC_403_PERMISSION_DENIED:
+                  description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+                  value:
+                    status: 403
+                    code: PERMISSION_DENIED
+                    message: Client does not have sufficient permissions to perform this action.
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - status
+                  - code
+                  - message
+                  properties:
+                    status:
+                      type: integer
+                      description: HTTP response status code
+                    code:
+                      type: string
+                      description: A human-readable code to describe the error
+                    message:
+                      type: string
+                      description: A human-readable description of what the event represents
+                - type: object
+                  properties:
+                    status:
+                      enum:
+                      - 403
+                    code:
+                      enum:
+                      - PERMISSION_DENIED
+          description: ''
+        '404':
+          content:
+            application/json:
+              examples:
+                GENERIC_404_IDENTIFIER_NOT_FOUND:
+                  description: The phone number is not associated with a CSP customer account
+                  value:
+                    status: 404
+                    code: IDENTIFIER_NOT_FOUND
+                    message: The phone number provided is not associated with a customer account
+                GENERIC_404_NOT_FOUND:
+                  description: Resource is not found
+                  value:
+                    status: 404
+                    code: NOT_FOUND
+                    message: The specified resource is not found.
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - status
+                  - code
+                  - message
+                  properties:
+                    status:
+                      type: integer
+                      description: HTTP response status code
+                    code:
+                      type: string
+                      description: A human-readable code to describe the error
+                    message:
+                      type: string
+                      description: A human-readable description of what the event represents
+                - type: object
+                  properties:
+                    status:
+                      enum:
+                      - 404
+                    code:
+                      enum:
+                      - NOT_FOUND
+                      - IDENTIFIER_NOT_FOUND
+          description: ''
+        '422':
+          content:
+            application/json:
+              examples:
+                GENERIC_422_UNSUPPORTED_IDENTIFIER:
+                  description: None of the provided identifiers is supported by the implementation
+                  value:
+                    status: 422
+                    code: UNSUPPORTED_IDENTIFIER
+                    message: The identifier provided is not supported.
+                GENERIC_422_UNNECESSARY_IDENTIFIER:
+                  description: An explicit identifier is provided when a device or phone number has already been identified from the access token
+                  value:
+                    status: 422
+                    code: UNNECESSARY_IDENTIFIER
+                    message: The device is already identified by the access token.
+                GENERIC_422_SERVICE_NOT_APPLICABLE:
+                  description: Service not applicable for the provided identifier
+                  value:
+                    status: 422
+                    code: SERVICE_NOT_APPLICABLE
+                    message: The service is not available for the provided identifier.
+                GENERIC_422_MISSING_IDENTIFIER:
+                  description: An identifier is not included in the request and the device or phone number identification cannot be derived from the 3-legged access token
+                  value:
+                    status: 422
+                    code: MISSING_IDENTIFIER
+                    message: The device cannot be identified.
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - status
+                  - code
+                  - message
+                  properties:
+                    status:
+                      type: integer
+                      description: HTTP response status code
+                    code:
+                      type: string
+                      description: A human-readable code to describe the error
+                    message:
+                      type: string
+                      description: A human-readable description of what the event represents
+                - type: object
+                  properties:
+                    status:
+                      enum:
+                      - 422
+                    code:
+                      enum:
+                      - SERVICE_NOT_APPLICABLE
+                      - MISSING_IDENTIFIER
+                      - UNSUPPORTED_IDENTIFIER
+                      - UNNECESSARY_IDENTIFIER
+          description: ''
+        '429':
+          content:
+            application/json:
+              examples:
+                GENERIC_429_QUOTA_EXCEEDED:
+                  description: Request is rejected due to exceeding a business quota limit
+                  value:
+                    status: 429
+                    code: QUOTA_EXCEEDED
+                    message: Out of resource quota.
+                GENERIC_429_TOO_MANY_REQUESTS:
+                  description: Access to the API has been temporarily blocked due to rate or spike arrest limits being reached
+                  value:
+                    status: 429
+                    code: TOO_MANY_REQUESTS
+                    message: Rate limit reached.
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - status
+                  - code
+                  - message
+                  properties:
+                    status:
+                      type: integer
+                      description: HTTP response status code
+                    code:
+                      type: string
+                      description: A human-readable code to describe the error
+                    message:
+                      type: string
+                      description: A human-readable description of what the event represents
+                - type: object
+                  properties:
+                    status:
+                      enum:
+                      - 429
+                    code:
+                      enum:
+                      - QUOTA_EXCEEDED
+                      - TOO_MANY_REQUESTS
+          description: ''
+        '503':
+          content:
+            application/json:
+              examples:
+                GENERIC_503_UNAVAILABLE:
+                  description: Service is not available. Temporary situation usually related to maintenance process in the server side
+                  value:
+                    status: 503
+                    code: UNAVAILABLE
+                    message: Network issue
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - status
+                  - code
+                  - message
+                  properties:
+                    status:
+                      type: integer
+                      description: HTTP response status code
+                    code:
+                      type: string
+                      description: A human-readable code to describe the error
+                    message:
+                      type: string
+                      description: A human-readable description of what the event represents
+                - type: object
+                  properties:
+                    status:
+                      enum:
+                      - 503
+                    code:
+                      enum:
+                      - UNAVAILABLE
+          description: ''
+      requestBody:
+        content:
+          application/json:
+            examples:
+              REACHABLE_SMS_PHONE_NUMBER:
+                value:
+                  device:
+                    phoneNumber: '+99999991000'
+              REACHABLE_DATA_PHONE_NUMBER:
+                value:
+                  device:
+                    phoneNumber: '+99999991001'
+              REACHABLE_DATA_AND_SMS_PHONE_NUMBER:
+                value:
+                  device:
+                    phoneNumber: '+99999991002'
+              DISCONNECTED_PHONE_NUMBER:
+                value:
+                  device:
+                    phoneNumber: '+99999991003'
+            schema:
+              description: The request to retrieve the current roaming-status for the requested device.
+              type: object
+              properties:
+                device:
+                  description: 'End-user equipment able to connect to a mobile network. Examples of devices include smartphones or IoT sensors/actuators.
+
+
+                    The developer can choose to provide the below specified device identifiers:
+
+
+                    * `ipv4Address`
+
+                    * `ipv6Address`
+
+                    * `phoneNumber`
+
+                    * `networkAccessIdentifier`
+
+
+                    NOTE: the MNO might support only a subset of these options. The API invoker can provide multiple identifiers to be compatible across different MNOs. In this case the identifiers MUST belong to the same device.
+
+                    '
+                  type: object
+                  properties:
+                    phoneNumber:
+                      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+                      type: string
+                      pattern: ^\+[1-9][0-9]{4,14}$
+                    networkAccessIdentifier:
+                      description: A public identifier addressing a subscription in a mobile network. In 3GPP terminology, it corresponds to the GPSI formatted with the External Identifier ({Local Identifier}@{Domain Identifier}). Unlike the telephone number, the network access identifier is not subjected to portability ruling in force, and is individually managed by each operator.
+                      type: string
+                    ipv4Address:
+                      type: object
+                      description: 'The device should be identified by either the public (observed) IP address and port as seen by the application server, or the private (local) and any public (observed) IP addresses in use by the device (this information can be obtained by various means, for example from some DNS servers).
+
+
+                        If the allocated and observed IP addresses are the same (i.e. NAT is not in use) then  the same address should be specified for both publicAddress and privateAddress.
+
+
+                        If NAT64 is in use, the device should be identified by its publicAddress and publicPort, or separately by its allocated IPv6 address (field ipv6Address of the Device object)
+
+
+                        In all cases, publicAddress must be specified, along with at least one of either privateAddress or publicPort, dependent upon which is known. In general, mobile devices cannot be identified by their public IPv4 address alone.
+
+                        '
+                      properties:
+                        publicAddress:
+                          description: A single IPv4 address with no subnet mask
+                          type: string
+                          format: ipv4
+                        privateAddress:
+                          description: A single IPv4 address with no subnet mask
+                          type: string
+                          format: ipv4
+                        publicPort:
+                          description: TCP or UDP port number
+                          type: integer
+                          minimum: 0
+                          maximum: 65535
+                      anyOf:
+                      - required:
+                        - publicAddress
+                        - privateAddress
+                      - required:
+                        - publicAddress
+                        - publicPort
+                    ipv6Address:
+                      description: 'The device should be identified by the observed IPv6 address, or by any single IPv6 address from within the subnet allocated to the device (e.g. adding ::0 to the /64 prefix).
+
+                        '
+                      type: string
+                      format: ipv6
+                  minProperties: 1
+        description: ''
+components:
+  parameters:
+    x-rapidapi-host:
+      name: x-rapidapi-host
+      in: header
+      required: true
+      description: The API's Host value as defined in the RapidAPI Hub.
+      schema:
+        type: string
+        example: network-as-code.p-eu.rapidapi.com
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-rapidapi-key
+      description: Your RapidAPI key
+x-rapidapi-info:
+  apiVersionId: apiversion_969ae0b0-88c0-4670-9353-9c09d02c076f
+  apiId: api_47e41e89-ab4a-40fa-87de-c528077c9945
+x-documentation:
+  tutorials: []
+  spotlights: []
+x-gateways: []

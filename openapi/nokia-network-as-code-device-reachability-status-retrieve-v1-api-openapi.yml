@@ -1,0 +1,502 @@
+openapi: 3.2.0
+info:
+  title: Network as Code Device Reachability Status Retrieve v1 API
+  description: Nokia's Network as Code API for programmable networks.
+  termsOfService: https://developer.networkascode.nokia.io/legal/terms-of-service
+  contact:
+    email: support.networkascode@nokia.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+  x-camara-commonalities: 0.4.0
+servers:
+- url: '{apiRoot}/geofencing-subscriptions/v0.3'
+  variables:
+    apiRoot:
+      default: http://localhost:9091
+      description: API root
+- url: '{apiRoot}/geofencing-subscriptions/v0.4'
+  variables:
+    apiRoot:
+      default: http://localhost:9091
+      description: API root
+security:
+- oAuth2ClientCredentials: []
+tags:
+- name: Device Reachability Status Retrieve v1
+paths:
+  /device-status/device-reachability-status/v1/retrieve:
+    post:
+      tags:
+      - Device Reachability Status Retrieve v1
+      summary: Get the current reachability status information
+      description: Get the current reachability status information
+      operationId: getReachabilityStatus
+      parameters:
+      - $ref: '#/components/parameters/x-correlator-DS-RE-V1'
+      security:
+      - openId:
+        - device-reachability-status:read
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestReachabilityStatus-DS-RE-V1'
+            examples:
+              REACHABLE_SMS_PHONE_NUMBER:
+                value:
+                  device:
+                    phoneNumber: '+99999991000'
+              REACHABLE_DATA_PHONE_NUMBER:
+                value:
+                  device:
+                    phoneNumber: '+99999991001'
+              REACHABLE_DATA_AND_SMS_PHONE_NUMBER:
+                value:
+                  device:
+                    phoneNumber: '+99999991002'
+              DISCONNECTED_PHONE_NUMBER:
+                value:
+                  device:
+                    phoneNumber: '+99999991003'
+        required: true
+      responses:
+        '200':
+          description: Contains information about current reachability status
+          headers:
+            x-correlator:
+              $ref: '#/components/headers/x-correlator-DS-RE-V1'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReachabilityStatusResponse-DS-RE-V1'
+              examples:
+                Connected-With-SMS:
+                  value:
+                    lastStatusTime: '2024-02-20T10:41:38.657Z'
+                    reachable: true
+                    connectivity:
+                    - SMS
+                Connected-With-DATA:
+                  value:
+                    lastStatusTime: '2024-02-20T10:41:38.657Z'
+                    reachable: true
+                    connectivity:
+                    - DATA
+                Connected-With-DATA-And-SMS:
+                  value:
+                    lastStatusTime: '2024-02-20T10:41:38.657Z'
+                    reachable: true
+                    connectivity:
+                    - DATA
+                    - SMS
+                Not-Reachable:
+                  value:
+                    lastStatusTime: '2024-02-20T10:41:38.657Z'
+                    reachable: false
+        '400':
+          $ref: '#/components/responses/Generic400-DS-RE-V1'
+        '401':
+          $ref: '#/components/responses/Generic401-DS-RE-V1'
+        '403':
+          $ref: '#/components/responses/Generic403-DS-RE-V1'
+        '404':
+          $ref: '#/components/responses/Generic404-DS-RE-V1'
+        '422':
+          $ref: '#/components/responses/Generic422-DS-RE-V1'
+        '429':
+          $ref: '#/components/responses/Generic429-DS-RE-V1'
+        '503':
+          $ref: '#/components/responses/Generic503-DS-RE-V1'
+components:
+  responses:
+    Generic503-DS-RE-V1:
+      description: Service Unavailable
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-DS-RE-V1'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-DS-RE-V1'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 503
+                code:
+                  enum:
+                  - UNAVAILABLE
+          examples:
+            GENERIC_503_UNAVAILABLE:
+              description: Service is not available. Temporary situation usually related to maintenance process in the server side
+              value:
+                status: 503
+                code: UNAVAILABLE
+                message: Network issue
+    Generic404-DS-RE-V1:
+      description: Not found
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-DS-RE-V1'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-DS-RE-V1'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 404
+                code:
+                  enum:
+                  - NOT_FOUND
+                  - IDENTIFIER_NOT_FOUND
+          examples:
+            GENERIC_404_NOT_FOUND:
+              description: Resource is not found
+              value:
+                status: 404
+                code: NOT_FOUND
+                message: The specified resource is not found.
+            GENERIC_404_IDENTIFIER_NOT_FOUND:
+              description: The phone number is not associated with a CSP customer account
+              value:
+                status: 404
+                code: IDENTIFIER_NOT_FOUND
+                message: The phone number provided is not associated with a customer account
+    Generic401-DS-RE-V1:
+      description: Unauthorized
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-DS-RE-V1'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-DS-RE-V1'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 401
+                code:
+                  enum:
+                  - UNAUTHENTICATED
+                  - AUTHENTICATION_REQUIRED
+          examples:
+            GENERIC_401_UNAUTHENTICATED:
+              description: Request cannot be authenticated
+              value:
+                status: 401
+                code: UNAUTHENTICATED
+                message: Request not authenticated due to missing, invalid, or expired credentials.
+            GENERIC_401_AUTHENTICATION_REQUIRED:
+              description: New authentication is needed, authentication is no longer valid
+              value:
+                status: 401
+                code: AUTHENTICATION_REQUIRED
+                message: New authentication is required.
+    Generic429-DS-RE-V1:
+      description: Too Many Requests
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-DS-RE-V1'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-DS-RE-V1'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 429
+                code:
+                  enum:
+                  - QUOTA_EXCEEDED
+                  - TOO_MANY_REQUESTS
+          examples:
+            GENERIC_429_QUOTA_EXCEEDED:
+              description: Request is rejected due to exceeding a business quota limit
+              value:
+                status: 429
+                code: QUOTA_EXCEEDED
+                message: Out of resource quota.
+            GENERIC_429_TOO_MANY_REQUESTS:
+              description: Access to the API has been temporarily blocked due to rate or spike arrest limits being reached
+              value:
+                status: 429
+                code: TOO_MANY_REQUESTS
+                message: Rate limit reached.
+    Generic403-DS-RE-V1:
+      description: Forbidden
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-DS-RE-V1'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-DS-RE-V1'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 403
+                code:
+                  enum:
+                  - PERMISSION_DENIED
+          examples:
+            GENERIC_403_PERMISSION_DENIED:
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action.
+    Generic422-DS-RE-V1:
+      description: Unprocessable Content
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-DS-RE-V1'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-DS-RE-V1'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 422
+                code:
+                  enum:
+                  - IDENTIFIER_MISMATCH
+                  - SERVICE_NOT_APPLICABLE
+                  - MISSING_IDENTIFIER
+                  - UNSUPPORTED_IDENTIFIER
+                  - UNNECESSARY_IDENTIFIER
+          examples:
+            GENERIC_422_IDENTIFIER_MISMATCH:
+              description: Inconsistency between identifiers not pointing to the same device
+              value:
+                status: 422
+                code: IDENTIFIER_MISMATCH
+                message: Provided identifiers are not consistent.
+            GENERIC_422_SERVICE_NOT_APPLICABLE:
+              description: Service not applicable for the provided identifier
+              value:
+                status: 422
+                code: SERVICE_NOT_APPLICABLE
+                message: The service is not available for the provided identifier.
+            GENERIC_422_MISSING_IDENTIFIER:
+              description: An identifier is not included in the request and the device or phone number identification cannot be derived from the 3-legged access token
+              value:
+                status: 422
+                code: MISSING_IDENTIFIER
+                message: The device cannot be identified.
+            GENERIC_422_UNSUPPORTED_IDENTIFIER:
+              description: None of the provided identifiers is supported by the implementation
+              value:
+                status: 422
+                code: UNSUPPORTED_IDENTIFIER
+                message: The identifier provided is not supported.
+            GENERIC_422_UNNECESSARY_IDENTIFIER:
+              description: An explicit identifier is provided when a device or phone number has already been identified from the access token
+              value:
+                status: 422
+                code: UNNECESSARY_IDENTIFIER
+                message: The device is already identified by the access token.
+    Generic400-DS-RE-V1:
+      description: Bad Request
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-DS-RE-V1'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-DS-RE-V1'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 400
+                code:
+                  enum:
+                  - INVALID_ARGUMENT
+          examples:
+            GENERIC_400_INVALID_ARGUMENT:
+              description: Invalid Argument. Generic Syntax Exception
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Client specified an invalid argument, request body or query param.
+  schemas:
+    ConnectivityType-DS-RE-V1:
+      description: 'DATA: The device is connected to the network for Data usage (regardless of the SMS reachability)
+
+
+        SMS: The device is connected to the network only for SMS usage
+
+        '
+      type: string
+      enum:
+      - DATA
+      - SMS
+    RequestReachabilityStatus-DS-RE-V1:
+      description: The request to retrieve the current roaming-status for the requested device.
+      type: object
+      properties:
+        device:
+          $ref: '#/components/schemas/Device-DS-RE-V1'
+    DeviceIpv4Addr-DS-RE-V1:
+      type: object
+      description: 'The device should be identified by either the public (observed) IP address and port as seen by the application server, or the private (local) and any public (observed) IP addresses in use by the device (this information can be obtained by various means, for example from some DNS servers).
+
+
+        If the allocated and observed IP addresses are the same (i.e. NAT is not in use) then  the same address should be specified for both publicAddress and privateAddress.
+
+
+        If NAT64 is in use, the device should be identified by its publicAddress and publicPort, or separately by its allocated IPv6 address (field ipv6Address of the Device object)
+
+
+        In all cases, publicAddress must be specified, along with at least one of either privateAddress or publicPort, dependent upon which is known. In general, mobile devices cannot be identified by their public IPv4 address alone.
+
+        '
+      properties:
+        publicAddress:
+          $ref: '#/components/schemas/SingleIpv4Addr-DS-RE-V1'
+        privateAddress:
+          $ref: '#/components/schemas/SingleIpv4Addr-DS-RE-V1'
+        publicPort:
+          $ref: '#/components/schemas/Port-DS-RE-V1'
+      anyOf:
+      - required:
+        - publicAddress
+        - privateAddress
+      - required:
+        - publicAddress
+        - publicPort
+      example:
+        publicAddress: 84.125.93.10
+        publicPort: 59765
+    Port-DS-RE-V1:
+      description: TCP or UDP port number
+      type: integer
+      minimum: 0
+      maximum: 65535
+    PhoneNumber-DS-RE-V1:
+      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+      type: string
+      pattern: ^\+[1-9][0-9]{4,14}$
+      example: '+99999991000'
+    Device-DS-RE-V1:
+      description: 'End-user equipment able to connect to a mobile network. Examples of devices include smartphones or IoT sensors/actuators.
+
+
+        The developer can choose to provide the below specified device identifiers:
+
+
+        * `ipv4Address`
+
+        * `ipv6Address`
+
+        * `phoneNumber`
+
+        * `networkAccessIdentifier`
+
+
+        NOTE: the MNO might support only a subset of these options. The API invoker can provide multiple identifiers to be compatible across different MNOs. In this case the identifiers MUST belong to the same device.
+
+        '
+      type: object
+      properties:
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber-DS-RE-V1'
+        networkAccessIdentifier:
+          $ref: '#/components/schemas/NetworkAccessIdentifier-DS-RE-V1'
+        ipv4Address:
+          $ref: '#/components/schemas/DeviceIpv4Addr-DS-RE-V1'
+        ipv6Address:
+          $ref: '#/components/schemas/DeviceIpv6Address-DS-RE-V1'
+      minProperties: 1
+    LastStatusTime-DS-RE-V1:
+      description: Last time that the associated device reachability status was updated
+      type: string
+      format: date-time
+      example: '2024-02-20T10:41:38.657Z'
+    NetworkAccessIdentifier-DS-RE-V1:
+      description: A public identifier addressing a subscription in a mobile network. In 3GPP terminology, it corresponds to the GPSI formatted with the External Identifier ({Local Identifier}@{Domain Identifier}). Unlike the telephone number, the network access identifier is not subjected to portability ruling in force, and is individually managed by each operator.
+      type: string
+      example: 123456789@domain.com
+    ReachabilityStatusResponse-DS-RE-V1:
+      type: object
+      required:
+      - reachable
+      properties:
+        lastStatusTime:
+          $ref: '#/components/schemas/LastStatusTime-DS-RE-V1'
+        reachable:
+          description: Indicates overall device reachability
+          type: boolean
+        connectivity:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConnectivityType-DS-RE-V1'
+    ErrorInfo-DS-RE-V1:
+      description: The error object used for error-cases.
+      type: object
+      required:
+      - status
+      - code
+      - message
+      properties:
+        status:
+          type: integer
+          description: HTTP response status code
+        code:
+          type: string
+          description: Code given to this error
+        message:
+          type: string
+          description: Detailed error description
+    DeviceIpv6Address-DS-RE-V1:
+      description: 'The device should be identified by the observed IPv6 address, or by any single IPv6 address from within the subnet allocated to the device (e.g. adding ::0 to the /64 prefix).
+
+        '
+      type: string
+      format: ipv6
+      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
+    SingleIpv4Addr-DS-RE-V1:
+      description: A single IPv4 address with no subnet mask
+      type: string
+      format: ipv4
+      example: 84.125.93.10
+  parameters:
+    x-correlator-DS-RE-V1:
+      name: x-correlator
+      in: header
+      description: Correlation id for the different services
+      schema:
+        type: string
+        pattern: ^[a-zA-Z0-9-]{0,55}$
+        example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
+  headers:
+    x-correlator-DS-RE-V1:
+      description: Correlation id for the different services
+      schema:
+        type: string
+        pattern: ^[a-zA-Z0-9-]{0,55}$
+        example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
+  securitySchemes:
+    openId:
+      description: OpenID Connect authentication
+      type: openIdConnect
+      openIdConnectUrl: https://example.com/.well-known/openid-configuration
+externalDocs:
+  description: Project documentation at Camara
+  url: https://github.com/camaraproject/DeviceLocation

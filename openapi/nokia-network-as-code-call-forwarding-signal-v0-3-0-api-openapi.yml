@@ -1,0 +1,460 @@
+openapi: 3.2.0
+info:
+  title: Nokia Network As Code Call Forwarding Signal v0.3.0 API
+  version: 1.0.0
+  termsOfService: https://developer.networkascode.nokia.io/legal/terms-of-service
+  x-refined-note:
+  - x-badges differs across the merged source definitions and was not carried
+  - x-camara-commonalities differs across the merged source definitions and was not carried
+  - x-category differs across the merged source definitions and was not carried
+  - x-collections differs across the merged source definitions and was not carried
+  - x-long-description differs across the merged source definitions and was not carried
+  - x-public differs across the merged source definitions and was not carried
+  - x-thumbnail differs across the merged source definitions and was not carried
+  - x-version-lifecycle differs across the merged source definitions and was not carried
+  - x-website differs across the merged source definitions and was not carried
+  description: 'Operations tagged Call Forwarding Signal v0.3.0 across 2 of this provider''s published API definitions: nokia-network-as-code-camara-openapi.yml, nokia-network-as-code-platform-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: '{apiRoot}/geofencing-subscriptions/v0.3'
+  variables:
+    apiRoot:
+      default: http://localhost:9091
+      description: API root
+- url: '{apiRoot}/geofencing-subscriptions/v0.4'
+  variables:
+    apiRoot:
+      default: http://localhost:9091
+      description: API root
+- url: https://network-as-code.p-eu.rapidapi.com
+tags:
+- name: Call Forwarding Signal v0.3.0
+paths:
+  /passthrough/camara/v1/call-forwarding-signal/call-forwarding-signal/v0.3/unconditional-call-forwardings:
+    post:
+      security:
+      - openId:
+        - call-forwarding-signal:unconditional-call-forwardings:read
+      summary: Retrieve the information about the status of the unconditional call forwarding service on a phone number (PhoneNumber)
+      description: This endpoint provides information about the status of the unconditional call forwarding, beeing active or not.
+      operationId: retrieveUnconditionalCallForwarding
+      parameters:
+      - $ref: '#/components/parameters/x-correlator-Cfs-V0'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCallForwardingSignal-Cfs-V0'
+            examples:
+              UNCONDITIONAL_SETTING_ACTIVE:
+                summary: Phone number - active
+                description: Verify if a subscription identified by a phone number has the unconditional call forwarding setting enabled
+                value:
+                  phoneNumber: '+99999991000'
+              UNCONDITIONAL_SETTING_INACTIVE:
+                summary: Phone number - inactive
+                description: Verify if a subscription identified by a phone number has not got the unconditional call forwarding setting enabled
+                value:
+                  phoneNumber: '+99999991001'
+        required: true
+      responses:
+        '200':
+          description: OK.
+          headers:
+            x-correlator:
+              $ref: '#/components/headers/x-correlator-Cfs-V0'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnconditionalCallForwardingSignal-Cfs-V0'
+        '400':
+          $ref: '#/components/responses/Generic400-Cfs-V0'
+        '401':
+          $ref: '#/components/responses/Generic401-Cfs-V0'
+        '403':
+          $ref: '#/components/responses/Generic403-Cfs-V0'
+        '404':
+          $ref: '#/components/responses/Generic404-Cfs-V0'
+        '422':
+          $ref: '#/components/responses/Generic422-Cfs-V0'
+        '429':
+          $ref: '#/components/responses/Generic429-Cfs-V0'
+      tags:
+      - Call Forwarding Signal v0.3.0
+    servers:
+    - url: '{apiRoot}/geofencing-subscriptions/v0.3'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+    - url: '{apiRoot}/geofencing-subscriptions/v0.4'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+  /passthrough/camara/v1/call-forwarding-signal/call-forwarding-signal/v0.3/call-forwardings:
+    post:
+      security:
+      - openId:
+        - call-forwarding-signal:call-forwardings:read
+      summary: Retrieve the information about the type of call forwarding service active on a phone number (PhoneNumber)
+      description: This endpoint provides information about wich type of call forwarding service is active. More than one service can be active, e.g. conditional and unconditional. This endpoit exceeds the main scope of the CFS API, for this reason an error code 501 can be returned.
+      operationId: retrieveCallForwarding
+      parameters:
+      - $ref: '#/components/parameters/x-correlator-Cfs-V0'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCallForwardingSignal-Cfs-V0'
+            examples:
+              CALLFORWARDING_SETTINGs_ACTIVE:
+                summary: Phone number - forwarding enabled
+                description: Verify if a subscription identified by a phone number has call forwardings settings enabled
+                value:
+                  phoneNumber: '+99999991111'
+              CALLFORWARDING_SETTINGs_INACTIVE:
+                summary: Phone number - forwarding disabled
+                description: Verify if a subscription identified by a phone number has call forwarding settings disenabled
+                value:
+                  phoneNumber: '+99999991001'
+        required: true
+      responses:
+        '200':
+          description: OK.
+          headers:
+            x-correlator:
+              $ref: '#/components/headers/x-correlator-Cfs-V0'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CallForwardingSignal-Cfs-V0'
+        '400':
+          $ref: '#/components/responses/Generic400-Cfs-V0'
+        '401':
+          $ref: '#/components/responses/Generic401-Cfs-V0'
+        '403':
+          $ref: '#/components/responses/Generic403-Cfs-V0'
+        '404':
+          $ref: '#/components/responses/Generic404-Cfs-V0'
+        '422':
+          $ref: '#/components/responses/Generic422-Cfs-V0'
+        '429':
+          $ref: '#/components/responses/Generic429-Cfs-V0'
+        '501':
+          $ref: '#/components/responses/Generic501-Cfs-V0'
+      tags:
+      - Call Forwarding Signal v0.3.0
+    servers:
+    - url: '{apiRoot}/geofencing-subscriptions/v0.3'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+    - url: '{apiRoot}/geofencing-subscriptions/v0.4'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+components:
+  headers:
+    x-correlator-Cfs-V0:
+      description: Correlation id for the different services
+      schema:
+        type: string
+        pattern: ^[a-zA-Z0-9-]{0,55}$
+  schemas:
+    CallForwardingSignal-Cfs-V0:
+      description: resource containing the list of the Call Forwarding Services active for the given phone number (PhoneNumber). The possible states are, 'inactive' (no call forwarding service activated), 'unconditional' (call forwarded independently from the device status), 'conditional_busy' (call forwarded if the device is on an active call), 'conditional_not_reachable' (call forwarded if the device is not reachable), 'conditional_no_answer' (call forwarded if the device doesn't answer the incoming call).
+      type: array
+      items:
+        type: string
+        enum:
+        - inactive
+        - unconditional
+        - conditional_busy
+        - conditional_not_reachable
+        - conditional_no_answer
+      example:
+      - unconditional
+      - conditional_busy
+      - conditional_no_answer
+      minItems: 1
+    CreateCallForwardingSignal-Cfs-V0:
+      description: resource containing the phone number (PhoneNumber) regarding which the Call Forwarding Service must be checked. To be valorised only in case of two-legged authentication. If valorised with three-legged authentication a 422-UNNECESSARY_IDENTIFIER error code is returned.
+      type: object
+      properties:
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber-Cfs-V0'
+    PhoneNumber-Cfs-V0:
+      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+      type: string
+      pattern: ^\+[1-9][0-9]{4,14}$
+      example: '+99999991000'
+    UnconditionalCallForwardingSignal-Cfs-V0:
+      description: resource containing the information about the Unconditional Call Forwarding Service for the given phone number (PhoneNumber)
+      type: object
+      properties:
+        active:
+          type: boolean
+          description: Indicates if the unconditional call forwarding service is active.
+    ErrorInfo-Cfs-V0:
+      description: error info template
+      type: object
+      required:
+      - message
+      - status
+      - code
+      properties:
+        message:
+          type: string
+          description: A human readable description of what the event represent
+        status:
+          type: integer
+          description: HTTP response status code
+        code:
+          type: string
+          description: Friendly Code to describe the error
+  responses:
+    Generic422-Cfs-V0:
+      description: Unprocessable Content
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-Cfs-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-Cfs-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 422
+                code:
+                  enum:
+                  - SERVICE_NOT_APPLICABLE
+                  - MISSING_IDENTIFIER
+                  - UNNECESSARY_IDENTIFIER
+          examples:
+            GENERIC_422_SERVICE_NOT_APPLICABLE:
+              description: Service not applicable for the provided identifier
+              value:
+                status: 422
+                code: SERVICE_NOT_APPLICABLE
+                message: The service is not available for the provided identifier.
+            GENERIC_422_MISSING_IDENTIFIER:
+              description: An identifier is not included in the request and the device or phone number identification cannot be derived from the 3-legged access token
+              value:
+                status: 422
+                code: MISSING_IDENTIFIER
+                message: The phone number cannot be identified.
+            GENERIC_422_UNNECESSARY_IDENTIFIER:
+              description: An explicit identifier is provided when a device or phone number has already been identified from the access token
+              value:
+                status: 422
+                code: UNNECESSARY_IDENTIFIER
+                message: The phone number is already identified by the access token.
+    Generic403-Cfs-V0:
+      description: Forbidden
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-Cfs-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-Cfs-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 403
+                code:
+                  enum:
+                  - PERMISSION_DENIED
+          examples:
+            GENERIC_403_PERMISSION_DENIED:
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action.
+    Generic501-Cfs-V0:
+      description: Not Implemented
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-Cfs-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-Cfs-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 501
+                code:
+                  enum:
+                  - NOT_IMPLEMENTED
+          examples:
+            GENERIC_501_NOT_IMPLEMENTED:
+              description: Service not implemented. The use of this code should be avoided as far as possible to get the objective to reach aligned implementations
+              value:
+                status: 501
+                code: NOT_IMPLEMENTED
+                message: This functionality is not implemented yet.
+    Generic401-Cfs-V0:
+      description: Unauthorized
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-Cfs-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-Cfs-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 401
+                code:
+                  enum:
+                  - UNAUTHENTICATED
+                  - AUTHENTICATION_REQUIRED
+          examples:
+            GENERIC_401_UNAUTHENTICATED:
+              description: Request cannot be authenticated
+              value:
+                status: 401
+                code: UNAUTHENTICATED
+                message: Request not authenticated due to missing, invalid, or expired credentials.
+            GENERIC_401_AUTHENTICATION_REQUIRED:
+              description: New authentication is needed, authentication is no longer valid
+              value:
+                status: 401
+                code: AUTHENTICATION_REQUIRED
+                message: New authentication is required.
+    Generic404-Cfs-V0:
+      description: Not found
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-Cfs-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-Cfs-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 404
+                code:
+                  enum:
+                  - NOT_FOUND
+                  - IDENTIFIER_NOT_FOUND
+          examples:
+            GENERIC_404_NOT_FOUND:
+              description: Resource is not found
+              value:
+                status: 404
+                code: NOT_FOUND
+                message: The specified resource is not found.
+            GENERIC_404_IDENTIFIER_NOT_FOUND:
+              description: Call forwarding check can't be done because the phone number is unknown.
+              value:
+                status: 404
+                code: IDENTIFIER_NOT_FOUND
+                message: Device identifier not found.
+    Generic429-Cfs-V0:
+      description: Too Many Requests
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-Cfs-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-Cfs-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 429
+                code:
+                  enum:
+                  - QUOTA_EXCEEDED
+                  - TOO_MANY_REQUESTS
+          examples:
+            GENERIC_429_QUOTA_EXCEEDED:
+              description: Request is rejected due to exceeding a business quota limit
+              value:
+                status: 429
+                code: QUOTA_EXCEEDED
+                message: Out of resource quota.
+            GENERIC_429_TOO_MANY_REQUESTS:
+              description: Access to the API has been temporarily blocked due to rate or spike arrest limits being reached
+              value:
+                status: 429
+                code: TOO_MANY_REQUESTS
+                message: Rate limit reached.
+    Generic400-Cfs-V0:
+      description: Bad Request
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-Cfs-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-Cfs-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 400
+                code:
+                  enum:
+                  - INVALID_ARGUMENT
+          examples:
+            GENERIC_400_INVALID_ARGUMENT:
+              description: Invalid Argument. Generic Syntax Exception
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Client specified an invalid argument, request body or query param.
+  parameters:
+    x-correlator-Cfs-V0:
+      name: x-correlator
+      in: header
+      description: Correlation id for the different services
+      schema:
+        type: string
+        pattern: ^[a-zA-Z0-9-]{0,55}$
+        example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
+    x-rapidapi-host:
+      name: x-rapidapi-host
+      in: header
+      required: true
+      description: The API's Host value as defined in the RapidAPI Hub.
+      schema:
+        type: string
+        example: network-as-code.p-eu.rapidapi.com
+  securitySchemes:
+    openId:
+      description: OpenID Connect authentication
+      type: openIdConnect
+      openIdConnectUrl: https://example.com/.well-known/openid-configuration
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-rapidapi-key
+      description: Your RapidAPI key
+externalDocs:
+  description: Project documentation at Camara
+  url: https://github.com/camaraproject/DeviceLocation
+x-refined-from:
+- nokia-network-as-code-camara-openapi.yml
+- nokia-network-as-code-platform-openapi.json

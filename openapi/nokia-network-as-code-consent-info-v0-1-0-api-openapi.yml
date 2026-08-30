@@ -1,0 +1,584 @@
+openapi: 3.2.0
+info:
+  title: Nokia Network As Code Consent Info v0.1.0 API
+  version: 1.0.0
+  termsOfService: https://developer.networkascode.nokia.io/legal/terms-of-service
+  x-refined-note:
+  - x-badges differs across the merged source definitions and was not carried
+  - x-camara-commonalities differs across the merged source definitions and was not carried
+  - x-category differs across the merged source definitions and was not carried
+  - x-collections differs across the merged source definitions and was not carried
+  - x-long-description differs across the merged source definitions and was not carried
+  - x-public differs across the merged source definitions and was not carried
+  - x-thumbnail differs across the merged source definitions and was not carried
+  - x-version-lifecycle differs across the merged source definitions and was not carried
+  - x-website differs across the merged source definitions and was not carried
+  description: 'Operations tagged Consent Info v0.1.0 across 2 of this provider''s published API definitions: nokia-network-as-code-camara-openapi.yml, nokia-network-as-code-platform-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: '{apiRoot}/geofencing-subscriptions/v0.3'
+  variables:
+    apiRoot:
+      default: http://localhost:9091
+      description: API root
+- url: '{apiRoot}/geofencing-subscriptions/v0.4'
+  variables:
+    apiRoot:
+      default: http://localhost:9091
+      description: API root
+- url: https://network-as-code.p-eu.rapidapi.com
+tags:
+- name: Consent Info v0.1.0
+paths:
+  /passthrough/camara/v1/consent-info/consent-info/v0.1/retrieve:
+    post:
+      summary: Create a request to retrieve the validity status of the data processing
+      description: 'Create a request to retrieve the validity status of the API Consumer data processing for a given User, scope(s) and Purpose.
+
+        '
+      operationId: retrieveStatus
+      security:
+      - openId:
+        - consent-info:retrieve
+      tags:
+      - Consent Info v0.1.0
+      parameters:
+      - $ref: '#/components/parameters/x-correlator-ConsentInfo-V0'
+      requestBody:
+        required: true
+        description: Retrieve status request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RetrieveStatusRequestBody-ConsentInfo-V0'
+            examples:
+              SCOPE_VALID_FOR_PROCESSING:
+                value:
+                  phoneNumber: '+99999991000'
+                  scopes:
+                  - location-verification:verify
+                  purpose: dpv:FraudPreventionAndDetection
+                  requestCaptureUrl: false
+              SCOPE_NOT_VALID_STATUS_PENDING:
+                value:
+                  phoneNumber: '+99999991001'
+                  scopes:
+                  - quality-on-demand:sessions:create
+                  purpose: dpv:RequestedServiceProvision
+                  requestCaptureUrl: false
+              SCOPE_NOT_VALID_STATUS_REQUESTED:
+                value:
+                  phoneNumber: '+99999991002'
+                  scopes:
+                  - device-roaming-status:read
+                  purpose: dpv:FraudPreventionAndDetection
+                  requestCaptureUrl: false
+              SCOPE_NOT_VALID_STATUS_REVOKED:
+                value:
+                  phoneNumber: '+99999991003'
+                  scopes:
+                  - sim-swap:check
+                  purpose: dpv:FraudPreventionAndDetection
+                  requestCaptureUrl: false
+              SCOPE_NOT_VALID_STATUS_EXPIRED:
+                value:
+                  phoneNumber: '+99999991004'
+                  scopes:
+                  - number-verification:verify
+                  purpose: dpv:FraudPreventionAndDetection
+                  requestCaptureUrl: false
+              SCOPE_NOT_VALID_STATUS_OBJECTED:
+                value:
+                  phoneNumber: '+99999991005'
+                  scopes:
+                  - location-verification:verify
+                  purpose: dpv:FraudPreventionAndDetection
+                  requestCaptureUrl: false
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-correlator:
+              $ref: '#/components/headers/x-correlator-ConsentInfo-V0'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RetrieveStatusResponseBody-ConsentInfo-V0'
+              examples:
+                READY_FOR_PROCESSING:
+                  summary: Ready for processing
+                  description: 'Data processing is allowed for the requested scope(s) and Purpose.
+
+                    '
+                  value:
+                    statusInfo:
+                    - scopes:
+                      - number-verification:verify
+                      purpose: dpv:FraudPreventionAndDetection
+                      statusValidForProcessing: true
+                CONSENT_REQUIRED:
+                  summary: Consent is required
+                  description: 'Consent is required for the requested scope(s) and Purpose
+
+                    '
+                  value:
+                    statusInfo:
+                    - scopes:
+                      - location-verification:verify
+                      purpose: dpv:FraudPreventionAndDetection
+                      statusValidForProcessing: false
+                      statusReason: REQUESTED
+                CONSENT_REQUIRED_CAPTURE_URL:
+                  summary: Consent is required and capture URL is provided
+                  description: 'Consent is required for the requested scope(s) and Purpose but it is expired. The API Provider provides a Consent capture URL.
+
+                    '
+                  value:
+                    statusInfo:
+                    - scopes:
+                      - location-verification:verify
+                      purpose: dpv:FraudPreventionAndDetection
+                      statusValidForProcessing: false
+                      statusReason: EXPIRED
+                      expirationDate: '2023-07-03T14:27:08.312+02:00'
+                    captureUrl: https://example.org/consent-capture-url
+                CONSENT_REVOKED:
+                  summary: Consent is revoked
+                  description: 'Consent is revoked for the requested scope(s) and Purpose.
+
+                    '
+                  value:
+                    statusInfo:
+                    - scopes:
+                      - location-verification:verify
+                      purpose: dpv:FraudPreventionAndDetection
+                      statusValidForProcessing: false
+                      statusReason: REVOKED
+                DATA_PROCESSING_OPT_OUT:
+                  summary: Data processing opt-out
+                  description: 'The User has opted out of the data processing for the requested scope(s) and Purpose.
+
+                    '
+                  value:
+                    statusInfo:
+                    - scopes:
+                      - number-verification:verify
+                      purpose: dpv:FraudPreventionAndDetection
+                      statusValidForProcessing: false
+                      statusReason: OBJECTED
+                MULTIPLE_SCOPES_ONE_API:
+                  summary: Multiple scopes for one API
+                  description: 'Request with multiple scopes corresponding to one API.
+
+                    '
+                  value:
+                    statusInfo:
+                    - scopes:
+                      - quality-on-demand:sessions:create
+                      - quality-on-demand:sessions:read
+                      - quality-on-demand:sessions:update
+                      - quality-on-demand:sessions:delete
+                      - quality-on-demand:sessions:retrieve-by-device
+                      purpose: dpv:RequestedServiceProvision
+                      statusValidForProcessing: true
+                MULTIPLE_SCOPES_MULTIPLE_APIS:
+                  summary: Multiple scopes for multiple APIs
+                  description: 'Request with multiple scopes corresponding to multiple APIs.
+
+                    '
+                  value:
+                    statusInfo:
+                    - scopes:
+                      - location-verification:verify
+                      purpose: dpv:FraudPreventionAndDetection
+                      statusValidForProcessing: false
+                      statusReason: PENDING
+                    - scopes:
+                      - device-roaming-status:read
+                      purpose: dpv:FraudPreventionAndDetection
+                      statusValidForProcessing: false
+                      statusReason: PENDING
+                    captureUrl: https://example.org/consent-capture-url
+                MULTIPLES_SCOPES_ONE_API_DIFFERENT_STATUS:
+                  summary: Multiple scopes for one API with different status
+                  description: 'Request with multiple scopes corresponding to one API. Different status for each scope.
+
+                    '
+                  value:
+                    statusInfo:
+                    - scopes:
+                      - sim-swap:check
+                      purpose: dpv:FraudPreventionAndDetection
+                      statusValidForProcessing: true
+                    - scopes:
+                      - sim-swap:retrieve-date
+                      purpose: dpv:FraudPreventionAndDetection
+                      statusValidForProcessing: false
+                      statusReason: OBJECTED
+        '400':
+          $ref: '#/components/responses/Generic400-ConsentInfo-V0'
+        '401':
+          $ref: '#/components/responses/Generic401-ConsentInfo-V0'
+        '403':
+          $ref: '#/components/responses/retrieveStatus403-ConsentInfo-V0'
+        '404':
+          $ref: '#/components/responses/Generic404-ConsentInfo-V0'
+        '422':
+          $ref: '#/components/responses/Generic422-ConsentInfo-V0'
+    servers:
+    - url: '{apiRoot}/geofencing-subscriptions/v0.3'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+    - url: '{apiRoot}/geofencing-subscriptions/v0.4'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+components:
+  headers:
+    x-correlator-ConsentInfo-V0:
+      description: Correlation id for the different services
+      schema:
+        $ref: '#/components/schemas/XCorrelator-ConsentInfo-V0'
+  responses:
+    Generic401-ConsentInfo-V0:
+      description: Unauthorized
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-ConsentInfo-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-ConsentInfo-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 401
+                code:
+                  enum:
+                  - UNAUTHENTICATED
+          examples:
+            GENERIC_401_UNAUTHENTICATED:
+              description: Request cannot be authenticated
+              value:
+                status: 401
+                code: UNAUTHENTICATED
+                message: Request not authenticated due to missing, invalid, or expired credentials. A new authentication is required.
+    retrieveStatus403-ConsentInfo-V0:
+      description: Forbidden
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-ConsentInfo-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-ConsentInfo-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 403
+                code:
+                  enum:
+                  - PERMISSION_DENIED
+                  - CONSENT_INFO.NOT_ALLOWED_SCOPES_PURPOSE
+                  - CONSENT_INFO.CAPTURE_FREQUENCY_EXCEEDED
+          examples:
+            GENERIC_403_PERMISSION_DENIED:
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action.
+            NOT_ALLOWED_SCOPES_PURPOSE:
+              description: The requested scope(s) and Purpose combination is not allowed for the API Consumer, e.g. the API Consumer has not onboarded the appropriate API(s) with the API Provider for the declared Purpose.
+              value:
+                status: 403
+                code: CONSENT_INFO.NOT_ALLOWED_SCOPES_PURPOSE
+                message: The requested scope(s) and Purpose combination is not allowed for this API Consumer.
+            CAPTURE_FREQUENCY_EXCEEDED:
+              description: The frequency of consent capture requests has been exceeded.
+              value:
+                status: 403
+                code: CONSENT_INFO.CAPTURE_FREQUENCY_EXCEEDED
+                message: The frequency of consent capture requests has been exceeded. Please try again later.
+    Generic404-ConsentInfo-V0:
+      description: Not found
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-ConsentInfo-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-ConsentInfo-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 404
+                code:
+                  enum:
+                  - NOT_FOUND
+                  - IDENTIFIER_NOT_FOUND
+          examples:
+            GENERIC_404_NOT_FOUND:
+              description: Resource is not found
+              value:
+                status: 404
+                code: NOT_FOUND
+                message: The specified resource is not found.
+            GENERIC_404_IDENTIFIER_NOT_FOUND:
+              description: Some identifier cannot be matched to a device
+              value:
+                status: 404
+                code: IDENTIFIER_NOT_FOUND
+                message: Phone number not found.
+    Generic422-ConsentInfo-V0:
+      description: Unprocessable Content
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-ConsentInfo-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-ConsentInfo-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 422
+                code:
+                  enum:
+                  - SERVICE_NOT_APPLICABLE
+                  - MISSING_IDENTIFIER
+                  - UNNECESSARY_IDENTIFIER
+          examples:
+            GENERIC_422_SERVICE_NOT_APPLICABLE:
+              description: Service not applicable for the provided identifier
+              value:
+                status: 422
+                code: SERVICE_NOT_APPLICABLE
+                message: The service is not available for the provided phone number.
+            GENERIC_422_MISSING_IDENTIFIER:
+              description: An identifier is not included in the request and the device or phone number identification cannot be derived from the 3-legged access token
+              value:
+                status: 422
+                code: MISSING_IDENTIFIER
+                message: The phone number cannot be identified.
+            GENERIC_422_UNNECESSARY_IDENTIFIER:
+              description: An explicit identifier is provided when a device or phone number has already been identified from the access token
+              value:
+                status: 422
+                code: UNNECESSARY_IDENTIFIER
+                message: The phone number is already identified by the access token.
+    Generic400-ConsentInfo-V0:
+      description: Bad Request
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-ConsentInfo-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-ConsentInfo-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 400
+                code:
+                  enum:
+                  - INVALID_ARGUMENT
+          examples:
+            GENERIC_400_INVALID_ARGUMENT:
+              description: Invalid Argument. Generic Syntax Exception
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Client specified an invalid argument, request body or query param.
+  schemas:
+    statusInfo-ConsentInfo-V0:
+      type: array
+      description: 'Provides information about the validity status of the requested data processing for the specified scope(s) and Purpose. It contains details of whether the processing of the data is currently valid and, if not, the reason why. The expiration date of the validity may be also provided if applicable.
+
+
+        More than one array item may be required for the requested scope(s) and Purpose, e.g. when the requested scopes relate to multiple APIs.
+
+        '
+      items:
+        $ref: '#/components/schemas/statusInfoObject-ConsentInfo-V0'
+      minItems: 1
+    PhoneNumber-ConsentInfo-V0:
+      type: string
+      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+      pattern: ^\+[1-9][0-9]{4,14}$
+      example: '+123456789'
+    statusInfoObject-ConsentInfo-V0:
+      type: object
+      required:
+      - scopes
+      - purpose
+      - statusValidForProcessing
+      properties:
+        scopes:
+          $ref: '#/components/schemas/Scopes-ConsentInfo-V0'
+        purpose:
+          $ref: '#/components/schemas/Purpose-ConsentInfo-V0'
+        statusValidForProcessing:
+          type: boolean
+          description: 'Boolean flag that shows the validity status of the requested data processing for the specified scope(s) and Purpose.
+
+            * `true` - indicates that the current status is valid and permits the requested data processing.
+
+            * `false` - indicates that the requested data processing is not permitted. The reason for this is provided in the `statusReason` field.
+
+            '
+        statusReason:
+          type: string
+          enum:
+          - PENDING
+          - REQUESTED
+          - REVOKED
+          - EXPIRED
+          - OBJECTED
+          description: "This field must be present if `statusValidForProcessing` is `false`. It indicates the reason why the requested data processing is not permitted for the specified scope(s) and Purpose. It provides API Consumers with additional context on the current validity status, helping them to understand its applicability and the next steps they may need to take.\n\nIt is particularly useful for determining whether the API Consumer should prompt the User to take action, such as providing Consent or renewing an existing Consent.\n\nPossible values are:\n\n- `PENDING`: The requested data processing has not yet been established or fully validated under the applicable privacy regulations.\n\n\n\n\n            For example, the User has not yet provided Consent when it is required.\n- `REQUESTED`: The permission for the requested data processing has been submitted but has not yet been granted or confirmed.\n\n\n\n\n            This is common when the API Consumer has initiated a request for Consent capture, but the User has not yet completed the process. For example, this occurs when a notice prompting the User to provide Consent has been displayed, but they have not yet made a decision.\n- `REVOKED`: The User has actively withdrawn their permission for the requested data processing after previously opting in.\n\n\n\n\n            For example, the User revokes their Consent for the data processing.\n- `OBJECTED`: The user has opted out of the requested data processing, despite a previous explicit opt-in not being required.\n\n\n\n\n            This is common when the User has exercised their right to object to data processing under the applicable privacy regulations.\n- `EXPIRED`: When applicable, the validity of the data processing has ceased due to the passage of time or a pre-defined condition.\n\n\n\n\n            This is common for time-limited Consents.\n"
+        expirationDate:
+          type: string
+          format: date-time
+          description: 'The date and time at which the validity of the data processing is set to expire or has expired.
+
+            It applies mainly to time-limited Consents, or other cases where a specific duration of validity is defined for the data processing. This field is only applicable:
+
+
+            - if `statusValidForProcessing` is `true` (indicating a future expiration), or
+
+            - if `statusValidForProcessing` is `false` and `statusReason` is `EXPIRED` (indicating the past expiration date).
+
+
+            It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone. Recommended format is yyyy-MM-dd''T''HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
+
+            '
+          example: '2023-07-03T14:27:08.312+02:00'
+    ErrorInfo-ConsentInfo-V0:
+      type: object
+      required:
+      - status
+      - code
+      - message
+      properties:
+        status:
+          type: integer
+          description: HTTP response status code
+        code:
+          type: string
+          description: A human-readable code to describe the error
+        message:
+          type: string
+          description: A human-readable description of what the event represents
+    Purpose-ConsentInfo-V0:
+      type: string
+      pattern: ^dpv:[a-zA-Z0-9]+$
+      description: 'The reason for which personal data will be processed by the API Consumer. CAMARA defines a standard set of Purposes which can be used by API Consumers to specify the reason for their intended personal data processing. CAMARA uses the [W3C Data Privacy Vocabulary](https://w3c.github.io/dpv/2.0/dpv/) (DPV) to represent these purposes e.g. `dpv:FraudPreventionAndDetection` or `dpv:RequestedServiceProvision`.
+
+        '
+      example: dpv:FraudPreventionAndDetection
+    RetrieveStatusRequestBody-ConsentInfo-V0:
+      type: object
+      description: 'The request body for the retrieve status request. It contains the requested scope(s), the Purpose for which the API Consumer intends to process the User''s personal data, a flag indicating whether the API Consumer requests a Consent capture URL and optionally the phone number of the User. The phone number is required when the API is invoked using a two-legged access token, but MUST NOT be provided when a three-legged access token is used, as the subject will be uniquely identified from the access token.
+
+        '
+      required:
+      - scopes
+      - purpose
+      - requestCaptureUrl
+      properties:
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber-ConsentInfo-V0'
+        scopes:
+          $ref: '#/components/schemas/Scopes-ConsentInfo-V0'
+        purpose:
+          $ref: '#/components/schemas/Purpose-ConsentInfo-V0'
+        requestCaptureUrl:
+          type: boolean
+          description: 'A boolean flag indicating whether the API Consumer requests API Provider to return a Consent capture URL.
+
+            * `true` - If set to `true` the API will include a `captureUrl` in the response body if applicable.
+
+            * `false` - The API will omit the Consent capture URL from the response.
+
+            '
+          example: true
+    RetrieveStatusResponseBody-ConsentInfo-V0:
+      type: object
+      required:
+      - statusInfo
+      properties:
+        statusInfo:
+          $ref: '#/components/schemas/statusInfo-ConsentInfo-V0'
+        captureUrl:
+          type: string
+          format: url
+          description: 'URL where the User can provide the necessary Consent. This field is only present in the API response if the API Consumer requests it and if the following conditions are met:
+
+
+            - `statusInfo[*].statusValidForProcessing` is `false`, and
+
+            - `statusInfo[*].statusReason` is `PENDING`, `REQUESTED` or `EXPIRED`.
+
+
+            Please note that this field is only applicable when the User Consent is required to enable valid data processing. A unique URL is provided to authorise all items in the statusInfo list that require user action.
+
+            '
+          example: https://example.org/consent-capture-url
+    Scopes-ConsentInfo-V0:
+      type: array
+      minItems: 1
+      items:
+        type: string
+      description: 'List of requested scopes. The scope is a string that represents the access rights that the API Consumer is requesting from the User.
+
+        '
+      example:
+      - location-verification:verify
+    XCorrelator-ConsentInfo-V0:
+      description: Value for the x-correlator
+      type: string
+      pattern: ^[a-zA-Z0-9-_:;.\/<>{}]{0,256}$
+      example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
+  parameters:
+    x-correlator-ConsentInfo-V0:
+      name: x-correlator
+      in: header
+      description: Correlation id for the different services
+      schema:
+        $ref: '#/components/schemas/XCorrelator-ConsentInfo-V0'
+    x-rapidapi-host:
+      name: x-rapidapi-host
+      in: header
+      required: true
+      description: The API's Host value as defined in the RapidAPI Hub.
+      schema:
+        type: string
+        example: network-as-code.p-eu.rapidapi.com
+  securitySchemes:
+    openId:
+      description: OpenID Connect authentication
+      type: openIdConnect
+      openIdConnectUrl: https://example.com/.well-known/openid-configuration
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-rapidapi-key
+      description: Your RapidAPI key
+externalDocs:
+  description: Project documentation at Camara
+  url: https://github.com/camaraproject/DeviceLocation
+x-refined-from:
+- nokia-network-as-code-camara-openapi.yml
+- nokia-network-as-code-platform-openapi.json

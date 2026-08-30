@@ -1,0 +1,587 @@
+openapi: 3.2.0
+info:
+  title: Nokia Network As Code Congestion Insights v1.0.0 API
+  version: 1.0.0
+  termsOfService: https://developer.networkascode.nokia.io/legal/terms-of-service
+  x-refined-note:
+  - x-badges differs across the merged source definitions and was not carried
+  - x-camara-commonalities differs across the merged source definitions and was not carried
+  - x-category differs across the merged source definitions and was not carried
+  - x-collections differs across the merged source definitions and was not carried
+  - x-long-description differs across the merged source definitions and was not carried
+  - x-public differs across the merged source definitions and was not carried
+  - x-thumbnail differs across the merged source definitions and was not carried
+  - x-version-lifecycle differs across the merged source definitions and was not carried
+  - x-website differs across the merged source definitions and was not carried
+  description: 'Operations tagged Congestion Insights v1.0.0 across 2 of this provider''s published API definitions: nokia-network-as-code-camara-openapi.yml, nokia-network-as-code-platform-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: '{apiRoot}/geofencing-subscriptions/v0.3'
+  variables:
+    apiRoot:
+      default: http://localhost:9091
+      description: API root
+- url: '{apiRoot}/geofencing-subscriptions/v0.4'
+  variables:
+    apiRoot:
+      default: http://localhost:9091
+      description: API root
+- url: https://network-as-code.p-eu.rapidapi.com
+tags:
+- name: Congestion Insights v1.0.0
+paths:
+  /congestion-insights/v0/subscriptions:
+    get:
+      summary: Get congestion subscriptions
+      description: Get congestion subscriptions.
+      operationId: getSubscriptions
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SubscriptionInfo-ConI-V1'
+                type: array
+                title: Response Getsubscriptions
+      tags:
+      - Congestion Insights v1.0.0
+      security:
+      - oAuth2ClientCredentials: []
+    post:
+      summary: Create device congestion subscription
+      description: Create device congestion subscription. Notifies if congestion is high, medium, low or none.
+      operationId: createSubscription-ConI-V1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubscribeCongestionCreate-ConI-V1'
+            examples:
+              CREATE_DEVICE_CONGESTION_SUBSCRIPTION:
+                value:
+                  device:
+                    phoneNumber: '+36719991000'
+                  webhook:
+                    notificationUrl: http://example.com/notify
+                    notificationAuthToken: c8974e592f9fh683d4a3960714
+                  subscriptionExpireTime: '2045-04-12T14:09:33+05:00'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionInfo-ConI-V1'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError-ConI-V1'
+      callbacks:
+        notification:
+          '{$request.body#/webhook/notificationUrl}':
+            post:
+              summary: Notification
+              operationId: notification__request_body__webhook_notificationUrl__post
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/AnalyticsEventNotification-ConI-V1'
+                required: true
+              responses:
+                '200':
+                  description: Successful Response
+                  content:
+                    application/json:
+                      schema: {}
+                '422':
+                  description: Validation Error
+                  content:
+                    application/json:
+                      schema:
+                        $ref: '#/components/schemas/HTTPValidationError-ConI-V1'
+      tags:
+      - Congestion Insights v1.0.0
+      security:
+      - oAuth2ClientCredentials: []
+    servers:
+    - url: '{apiRoot}/geofencing-subscriptions/v0.3'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+    - url: '{apiRoot}/geofencing-subscriptions/v0.4'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+  /congestion-insights/v0/subscriptions/{resource_id}:
+    get:
+      summary: Get congestion subscription
+      description: Get congestion subscription data of the given device.
+      operationId: getSubscription
+      parameters:
+      - name: resource_id
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 36
+          pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$
+          title: Resource ID.
+        example: de87e438-58b4-42c3-9d49-0fbfbd878305
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionInfo-ConI-V1'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError-ConI-V1'
+      tags:
+      - Congestion Insights v1.0.0
+      security:
+      - oAuth2ClientCredentials: []
+    delete:
+      summary: Unsubscribe from congestion event
+      description: Unsubscribe from congestion event of the given device.
+      operationId: deleteSubscription-ConI-V1
+      parameters:
+      - name: resource_id
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 36
+          pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$
+          title: Resource ID.
+        example: de87e438-58b4-42c3-9d49-0fbfbd878305
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError-ConI-V1'
+      tags:
+      - Congestion Insights v1.0.0
+      security:
+      - oAuth2ClientCredentials: []
+    servers:
+    - url: '{apiRoot}/geofencing-subscriptions/v0.3'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+    - url: '{apiRoot}/geofencing-subscriptions/v0.4'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+  /congestion-insights/v0/query:
+    post:
+      summary: Fetch congestion level for a device.
+      description: Fetch historical or predicted congestion level of a device for a given period.
+      operationId: fetch
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FetchCongestion-ConI-V1'
+            examples:
+              FETCH_CONGESTION_LEVEL:
+                value:
+                  device:
+                    phoneNumber: '+99999991000'
+                  webhook:
+                    notificationUrl: http://example.com/notify
+                    notificationAuthToken: c8974e592f9fh683d4a3960714
+                  subscriptionExpireTime: '2045-04-12T14:09:33+05:00'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/CongestionData-ConI-V1'
+                type: array
+                title: Response Fetch
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError-ConI-V1'
+      tags:
+      - Congestion Insights v1.0.0
+      security:
+      - oAuth2ClientCredentials: []
+    servers:
+    - url: '{apiRoot}/geofencing-subscriptions/v0.3'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+    - url: '{apiRoot}/geofencing-subscriptions/v0.4'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+components:
+  schemas:
+    CongestionAnalytics-ConI-V1:
+      properties:
+        cngType:
+          type: string
+          maxLength: 50
+          title: Cngtype
+        tmWdw:
+          $ref: '#/components/schemas/TimeAndDate-ConI-V1'
+        nsi:
+          $ref: '#/components/schemas/ThresholdLevel-ConI-V1'
+        confidence:
+          type:
+          - integer
+          - 'null'
+          maximum: 100
+          minimum: 0
+          format: int32
+          title: Confidence
+      type: object
+      required:
+      - cngType
+      - tmWdw
+      - nsi
+      title: CongestionAnalytics
+    HTTPValidationError-ConI-V1:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError-ConI-V1'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    DeviceIpv4Addr-ConI-V1:
+      properties:
+        publicAddress:
+          type:
+          - string
+          - 'null'
+          maxLength: 15
+          title: Publicaddress
+          description: Public IPv4 address of the device. Either of the device or the NAT the device is behind.
+        privateAddress:
+          type:
+          - string
+          - 'null'
+          maxLength: 15
+          title: Privateaddress
+          description: Private IPv4 address of the device, if it is behind a NAT.
+        publicPort:
+          type:
+          - integer
+          - 'null'
+          maximum: 65535
+          minimum: 0
+          format: int32
+          title: Publicport
+          description: Public port used by the device. Port is necessary, as private address ranges overlap, and public port is used to extend the range for CGNAT.
+      type: object
+      title: DeviceIpv4Addr
+    Device-ConI-V1:
+      properties:
+        phoneNumber:
+          type:
+          - string
+          - 'null'
+          maxLength: 16
+          pattern: ^\+[1-9][0-9]{4,14}$
+          title: Phonenumber
+          description: Phone number of the subscription, if any. Optional.
+        networkAccessIdentifier:
+          type:
+          - string
+          - 'null'
+          maxLength: 256
+          pattern: ^\S+@\S+\.\S+$
+          title: Networkaccessidentifier
+          description: Email address-like external identifier of the subscription registered at the operator. If both networkAccessIdentifier and phoneNumber are included, phoneNumber may be dropped and networkAccessIdentifier may be retained.
+        ipv4Address:
+          allOf:
+          - $ref: '#/components/schemas/DeviceIpv4Addr-ConI-V1'
+          description: IPv4 address of the device. IP address is needed for some flow-oriented services, such as QoD.
+        ipv6Address:
+          type:
+          - string
+          - 'null'
+          maxLength: 45
+          title: Ipv6Address
+          description: IPv6 address of the device. IP address is needed for some flow-oriented services, such as QoD.
+      type: object
+      title: Device
+    AnalyticsEventNotification-ConI-V1:
+      properties:
+        notifId:
+          type: string
+          maxLength: 100
+          title: Notifid
+        analyEventNotifs:
+          items:
+            $ref: '#/components/schemas/AnalyticsEventNotif-ConI-V1'
+          type: array
+          title: Analyeventnotifs
+      type: object
+      required:
+      - notifId
+      - analyEventNotifs
+      title: AnalyticsEventNotification
+    CongestionData-ConI-V1:
+      properties:
+        timeIntervalStart:
+          type: string
+          format: date-time
+          title: Timeintervalstart
+        timeIntervalStop:
+          type: string
+          format: date-time
+          title: Timeintervalstop
+        congestionLevel:
+          $ref: '#/components/schemas/CongestionLevel-ConI-V1'
+        confidenceLevel:
+          type:
+          - integer
+          - 'null'
+          maximum: 100
+          minimum: 0
+          format: int32
+          title: Confidencelevel
+      type: object
+      required:
+      - timeIntervalStart
+      - timeIntervalStop
+      - congestionLevel
+      title: CongestionData
+    AnalyticsEvent-ConI-V1:
+      type: string
+      enum:
+      - CONGESTION
+      title: AnalyticsEvent
+    SubscriptionInfo-ConI-V1:
+      properties:
+        device:
+          $ref: '#/components/schemas/Device-ConI-V1'
+          description: Identifiers of the device
+        webhook:
+          $ref: '#/components/schemas/Webhook-ConI-V1'
+        subscriptionExpireTime:
+          type: string
+          format: date-time
+          title: Subscriptionexpiretime
+          description: Time when the subscription expires.
+        subscriptionId:
+          type: string
+          title: Subscriptionid
+        startedAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          title: Startedat
+          description: Time when subscription started
+        expiresAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          title: Expiresat
+          description: Time when subscription will expire or expired
+      type: object
+      required:
+      - device
+      - webhook
+      - subscriptionExpireTime
+      - subscriptionId
+      title: SubscriptionInfo
+    ThresholdLevel-ConI-V1:
+      properties:
+        congLevel:
+          type: integer
+          maximum: 100
+          minimum: 0
+          format: int32
+          title: Conglevel
+      type: object
+      required:
+      - congLevel
+      title: ThresholdLevel
+    SubscribeCongestionCreate-ConI-V1:
+      properties:
+        device:
+          $ref: '#/components/schemas/Device-ConI-V1'
+          description: Identifiers of the device
+        webhook:
+          $ref: '#/components/schemas/Webhook-ConI-V1'
+        subscriptionExpireTime:
+          type: string
+          format: date-time
+          title: Subscriptionexpiretime
+          description: Time when the subscription expires.
+      type: object
+      required:
+      - device
+      - webhook
+      - subscriptionExpireTime
+      title: SubscribeCongestionCreate
+    FetchCongestion-ConI-V1:
+      properties:
+        device:
+          $ref: '#/components/schemas/Device-ConI-V1'
+        start:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          title: Start
+          description: Start of the period queried. If not set, 15 minutes before end. If neither start or end is set, then the upcoming 15 minutes are predicted.
+        end:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          title: End
+          description: End of the period queried. If not set, 15 minutes after start.
+      type: object
+      required:
+      - device
+      title: FetchCongestion
+    CongestInfo-ConI-V1:
+      properties:
+        cngAnas:
+          items:
+            $ref: '#/components/schemas/CongestionAnalytics-ConI-V1'
+          type: array
+          title: Cnganas
+      type: object
+      required:
+      - cngAnas
+      title: CongestInfo
+    AnalyticsEventNotif-ConI-V1:
+      properties:
+        analyEvent:
+          $ref: '#/components/schemas/AnalyticsEvent-ConI-V1'
+        timeStamp:
+          type: string
+          format: date-time
+          title: Timestamp
+        congestInfos:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CongestInfo-ConI-V1'
+          title: Congestinfos
+      type: object
+      required:
+      - analyEvent
+      - timeStamp
+      title: AnalyticsEventNotif
+    Webhook-ConI-V1:
+      properties:
+        notificationUrl:
+          type: string
+          maxLength: 256
+          title: Notificationurl
+          description: Notification URL for session-related events.
+          example: https://application-server.com
+        notificationAuthToken:
+          type:
+          - string
+          - 'null'
+          maxLength: 4096
+          title: Notificationauthtoken
+          description: Authorization token for notification sending.
+          example: c8974e592c2fa383d4a3960714
+      type: object
+      required:
+      - notificationUrl
+      title: Webhook
+    ValidationError-ConI-V1:
+      properties:
+        loc:
+          type: array
+          items:
+            type: string
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    CongestionLevel-ConI-V1:
+      type: string
+      enum:
+      - Low
+      - Medium
+      - High
+      title: CongestionLevel
+    TimeAndDate-ConI-V1:
+      properties:
+        startTime:
+          type: string
+          format: date-time
+          title: Starttime
+        stopTime:
+          type: string
+          format: date-time
+          title: Stoptime
+      type: object
+      required:
+      - startTime
+      - stopTime
+      title: TimeAndDate
+  parameters:
+    x-rapidapi-host:
+      name: x-rapidapi-host
+      in: header
+      required: true
+      description: The API's Host value as defined in the RapidAPI Hub.
+      schema:
+        type: string
+        example: network-as-code.p-eu.rapidapi.com
+  securitySchemes:
+    openId:
+      description: OpenID Connect authentication
+      type: openIdConnect
+      openIdConnectUrl: https://example.com/.well-known/openid-configuration
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-rapidapi-key
+      description: Your RapidAPI key
+externalDocs:
+  description: Project documentation at Camara
+  url: https://github.com/camaraproject/DeviceLocation
+x-refined-from:
+- nokia-network-as-code-camara-openapi.yml
+- nokia-network-as-code-platform-openapi.json

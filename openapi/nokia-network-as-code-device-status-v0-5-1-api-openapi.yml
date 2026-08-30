@@ -1,0 +1,965 @@
+openapi: 3.2.0
+info:
+  title: Nokia Network As Code Device Status v0.5.1 API
+  version: 1.0.0
+  termsOfService: https://developer.networkascode.nokia.io/legal/terms-of-service
+  x-refined-note:
+  - x-badges differs across the merged source definitions and was not carried
+  - x-camara-commonalities differs across the merged source definitions and was not carried
+  - x-category differs across the merged source definitions and was not carried
+  - x-collections differs across the merged source definitions and was not carried
+  - x-long-description differs across the merged source definitions and was not carried
+  - x-public differs across the merged source definitions and was not carried
+  - x-thumbnail differs across the merged source definitions and was not carried
+  - x-version-lifecycle differs across the merged source definitions and was not carried
+  - x-website differs across the merged source definitions and was not carried
+  description: 'Operations tagged Device Status v0.5.1 across 2 of this provider''s published API definitions: nokia-network-as-code-camara-openapi.yml, nokia-network-as-code-platform-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: '{apiRoot}/geofencing-subscriptions/v0.3'
+  variables:
+    apiRoot:
+      default: http://localhost:9091
+      description: API root
+- url: '{apiRoot}/geofencing-subscriptions/v0.4'
+  variables:
+    apiRoot:
+      default: http://localhost:9091
+      description: API root
+- url: https://network-as-code.p-eu.rapidapi.com
+tags:
+- name: Device Status v0.5.1
+paths:
+  /device-status/v0/connectivity:
+    post:
+      tags:
+      - Device Status v0.5.1
+      summary: Get the current connectivity status information
+      deprecated: true
+      description: Get the current connectivity status information
+      operationId: getConnectivityStatus
+      security:
+      - openId:
+        - device-status:connectivity:read
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestConnectivityStatus-DS-V0'
+            examples:
+              CONNECTED_SMS_PHONE_NUMBER:
+                value:
+                  device:
+                    phoneNumber: '+99999991000'
+              CONNECTED_DATA_PHONE_NUMBER:
+                value:
+                  device:
+                    phoneNumber: '+99999991001'
+              NOT_CONNECTED_PHONE_NUMBER:
+                value:
+                  device:
+                    phoneNumber: '+99999991002'
+        required: true
+      responses:
+        '200':
+          description: Contains information about current connectivity status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectivityStatusResponse-DS-V0'
+              examples:
+                Connected-With-SMS:
+                  value:
+                    connectivityStatus: CONNECTED_SMS
+                Connected-With-DATA:
+                  value:
+                    connectivityStatus: CONNECTED_DATA
+                Not-Connected:
+                  value:
+                    connectivityStatus: NOT_CONNECTED
+        '400':
+          $ref: '#/components/responses/Generic400-DS-V0'
+        '401':
+          $ref: '#/components/responses/Generic401-DS-V0'
+        '403':
+          $ref: '#/components/responses/Generic403-DS-V0'
+        '404':
+          $ref: '#/components/responses/Generic404-DS-V0'
+        '500':
+          $ref: '#/components/responses/Generic500-DS-V0'
+        '503':
+          $ref: '#/components/responses/Generic503-DS-V0'
+    servers:
+    - url: '{apiRoot}/geofencing-subscriptions/v0.3'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+    - url: '{apiRoot}/geofencing-subscriptions/v0.4'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+  /device-status/v0/roaming:
+    post:
+      tags:
+      - Device Status v0.5.1
+      summary: Get the current roaming status and the country information
+      deprecated: true
+      description: Get the current roaming status and the country information
+      operationId: getRoamingStatus-DS-V0
+      security:
+      - openId:
+        - device-status:roaming:read
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestRoamingStatus-DS-V0'
+            examples:
+              ROAMING_TRUE_PHONE_NUMBER:
+                value:
+                  device:
+                    phoneNumber: '+99999991000'
+              ROAMING_FALSE_PHONE_NUMBER:
+                value:
+                  device:
+                    phoneNumber: '+99999991001'
+        required: true
+      responses:
+        '200':
+          description: Contains information about current roaming status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoamingStatusResponse-DS-V0'
+              examples:
+                No-Country-Name:
+                  value:
+                    roaming: true
+                    countryCode: 901
+                    countryName: []
+                Single-Country-Code:
+                  value:
+                    roaming: true
+                    countryCode: 262
+                    countryName:
+                    - DE
+                Multiple-Country-Codes:
+                  value:
+                    roaming: true
+                    countryCode: 340
+                    countryName:
+                    - BL
+                    - GF
+                    - GP
+                    - MF
+                    - MQ
+        '400':
+          $ref: '#/components/responses/Generic400-DS-V0'
+        '401':
+          $ref: '#/components/responses/Generic401-DS-V0'
+        '403':
+          $ref: '#/components/responses/Generic403-DS-V0'
+        '404':
+          $ref: '#/components/responses/Generic404-DS-V0'
+        '500':
+          $ref: '#/components/responses/Generic500-DS-V0'
+        '503':
+          $ref: '#/components/responses/Generic503-DS-V0'
+    servers:
+    - url: '{apiRoot}/geofencing-subscriptions/v0.3'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+    - url: '{apiRoot}/geofencing-subscriptions/v0.4'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+  /device-status/v0/subscriptions:
+    post:
+      tags:
+      - Device Status v0.5.1
+      summary: Create a device status event subscription for a device
+      deprecated: true
+      description: Create a device status event subscription for a device
+      operationId: createDeviceStatusSubscription
+      security:
+      - openId:
+        - device-status:subscriptions:create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSubscription-DS-V0'
+            examples:
+              CREATE_DEVICE_STATUS_SUBSCRIPTION:
+                value:
+                  subscriptionDetail:
+                    device:
+                      phoneNumber: '+36719991000'
+                    type: org.camaraproject.device-status.v0.roaming-status
+                  subscriptionExpireTime: '2026-01-17T13:18:23.682Z'
+                  webhook:
+                    notificationUrl: https://application-server.com
+                    notificationAuthToken: c8974e592c2fa383d4a3960714
+        required: true
+      callbacks:
+        notifications:
+          '{$request.body#/webhook/notificationUrl}':
+            post:
+              tags:
+              - Session notifications callback
+              summary: Session notifications callback
+              deprecated: true
+              description: 'Important: this endpoint is to be implemented by the API consumer.
+
+                The Device status server will call this endpoint whenever any device status related event occurs.
+
+                '
+              operationId: postNotification
+              requestBody:
+                required: true
+                content:
+                  application/cloudevents+json:
+                    schema:
+                      $ref: '#/components/schemas/CloudEvent-DS-V0'
+                    examples:
+                      roaming-status:
+                        $ref: '#/components/examples/ROAMING_STATUS-DS-V0'
+                      roaming-change-country:
+                        $ref: '#/components/examples/ROAMING_CHANGE_COUNTRY-DS-V0'
+                      roaming-on:
+                        $ref: '#/components/examples/ROAMING_ON-DS-V0'
+                      roaming-off:
+                        $ref: '#/components/examples/ROAMING_OFF-DS-V0'
+                      connectivity-data:
+                        $ref: '#/components/examples/CONNECTIVITY_DATA-DS-V0'
+                      connectivity-sms:
+                        $ref: '#/components/examples/CONNECTIVITY_SMS-DS-V0'
+                      connectivity-disconnected:
+                        $ref: '#/components/examples/CONNECTIVITY_DISCONNECTED-DS-V0'
+                      subscription-ends:
+                        $ref: '#/components/examples/SUBSCRIPTION_ENDS-DS-V0'
+              responses:
+                '204':
+                  description: Successful notification
+                '400':
+                  $ref: '#/components/responses/Generic400-DS-V0'
+                '401':
+                  $ref: '#/components/responses/Generic401-DS-V0'
+                '403':
+                  $ref: '#/components/responses/Generic403-DS-V0'
+                '500':
+                  $ref: '#/components/responses/Generic500-DS-V0'
+                '503':
+                  $ref: '#/components/responses/Generic503-DS-V0'
+              security:
+              - {}
+              - notificationsBearerAuth: []
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionInfo-DS-V0'
+        '202':
+          description: Request accepted to be processed. It applies for async creation process.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionAsync-DS-V0'
+        '400':
+          $ref: '#/components/responses/Generic400-DS-V0'
+        '401':
+          $ref: '#/components/responses/Generic401-DS-V0'
+        '403':
+          $ref: '#/components/responses/Generic403-DS-V0'
+        '409':
+          $ref: '#/components/responses/Generic409-DS-V0'
+        '500':
+          $ref: '#/components/responses/Generic500-DS-V0'
+        '503':
+          $ref: '#/components/responses/Generic503-DS-V0'
+    get:
+      tags:
+      - Device Status v0.5.1
+      summary: Retrieve a list of device status event subscription
+      deprecated: true
+      description: Retrieve a list of device status event subscription(s)
+      operationId: retrieveSubscriptionList
+      security:
+      - openId:
+        - device-status:subscriptions:read
+      responses:
+        '200':
+          description: List of event subscription details
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubscriptionInfo-DS-V0'
+        '400':
+          $ref: '#/components/responses/Generic400-DS-V0'
+        '401':
+          $ref: '#/components/responses/Generic401-DS-V0'
+        '403':
+          $ref: '#/components/responses/Generic403-DS-V0'
+        '500':
+          $ref: '#/components/responses/Generic500-DS-V0'
+        '503':
+          $ref: '#/components/responses/Generic503-DS-V0'
+    servers:
+    - url: '{apiRoot}/geofencing-subscriptions/v0.3'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+    - url: '{apiRoot}/geofencing-subscriptions/v0.4'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+  /device-status/v0/subscriptions/{subscriptionId}:
+    get:
+      tags:
+      - Device Status v0.5.1
+      summary: Retrieve a device status event subscription for a device
+      deprecated: true
+      operationId: retrieveSubscription
+      description: retrieve event subscription information for a given subscription.
+      security:
+      - openId:
+        - device-status:subscriptions:read
+      parameters:
+      - name: subscriptionId
+        in: path
+        description: Subscription identifier that was obtained from the create subscription operation
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionInfo-DS-V0'
+        '400':
+          $ref: '#/components/responses/Generic400-DS-V0'
+        '401':
+          $ref: '#/components/responses/Generic401-DS-V0'
+        '403':
+          $ref: '#/components/responses/Generic403-DS-V0'
+        '404':
+          $ref: '#/components/responses/Generic404-DS-V0'
+        '500':
+          $ref: '#/components/responses/Generic500-DS-V0'
+        '503':
+          $ref: '#/components/responses/Generic503-DS-V0'
+    delete:
+      tags:
+      - Device Status v0.5.1
+      summary: Delete a device status event subscription for a device
+      deprecated: true
+      operationId: deleteSubscription
+      description: delete a  given event subscription.
+      security:
+      - openId:
+        - device-status:subscriptions:delete
+      parameters:
+      - name: subscriptionId
+        in: path
+        description: Subscription identifier that was obtained from the create event subscription operation
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Request accepted to be processed. It applies for async deletion process.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionAsync-DS-V0'
+        '204':
+          description: event subscription deleted
+        '400':
+          $ref: '#/components/responses/Generic400-DS-V0'
+        '401':
+          $ref: '#/components/responses/Generic401-DS-V0'
+        '403':
+          $ref: '#/components/responses/Generic403-DS-V0'
+        '404':
+          $ref: '#/components/responses/Generic404-DS-V0'
+        '500':
+          $ref: '#/components/responses/Generic500-DS-V0'
+        '503':
+          $ref: '#/components/responses/Generic503-DS-V0'
+    servers:
+    - url: '{apiRoot}/geofencing-subscriptions/v0.3'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+    - url: '{apiRoot}/geofencing-subscriptions/v0.4'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+components:
+  schemas:
+    ConnectivityStatusResponse-DS-V0:
+      type: object
+      required:
+      - connectivityStatus
+      properties:
+        connectivityStatus:
+          $ref: '#/components/schemas/ConnectivityStatus-DS-V0'
+    DeviceIpv6Address-DS-V0:
+      description: 'The device should be identified by the observed IPv6 address, or by any single IPv6 address from within the subnet allocated to the device (e.g. adding ::0 to the /64 prefix).
+
+        '
+      type: string
+      format: ipv6
+      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
+    CountryCode-DS-V0:
+      description: The Mobile country code (MCC) as an geographic region identifier for the country and the dependent areas.
+      type: integer
+    DeviceIpv4Addr-DS-V0:
+      type: object
+      description: 'The device should be identified by either the public (observed) IP address and port as seen by the application server, or the private (local) and any public (observed) IP addresses in use by the device (this information can be obtained by various means, for example from some DNS servers).
+
+
+        If the allocated and observed IP addresses are the same (i.e. NAT is not in use) then  the same address should be specified for both publicAddress and privateAddress.
+
+
+        If NAT64 is in use, the device should be identified by its publicAddress and publicPort, or separately by its allocated IPv6 address (field ipv6Address of the Device object)
+
+
+        In all cases, publicAddress must be specified, along with at least one of either privateAddress or publicPort, dependent upon which is known. In general, mobile devices cannot be identified by their public IPv4 address alone.
+
+        '
+      properties:
+        publicAddress:
+          $ref: '#/components/schemas/SingleIpv4Addr-DS-V0'
+        privateAddress:
+          $ref: '#/components/schemas/SingleIpv4Addr-DS-V0'
+        publicPort:
+          $ref: '#/components/schemas/Port-DS-V0'
+      anyOf:
+      - required:
+        - publicAddress
+        - privateAddress
+      - required:
+        - publicAddress
+        - publicPort
+      example:
+        publicAddress: 84.125.93.10
+        publicPort: 59765
+    ErrorInfo-DS-V0:
+      type: object
+      required:
+      - status
+      - code
+      - message
+      properties:
+        status:
+          type: integer
+          description: HTTP response status code
+        code:
+          type: string
+          description: Code given to this error
+        message:
+          type: string
+          description: Detailed error description
+    CreateSubscription-DS-V0:
+      description: The request for creating a Device Status event subscription
+      type: object
+      required:
+      - webhook
+      - subscriptionDetail
+      properties:
+        subscriptionDetail:
+          $ref: '#/components/schemas/SubscriptionDetail-DS-V0'
+        subscriptionExpireTime:
+          type: string
+          format: date-time
+          example: '2023-01-17T13:18:23.682Z'
+          description: The subscription expiration time in date-time format.
+        webhook:
+          $ref: '#/components/schemas/Webhook-DS-V0'
+    SubscriptionAsync-DS-V0:
+      description: Response for a device status operation managed asynchronously (Creation or Deletion)
+      type: object
+      properties:
+        subscriptionId:
+          $ref: '#/components/schemas/SubscriptionId-DS-V0'
+    SubscriptionId-DS-V0:
+      type: string
+      description: The event subscription identifier.
+      example: qs15-h556-rt89-1298
+    CloudEvent-DS-V0:
+      description: The notification callback
+      required:
+      - id
+      - source
+      - specversion
+      - type
+      - time
+      - data
+      properties:
+        id:
+          type: string
+          description: identifier of this event, that must be unique in the source context.
+          example: sd5e-uy52-88t4-za66
+        source:
+          $ref: '#/components/schemas/Source-DS-V0'
+        type:
+          $ref: '#/components/schemas/SubscriptionEventType-DS-V0'
+        specversion:
+          type: string
+          description: Version of the specification to which this event conforms (must be 1.0 if it conforms to cloudevents 1.0.2 version)
+          example: '1.0'
+        datacontenttype:
+          type: string
+          description: media-type that describes the event payload encoding, must be "application/json" for CAMARA APIs
+          example: application/json
+        data:
+          type: object
+          description: Event details payload described in each CAMARA API and referenced by its type
+        time:
+          $ref: '#/components/schemas/DateTime-DS-V0'
+      discriminator:
+        propertyName: type
+        mapping:
+          org.camaraproject.device-status.v0.roaming-status: '#/components/schemas/EventRoamingStatus'
+          org.camaraproject.device-status.v0.roaming-change-country: '#/components/schemas/EventRoamingChangeCountry'
+          org.camaraproject.device-status.v0.roaming-off: '#/components/schemas/EventRoamingOff'
+          org.camaraproject.device-status.v0.roaming-on: '#/components/schemas/EventRoamingOn'
+          org.camaraproject.device-status.v0.connectivity-data: '#/components/schemas/EventConnectivityData'
+          org.camaraproject.device-status.v0.connectivity-sms: '#/components/schemas/EventConnectivitySms'
+          org.camaraproject.device-status.v0.connectivity-disconnected: '#/components/schemas/EventConnectivityDisconnected'
+          org.camaraproject.device-status.v0.subscription-ends: '#/components/schemas/EventSubscriptionEnds'
+    Port-DS-V0:
+      description: TCP or UDP port number
+      type: integer
+      minimum: 0
+      maximum: 65535
+    Webhook-DS-V0:
+      description: Webhook information for event channel
+      type: object
+      required:
+      - notificationUrl
+      properties:
+        notificationUrl:
+          type: string
+          example: https://application-server.com
+          description: https callback address where the event notification must be POST-ed
+        notificationAuthToken:
+          type: string
+          example: c8974e592c2fa383d4a3960714
+          description: 'OAuth2 token to be used by the callback API endpoint. It MUST be indicated within HTTP Authorization header e.g. Authorization: Bearer $notificationAuthToken
+
+            '
+    RoamingStatusResponse-DS-V0:
+      type: object
+      required:
+      - roaming
+      properties:
+        roaming:
+          $ref: '#/components/schemas/ActiveRoaming-DS-V0'
+        countryCode:
+          $ref: '#/components/schemas/CountryCode-DS-V0'
+        countryName:
+          $ref: '#/components/schemas/CountryName-DS-V0'
+    SubscriptionEventType-DS-V0:
+      type: string
+      description: 'roaming-status - Event triggered when the device switch from roaming ON to roaming OFF and conversely
+
+
+        roaming-on - Event triggered when the device switch from roaming OFF to roaming ON
+
+
+        roaming-off - Event triggered when the device switch from roaming ON to roaming OFF
+
+
+        roaming-change-country - Event triggered when the device in roaming change country code
+
+
+        connectivity-data - Event triggered when the device is connected to the network for Data usage.
+
+
+        connectivity-sms - Event triggered when the device is connected to the network for SMS usage
+
+
+        connectivity-disconnected - Event triggered when the device is not connected.
+
+
+        subscription-ends - Event triggered when the subscription is terminated
+
+        '
+      enum:
+      - org.camaraproject.device-status.v0.roaming-status
+      - org.camaraproject.device-status.v0.roaming-on
+      - org.camaraproject.device-status.v0.roaming-off
+      - org.camaraproject.device-status.v0.roaming-change-country
+      - org.camaraproject.device-status.v0.connectivity-data
+      - org.camaraproject.device-status.v0.connectivity-sms
+      - org.camaraproject.device-status.v0.connectivity-disconnected
+      - org.camaraproject.device-status.v0.subscription-ends
+    DateTime-DS-V0:
+      type: string
+      format: date-time
+      description: Timestamp of when the occurrence happened. Must adhere to RFC 3339.
+      example: '2018-04-05T17:31:00Z'
+    RequestRoamingStatus-DS-V0:
+      type: object
+      properties:
+        device:
+          $ref: '#/components/schemas/Device-DS-V0'
+      required:
+      - device
+    SubscriptionDetail-DS-V0:
+      description: The detail of the requested event subscription
+      type: object
+      required:
+      - type
+      - device
+      properties:
+        device:
+          $ref: '#/components/schemas/Device-DS-V0'
+        type:
+          $ref: '#/components/schemas/SubscriptionCreationEventType-DS-V0'
+    Source-DS-V0:
+      type: string
+      format: uri-reference
+      minLength: 1
+      description: Identifies the context in which an event happened in the specific Provider Implementation.
+      example: https://notificationSendServer12.supertelco.com
+    ActiveRoaming-DS-V0:
+      description: Roaming status. True, if it is roaming
+      type: boolean
+    NetworkAccessIdentifier-DS-V0:
+      description: A public identifier addressing a subscription in a mobile network. In 3GPP terminology, it corresponds to the GPSI formatted with the External Identifier ({Local Identifier}@{Domain Identifier}). Unlike the telephone number, the network access identifier is not subjected to portability ruling in force, and is individually managed by each operator.
+      type: string
+      example: 123456789@domain.com
+    Device-DS-V0:
+      description: 'End-user equipment able to connect to a mobile network. Examples of devices include smartphones or IoT sensors/actuators.
+
+
+        The developer can choose to provide the below specified device identifiers:
+
+
+        * `ipv4Address`
+
+        * `ipv6Address`
+
+        * `phoneNumber`
+
+        * `networkAccessIdentifier`
+
+
+        NOTE: the MNO might support only a subset of these options. The API invoker can provide multiple identifiers to be compatible across different MNOs. In this case the identifiers MUST belong to the same device.
+
+        '
+      type: object
+      properties:
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber-DS-V0'
+        networkAccessIdentifier:
+          $ref: '#/components/schemas/NetworkAccessIdentifier-DS-V0'
+        ipv4Address:
+          $ref: '#/components/schemas/DeviceIpv4Addr-DS-V0'
+        ipv6Address:
+          $ref: '#/components/schemas/DeviceIpv6Address-DS-V0'
+      minProperties: 1
+    CountryName-DS-V0:
+      description: The ISO 3166 ALPHA-2 country-codes of mapped to mobile country code(MCC). If there is mapping of one MCC to multiple countries, then we have list of countries. If there is no mapping of MCC to any country, then an empty array [] shall be returned..
+      type: array
+      items:
+        type: string
+    ConnectivityStatus-DS-V0:
+      description: 'CONNECTED_DATA: The device is connected to the network for Data usage
+
+
+        CONNECTED_SMS: The device is connected to the network for SMS usage
+
+
+        NOT_CONNECTED: The device is not connected
+
+        '
+      type: string
+      enum:
+      - CONNECTED_DATA
+      - CONNECTED_SMS
+      - NOT_CONNECTED
+    PhoneNumber-DS-V0:
+      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, optionally prefixed with '+'.
+      type: string
+      pattern: ^\+?[0-9]{5,15}$
+      example: '123456789'
+    RequestConnectivityStatus-DS-V0:
+      type: object
+      properties:
+        device:
+          $ref: '#/components/schemas/Device-DS-V0'
+      required:
+      - device
+    SubscriptionInfo-DS-V0:
+      description: Represents a device status subscription.
+      allOf:
+      - $ref: '#/components/schemas/CreateSubscription-DS-V0'
+      - type: object
+        properties:
+          subscriptionId:
+            $ref: '#/components/schemas/SubscriptionId-DS-V0'
+          startsAt:
+            type: string
+            format: date-time
+            description: date time when subscription started
+          expiresAt:
+            type: string
+            format: date-time
+            description: date time when subscription will expire or expired
+        required:
+        - subscriptionId
+        - type
+    SubscriptionCreationEventType-DS-V0:
+      type: string
+      description: 'roaming-status - Event triggered when the device switch from roaming ON to roaming OFF and conversely
+
+
+        roaming-on - Event triggered when the device switch from roaming OFF to roaming ON
+
+
+        roaming-off - Event triggered when the device switch from roaming ON to roaming OFF
+
+
+        roaming-change-country - Event triggered when the device in roaming change country code
+
+
+        connectivity-data - Event triggered when the device is connected to the network for Data usage.
+
+
+        connectivity-sms - Event triggered when the device is connected to the network for SMS usage
+
+
+        connectivity-disconnected - Event triggered when the device is not connected.
+
+        '
+      enum:
+      - org.camaraproject.device-status.v0.roaming-status
+      - org.camaraproject.device-status.v0.roaming-on
+      - org.camaraproject.device-status.v0.roaming-off
+      - org.camaraproject.device-status.v0.roaming-change-country
+      - org.camaraproject.device-status.v0.connectivity-data
+      - org.camaraproject.device-status.v0.connectivity-sms
+      - org.camaraproject.device-status.v0.connectivity-disconnected
+    SingleIpv4Addr-DS-V0:
+      description: A single IPv4 address with no subnet mask
+      type: string
+      format: ipv4
+      example: 84.125.93.10
+  examples:
+    ROAMING_CHANGE_COUNTRY-DS-V0:
+      value:
+        id: '123657'
+        source: https://notificationSendServer12.supertelco.com
+        type: org.camaraproject.device-status.v0.roaming-change-country
+        specversion: '1.0'
+        datacontenttype: application/json
+        data:
+          device:
+            phoneNumber: '+99999991000'
+          countryCode: 214
+          countryName:
+          - ES
+          subscriptionId: qs15-h556-rt89-1298
+        time: '2023-01-19T13:18:23.682Z'
+    ROAMING_OFF-DS-V0:
+      value:
+        id: '123655'
+        source: https://notificationSendServer12.supertelco.com
+        type: org.camaraproject.device-status.v0.roaming-off
+        specversion: '1.0'
+        datacontenttype: application/json
+        data:
+          device:
+            phoneNumber: '+99999991000'
+          subscriptionId: qs15-h556-rt89-1298
+        time: '2023-01-18T13:18:23.682Z'
+    ROAMING_ON-DS-V0:
+      value:
+        id: '123656'
+        source: https://notificationSendServer12.supertelco.com
+        type: org.camaraproject.device-status.v0.roaming-on
+        specversion: '1.0'
+        datacontenttype: application/json
+        data:
+          device:
+            phoneNumber: '+99999991000'
+          subscriptionId: qs15-h556-rt89-1298
+        time: '2023-01-19T13:18:23.682Z'
+    CONNECTIVITY_DATA-DS-V0:
+      value:
+        id: '123656'
+        source: https://notificationSendServer12.supertelco.com
+        type: org.camaraproject.device-status.v0.connectivity-data
+        specversion: '1.0'
+        datacontenttype: application/json
+        data:
+          device:
+            phoneNumber: '+99999991000'
+          subscriptionId: qs15-h556-rt89-1298
+        time: '2023-01-19T13:18:23.682Z'
+    CONNECTIVITY_DISCONNECTED-DS-V0:
+      value:
+        id: '123656'
+        source: https://notificationSendServer12.supertelco.com
+        type: org.camaraproject.device-status.v0.connectivity-disconnected
+        specversion: '1.0'
+        datacontenttype: application/json
+        data:
+          device:
+            phoneNumber: '+99999991000'
+          subscriptionId: qs15-h556-rt89-1298
+        time: '2023-01-19T13:18:23.682Z'
+    CONNECTIVITY_SMS-DS-V0:
+      value:
+        id: '123656'
+        source: https://notificationSendServer12.supertelco.com
+        type: org.camaraproject.device-status.v0.connectivity-sms
+        specversion: '1.0'
+        datacontenttype: application/json
+        data:
+          device:
+            phoneNumber: '+99999991000'
+          subscriptionId: qs15-h556-rt89-1298
+        time: '2023-01-19T13:18:23.682Z'
+    ROAMING_STATUS-DS-V0:
+      value:
+        id: '123654'
+        source: https://notificationSendServer12.supertelco.com
+        type: org.camaraproject.device-status.v0.roaming-status
+        specversion: '1.0'
+        datacontenttype: application/json
+        data:
+          device:
+            phoneNumber: '+99999991000'
+          roaming: true
+          countryCode: 208
+          countryName: FR
+          subscriptionId: qs15-h556-rt89-1298
+        time: '2023-01-17T13:18:23.682Z'
+    SUBSCRIPTION_ENDS-DS-V0:
+      value:
+        id: '123658'
+        source: https://notificationSendServer12.supertelco.com
+        type: org.camaraproject.device-status.v0.subscription-ends
+        specversion: '1.0'
+        datacontenttype: application/json
+        data:
+          device:
+            phoneNumber: '+99999991000'
+          terminationReason: SUBSCRIPTION_EXPIRED
+          subscriptionId: qs15-h556-rt89-1298
+        time: '2023-01-19T13:18:23.682Z'
+  responses:
+    Generic404-DS-V0:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-DS-V0'
+          example:
+            status: 404
+            code: NOT_FOUND
+            message: The specified resource is not found
+    Generic500-DS-V0:
+      description: Server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-DS-V0'
+          example:
+            status: 500
+            code: INTERNAL
+            message: Server error
+    Generic403-DS-V0:
+      description: Client does not have sufficient permission
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-DS-V0'
+          example:
+            status: 403
+            code: PERMISSION_DENIED
+            message: Client does not have sufficient permissions to perform this action
+    Generic401-DS-V0:
+      description: Authentication problem with the client request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-DS-V0'
+          example:
+            status: 401
+            code: UNAUTHENTICATED
+            message: Request not authenticated due to missing, invalid, or expired credentials
+    Generic409-DS-V0:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-DS-V0'
+          example:
+            status: 409
+            code: CONFLICT
+            message: The specified resource is in a conflict
+    Generic400-DS-V0:
+      description: Problem with the client request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-DS-V0'
+          example:
+            status: 400
+            code: INVALID_ARGUMENT
+            message: Client specified an invalid argument, request body or query param
+    Generic503-DS-V0:
+      description: Service unavailable. Typically the server is down.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-DS-V0'
+          example:
+            status: 503
+            code: UNAVAILABLE
+            message: Service unavailable
+  parameters:
+    x-rapidapi-host:
+      name: x-rapidapi-host
+      in: header
+      required: true
+      description: The API's Host value as defined in the RapidAPI Hub.
+      schema:
+        type: string
+        example: network-as-code.p-eu.rapidapi.com
+  securitySchemes:
+    openId:
+      description: OpenID Connect authentication
+      type: openIdConnect
+      openIdConnectUrl: https://example.com/.well-known/openid-configuration
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-rapidapi-key
+      description: Your RapidAPI key
+externalDocs:
+  description: Project documentation at Camara
+  url: https://github.com/camaraproject/DeviceLocation
+x-refined-from:
+- nokia-network-as-code-camara-openapi.yml
+- nokia-network-as-code-platform-openapi.json

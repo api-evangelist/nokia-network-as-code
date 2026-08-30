@@ -1,0 +1,684 @@
+openapi: 3.2.0
+info:
+  title: Nokia Network As Code Slice Device Attach v1.0.0 API
+  version: 1.0.0
+  termsOfService: https://developer.networkascode.nokia.io/legal/terms-of-service
+  x-refined-note:
+  - x-badges differs across the merged source definitions and was not carried
+  - x-camara-commonalities differs across the merged source definitions and was not carried
+  - x-category differs across the merged source definitions and was not carried
+  - x-collections differs across the merged source definitions and was not carried
+  - x-long-description differs across the merged source definitions and was not carried
+  - x-public differs across the merged source definitions and was not carried
+  - x-thumbnail differs across the merged source definitions and was not carried
+  - x-version-lifecycle differs across the merged source definitions and was not carried
+  - x-website differs across the merged source definitions and was not carried
+  description: 'Operations tagged Slice Device Attach v1.0.0 across 2 of this provider''s published API definitions: nokia-network-as-code-camara-openapi.yml, nokia-network-as-code-platform-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: '{apiRoot}/geofencing-subscriptions/v0.3'
+  variables:
+    apiRoot:
+      default: http://localhost:9091
+      description: API root
+- url: '{apiRoot}/geofencing-subscriptions/v0.4'
+  variables:
+    apiRoot:
+      default: http://localhost:9091
+      description: API root
+- url: https://network-as-code.p-eu.rapidapi.com
+tags:
+- name: Slice Device Attach v1.0.0
+paths:
+  /device-attach/v0/attachments:
+    get:
+      summary: Retrieve the given device attach resources associated with the owner.
+      description: Retrieve the given device attach resources associated with the owner.
+      operationId: getAllAttachmentsStatus
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/AttachInfo-Output-SliceAttach-V1'
+                type: array
+                title: Response Getallattachmentsstatus
+      tags:
+      - Slice Device Attach v1.0.0
+      security:
+      - oAuth2ClientCredentials: []
+    post:
+      summary: Attach device to an existing or preconfigured slice.
+      description: Attach device to a specific network slice.
+      operationId: attachDevice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AttachResource-Input-SliceAttach-V1'
+            examples:
+              DEVICE_ATTACH_PHONE_NUMBER:
+                value:
+                  device:
+                    phoneNumber: '+99999991000'
+                    imsi: 99999991000
+                  customer:
+                    name: DefaultAttachOperationCustomer
+                    description: I Am Default Who Order The Device Attach Operation
+                    address: Dummy Customer Address
+                    contact: My Contact Should Be Here
+                  sliceId: slice-773
+                  mobile_services:
+                  - Voice
+                  - Voicemail
+                  - 5G-Data
+                  traffic_categories:
+                    apps:
+                      os: 09078034-07db-4b13-a970-ab80235f7369
+                      apps:
+                      - Daedalus
+                  webhook:
+                    notificationUrl: https://application-server.com
+                    notificationAuthToken: c8974e592c2fa383d4a396071
+        required: true
+      responses:
+        '202':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttachInfo-Output-SliceAttach-V1'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError-SliceAttach-V1'
+      callbacks:
+        notification:
+          '{$request.body#/webhook/notificationUrl}':
+            post:
+              summary: Notification
+              operationId: notification__request_body__webhook_notificationUrl__post
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/AttachInfo-Input-SliceAttach-V1'
+                required: true
+              responses:
+                '200':
+                  description: Successful Response
+                  content:
+                    application/json:
+                      schema: {}
+                '422':
+                  description: Validation Error
+                  content:
+                    application/json:
+                      schema:
+                        $ref: '#/components/schemas/HTTPValidationError-SliceAttach-V1'
+      tags:
+      - Slice Device Attach v1.0.0
+      security:
+      - oAuth2ClientCredentials: []
+    servers:
+    - url: '{apiRoot}/geofencing-subscriptions/v0.3'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+    - url: '{apiRoot}/geofencing-subscriptions/v0.4'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+  /device-attach/v0/attachments/{resource_id}:
+    delete:
+      summary: Detach device from given slice.
+      description: Detach device from a specific slice.
+      operationId: detachDevice
+      parameters:
+      - name: resource_id
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 36
+          pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$
+          title: Resource ID.
+        example: de87e438-58b4-42c3-9d49-0fbfbd878305
+      callbacks:
+        notification:
+          '{$request.body#/webhook/notificationUrl}':
+            post:
+              summary: Notification
+              operationId: notification__request_body__webhook_notificationUrl__post
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/AttachInfo-Input-SliceAttach-V1'
+              responses:
+                '200':
+                  description: Successful Response
+                  content:
+                    application/json:
+                      schema: {}
+                '422':
+                  description: Validation Error
+                  content:
+                    application/json:
+                      schema:
+                        $ref: '#/components/schemas/HTTPValidationError-SliceAttach-V1'
+      responses:
+        '202':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/AttachInfo-Output-SliceAttach-V1'
+                title: Response Detachdevice
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError-SliceAttach-V1'
+      tags:
+      - Slice Device Attach v1.0.0
+      security:
+      - oAuth2ClientCredentials: []
+    get:
+      summary: Retrieve the given device attach resource.
+      description: Retrieve the given device attach resource.
+      operationId: getAttachmentStatus
+      parameters:
+      - name: resource_id
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 36
+          pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$
+          title: Resource ID.
+        example: de87e438-58b4-42c3-9d49-0fbfbd878305
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttachInfo-Output-SliceAttach-V1'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError-SliceAttach-V1'
+      tags:
+      - Slice Device Attach v1.0.0
+      security:
+      - oAuth2ClientCredentials: []
+    servers:
+    - url: '{apiRoot}/geofencing-subscriptions/v0.3'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+    - url: '{apiRoot}/geofencing-subscriptions/v0.4'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+  /device-attach/v0/attachments/subscribers/{operation}:
+    post:
+      summary: Create subscriber in a given slice.
+      description: Create subscriber in a given slice.
+      operationId: manageSubscriber
+      parameters:
+      - name: operation
+        in: path
+        required: true
+        schema:
+          enum:
+          - create
+          - remove
+          type: string
+          title: Operation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AttachResource-Input-SliceAttach-V1'
+            examples:
+              CREATE_SUBSCRIBER_IN_A_GIVEN_SLICE:
+                value:
+                  device:
+                    phoneNumber: '+99999991000'
+                    imsi: 99999991000
+                  customer:
+                    name: DefaultAttachOperationCustomer
+                    description: I Am Default Who Order The Device Attach Operation
+                    address: Dummy Customer Address
+                    contact: My Contact Should Be Here
+                  sliceId: slice-773
+                  mobile_services:
+                  - Voice
+                  - Voicemail
+                  - 5G-Data
+                  traffic_categories:
+                    apps:
+                      os: 09078034-07db-4b13-a970-ab80235f7369
+                      apps:
+                      - Daedalus
+                  webhook:
+                    notificationUrl: https://application-server.com
+                    notificationAuthToken: c8974e592c2fa383d4a396071
+      callbacks:
+        notification:
+          '{$request.body#/webhook/notificationUrl}':
+            post:
+              summary: Notification
+              operationId: notification__request_body__webhook_notificationUrl__post
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/AttachInfo-Input-SliceAttach-V1'
+              responses:
+                '200':
+                  description: Successful Response
+                  content:
+                    application/json:
+                      schema: {}
+                '422':
+                  description: Validation Error
+                  content:
+                    application/json:
+                      schema:
+                        $ref: '#/components/schemas/HTTPValidationError-SliceAttach-V1'
+      responses:
+        '202':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttachInfo-Output-SliceAttach-V1'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError-SliceAttach-V1'
+      tags:
+      - Slice Device Attach v1.0.0
+      security:
+      - oAuth2ClientCredentials: []
+    servers:
+    - url: '{apiRoot}/geofencing-subscriptions/v0.3'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+    - url: '{apiRoot}/geofencing-subscriptions/v0.4'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+components:
+  schemas:
+    AttachInfo-Input-SliceAttach-V1:
+      properties:
+        nac_resource_id:
+          type: string
+          maxLength: 100
+          title: Nac Resource Id
+          description: Resource identifier of the attachment data.
+        resource:
+          $ref: '#/components/schemas/AttachResource-Input-SliceAttach-V1'
+          description: Original device attach request resources.
+        deviceStatus:
+          allOf:
+          - $ref: '#/components/schemas/AttachStatus-SliceAttach-V1'
+          description: Status of the device in relation to the given slice e.g. ATTACHED or DETACHED.
+        deviceAttachState:
+          allOf:
+          - $ref: '#/components/schemas/OrderState-SliceAttach-V1'
+          description: Progress/state of the device attach order, e.g. Completed, Accepted, Rejected.
+        applicationAttachSuccessful:
+          type:
+          - boolean
+          - 'null'
+          title: Applicationattachsuccessful
+          description: Denotes whether successful application attach subscription was subsequently sent.
+      type: object
+      required:
+      - nac_resource_id
+      - resource
+      title: AttachInfo
+    MobileSubscribersDevice-SliceAttach-V1:
+      properties:
+        phoneNumber:
+          type:
+          - string
+          - 'null'
+          maxLength: 16
+          pattern: ^\+[1-9][0-9]{4,14}$
+          title: Phonenumber
+          description: Phone number of the subscription, if any. Optional.
+        networkAccessIdentifier:
+          type:
+          - string
+          - 'null'
+          maxLength: 256
+          pattern: ^\S+@\S+\.\S+$
+          title: Networkaccessidentifier
+          description: Email address-like external identifier of the subscription registered at the operator. If both networkAccessIdentifier and phoneNumber are included, phoneNumber may be dropped and networkAccessIdentifier may be retained.
+        ipv4Address:
+          allOf:
+          - $ref: '#/components/schemas/DeviceIpv4Addr-SliceAttach-V1'
+          description: IPv4 address of the device. IP address is needed for some flow-oriented services, such as QoD.
+        ipv6Address:
+          type:
+          - string
+          - 'null'
+          maxLength: 45
+          title: Ipv6Address
+          description: IPv6 address of the device. IP address is needed for some flow-oriented services, such as QoD.
+        imsi:
+          type:
+          - integer
+          - 'null'
+          title: Imsi
+          description: International mobile subscriber identity
+      type: object
+      title: MobileSubscribersDevice
+    AttachStatus-SliceAttach-V1:
+      type: string
+      enum:
+      - ATTACHED
+      - DETACHED
+      title: AttachStatus
+    OrderState-SliceAttach-V1:
+      type: string
+      enum:
+      - Completed
+      - Accepted
+      - Rejected
+      - Acknowledged
+      title: OrderState
+    DeviceIpv4Addr-SliceAttach-V1:
+      properties:
+        publicAddress:
+          type:
+          - string
+          - 'null'
+          maxLength: 15
+          title: Publicaddress
+          description: Public IPv4 address of the device. Either of the device or the NAT the device is behind.
+        privateAddress:
+          type:
+          - string
+          - 'null'
+          maxLength: 15
+          title: Privateaddress
+          description: Private IPv4 address of the device, if it is behind a NAT.
+        publicPort:
+          type:
+          - integer
+          - 'null'
+          maximum: 65535
+          minimum: 0
+          format: int32
+          title: Publicport
+          description: Public port used by the device. Port is necessary, as private address ranges overlap, and public port is used to extend the range for CGNAT.
+      type: object
+      title: DeviceIpv4Addr
+    AttachInfo-Output-SliceAttach-V1:
+      properties:
+        nac_resource_id:
+          type: string
+          maxLength: 100
+          title: Nac Resource Id
+          description: Resource identifier of the attachment data.
+        resource:
+          $ref: '#/components/schemas/AttachResource-Output-SliceAttach-V1'
+          description: Original device attach request resources.
+        deviceStatus:
+          allOf:
+          - $ref: '#/components/schemas/AttachStatus-SliceAttach-V1'
+          description: Status of the device in relation to the given slice e.g. ATTACHED or DETACHED.
+        deviceAttachState:
+          allOf:
+          - $ref: '#/components/schemas/OrderState-SliceAttach-V1'
+          description: Progress/state of the device attach order, e.g. Completed, Accepted, Rejected.
+        applicationAttachSuccessful:
+          type:
+          - boolean
+          - 'null'
+          title: Applicationattachsuccessful
+          description: Denotes whether successful application attach subscription was subsequently sent.
+      type: object
+      required:
+      - nac_resource_id
+      - resource
+      title: AttachInfo
+    Apps-SliceAttach-V1:
+      properties:
+        os:
+          type: string
+          maxLength: 100
+          title: Os
+          description: Operating system identifier, UUID
+          example: 09078034-07db-4b13-a970-ab80235f7369
+        apps:
+          items:
+            type: string
+            maxLength: 50
+          type: array
+          title: Apps
+          description: List of application identifiers
+      type: object
+      required:
+      - os
+      - apps
+      title: Apps
+    AttachResource-Output-SliceAttach-V1:
+      properties:
+        device:
+          $ref: '#/components/schemas/MobileSubscribersDevice-SliceAttach-V1'
+          description: Identifiers of the device. Phone number and imsi are mandatory for device attach operations.
+        customer:
+          allOf:
+          - $ref: '#/components/schemas/Customer-SliceAttach-V1'
+          description: Customer who orders the device attach operations.
+        sliceId:
+          type: string
+          maxLength: 64
+          minLength: 5
+          pattern: ^[a-zA-Z0-9][a-zA-Z0-9-]{3,63}[a-zA-Z0-9]$
+          title: Sliceid
+          description: Slice resource identifier, simple name or UUID.
+        mobile_services:
+          items:
+            type: string
+          type: array
+          maxItems: 10
+          title: Mobile Services
+          description: List of services allowed for the device.
+          default:
+          - Voice
+          - Voicemail
+          - 5G-Data
+        traffic_categories:
+          allOf:
+          - $ref: '#/components/schemas/TrafficCategories-SliceAttach-V1'
+          description: Denotes the operating system id and the applications' identifiers
+        webhook:
+          allOf:
+          - $ref: '#/components/schemas/Webhook-SliceAttach-V1'
+          description: Callback settings for the requester application.
+      type: object
+      required:
+      - device
+      - sliceId
+      title: AttachResource
+    HTTPValidationError-SliceAttach-V1:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError-SliceAttach-V1'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    AttachResource-Input-SliceAttach-V1:
+      properties:
+        device:
+          $ref: '#/components/schemas/MobileSubscribersDevice-SliceAttach-V1'
+          description: Identifiers of the device. Phone number and imsi are mandatory for device attach operations.
+        customer:
+          allOf:
+          - $ref: '#/components/schemas/Customer-SliceAttach-V1'
+          description: Customer who orders the device attach operations.
+        sliceId:
+          type: string
+          maxLength: 64
+          minLength: 5
+          pattern: ^[a-zA-Z0-9][a-zA-Z0-9-]{3,63}[a-zA-Z0-9]$
+          title: Sliceid
+          description: Slice resource identifier, simple name or UUID.
+        mobile_services:
+          items:
+            type: string
+          type: array
+          maxItems: 10
+          title: Mobile Services
+          description: List of services allowed for the device.
+          default:
+          - Voice
+          - Voicemail
+          - 5G-Data
+        traffic_categories:
+          allOf:
+          - $ref: '#/components/schemas/TrafficCategories-SliceAttach-V1'
+          description: Denotes the operating system id and the applications' identifiers
+        webhook:
+          allOf:
+          - $ref: '#/components/schemas/Webhook-SliceAttach-V1'
+          description: Callback settings for the requester application.
+      type: object
+      required:
+      - device
+      - sliceId
+      title: AttachResource
+    TrafficCategories-SliceAttach-V1:
+      properties:
+        apps:
+          $ref: '#/components/schemas/Apps-SliceAttach-V1'
+          description: Contains the operating system ID and the applications identifiers.
+      type: object
+      required:
+      - apps
+      title: TrafficCategories
+    Customer-SliceAttach-V1:
+      properties:
+        name:
+          type: string
+          maxLength: 250
+          title: Name
+        description:
+          type:
+          - string
+          - 'null'
+          maxLength: 100
+          title: Description
+          description: Description of the slice, e.g. "B2B_5G_eMBB_Slice"
+        address:
+          type:
+          - string
+          - 'null'
+          maxLength: 250
+          title: Address
+          description: Address of the customer ordering slice creation.
+        contact:
+          type:
+          - string
+          - 'null'
+          maxLength: 250
+          title: Contact
+          description: Contact of the customer ordering slice creation.
+      type: object
+      required:
+      - name
+      title: Customer
+    ValidationError-SliceAttach-V1:
+      properties:
+        loc:
+          type: array
+          items:
+            type: string
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    Webhook-SliceAttach-V1:
+      properties:
+        notificationUrl:
+          type: string
+          maxLength: 256
+          title: Notificationurl
+          description: Notification URL for session-related events.
+          example: https://application-server.com
+        notificationAuthToken:
+          type:
+          - string
+          - 'null'
+          maxLength: 4096
+          title: Notificationauthtoken
+          description: Authorization token for notification sending.
+          example: c8974e592c2fa383d4a3960714
+      type: object
+      required:
+      - notificationUrl
+      title: Webhook
+  parameters:
+    x-rapidapi-host:
+      name: x-rapidapi-host
+      in: header
+      required: true
+      description: The API's Host value as defined in the RapidAPI Hub.
+      schema:
+        type: string
+        example: network-as-code.p-eu.rapidapi.com
+  securitySchemes:
+    openId:
+      description: OpenID Connect authentication
+      type: openIdConnect
+      openIdConnectUrl: https://example.com/.well-known/openid-configuration
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-rapidapi-key
+      description: Your RapidAPI key
+externalDocs:
+  description: Project documentation at Camara
+  url: https://github.com/camaraproject/DeviceLocation
+x-refined-from:
+- nokia-network-as-code-camara-openapi.yml
+- nokia-network-as-code-platform-openapi.json

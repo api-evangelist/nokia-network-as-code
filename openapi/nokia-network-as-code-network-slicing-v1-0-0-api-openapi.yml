@@ -1,0 +1,860 @@
+openapi: 3.2.0
+info:
+  title: Nokia Network As Code Network Slicing v1.0.0 API
+  version: 1.0.0
+  termsOfService: https://developer.networkascode.nokia.io/legal/terms-of-service
+  x-refined-note:
+  - x-badges differs across the merged source definitions and was not carried
+  - x-camara-commonalities differs across the merged source definitions and was not carried
+  - x-category differs across the merged source definitions and was not carried
+  - x-collections differs across the merged source definitions and was not carried
+  - x-long-description differs across the merged source definitions and was not carried
+  - x-public differs across the merged source definitions and was not carried
+  - x-thumbnail differs across the merged source definitions and was not carried
+  - x-version-lifecycle differs across the merged source definitions and was not carried
+  - x-website differs across the merged source definitions and was not carried
+  description: 'Operations tagged Network Slicing v1.0.0 across 2 of this provider''s published API definitions: nokia-network-as-code-camara-openapi.yml, nokia-network-as-code-platform-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: '{apiRoot}/geofencing-subscriptions/v0.3'
+  variables:
+    apiRoot:
+      default: http://localhost:9091
+      description: API root
+- url: '{apiRoot}/geofencing-subscriptions/v0.4'
+  variables:
+    apiRoot:
+      default: http://localhost:9091
+      description: API root
+- url: https://network-as-code.p-eu.rapidapi.com
+tags:
+- name: Network Slicing v1.0.0
+paths:
+  /slice/v1/slices:
+    get:
+      summary: Returns All Slices
+      description: Returns All created Network Slices
+      operationId: getAllSlices
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SliceData-Slice-V1'
+                type: array
+                title: Response Getallslices
+      tags:
+      - Network Slicing v1.0.0
+      security:
+      - oAuth2ClientCredentials: []
+    post:
+      tags:
+      - Network Slicing v1.0.0
+      summary: Create a network slice.
+      description: Create a network slice.
+      operationId: create_slice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Slice-Input-Slice-V1'
+            examples:
+              NETWORK_SLICE_CREATION:
+                value:
+                  notificationUrl: https://example.com/notify
+                  notificationAuthToken: 6207f4c159esfnjsf6280c0e8417090d91710b8c9369f21d9b616ebe809d28c5dc4b1428447fa5d83988b516595253bae24e2a9eb22f43523f2ab1997dd7
+                  networkIdentifier:
+                    mcc: '236'
+                    mnc: '30'
+                  sliceInfo:
+                    serviceType: 1
+                    differentiator: 0003E8
+                  maxDataConnections: 42312
+                  maxDevices: 33
+                  sliceUplinkThroughput:
+                    guaranteed: 15
+                    maximum: 999999
+                  deviceUplinkThroughput:
+                    guaranteed: 10
+                    maximum: 20
+        required: true
+      responses:
+        '202':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SliceData-Slice-V1'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError-Slice-V1'
+      callbacks:
+        notification:
+          '{$request.body#/notificationUrl}':
+            post:
+              summary: Notification
+              operationId: notification__request_body__notificationUrl__post
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/ServiceOrderClientNotif-Slice-V1'
+                required: true
+              responses:
+                '200':
+                  description: Successful Response
+                  content:
+                    application/json:
+                      schema:
+                        $ref: '#/components/schemas/ServiceOrderClientNotif-Slice-V1'
+                '422':
+                  description: Validation Error
+                  content:
+                    application/json:
+                      schema:
+                        $ref: '#/components/schemas/HTTPValidationError-Slice-V1'
+      security:
+      - oAuth2ClientCredentials: []
+    servers:
+    - url: '{apiRoot}/geofencing-subscriptions/v0.3'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+    - url: '{apiRoot}/geofencing-subscriptions/v0.4'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+  /slice/v1/slices/{id}:
+    get:
+      tags:
+      - Network Slicing v1.0.0
+      summary: Get network slice data.
+      description: Get network slice data.
+      operationId: get_slice
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 5
+          maxLength: 64
+          pattern: ^[a-zA-Z0-9][a-zA-Z0-9-]{3,63}[a-zA-Z0-9]$
+          title: Slice name or ID
+        example: Concert-2029-Big-Arena
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SliceData-Slice-V1'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError-Slice-V1'
+      security:
+      - oAuth2ClientCredentials: []
+    delete:
+      tags:
+      - Network Slicing v1.0.0
+      summary: Delete network slice.
+      description: Delete network slice. The slice state must not be active to perform this operation.
+      operationId: delete_slice
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 5
+          maxLength: 64
+          pattern: ^[a-zA-Z0-9][a-zA-Z0-9-]{3,63}[a-zA-Z0-9]$
+          title: Slice name or ID
+        example: Concert-2029-Big-Arena
+      callbacks:
+        notification:
+          '{$request.body#/notificationUrl}':
+            post:
+              summary: Notification
+              operationId: notification__request_body__notificationUrl__post
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/ServiceOrderClientNotif-Slice-V1'
+              responses:
+                '200':
+                  description: Successful Response
+                  content:
+                    application/json:
+                      schema:
+                        $ref: '#/components/schemas/ServiceOrderClientNotif-Slice-V1'
+                '422':
+                  description: Validation Error
+                  content:
+                    application/json:
+                      schema:
+                        $ref: '#/components/schemas/HTTPValidationError-Slice-V1'
+      responses:
+        '202':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Accepted-Slice-V1'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError-Slice-V1'
+      security:
+      - oAuth2ClientCredentials: []
+    servers:
+    - url: '{apiRoot}/geofencing-subscriptions/v0.3'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+    - url: '{apiRoot}/geofencing-subscriptions/v0.4'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+  /slice/v1/slices/{id}/activate:
+    post:
+      tags:
+      - Network Slicing v1.0.0
+      summary: Activate a network slice.
+      description: Activate a network slice.
+      operationId: activate_slice
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 36
+          title: Id
+      callbacks:
+        notification:
+          '{$request.body#/notificationUrl}':
+            post:
+              summary: Notification
+              operationId: notification__request_body__notificationUrl__post
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/ServiceOrderClientNotif-Slice-V1'
+              responses:
+                '200':
+                  description: Successful Response
+                  content:
+                    application/json:
+                      schema:
+                        $ref: '#/components/schemas/ServiceOrderClientNotif-Slice-V1'
+                '422':
+                  description: Validation Error
+                  content:
+                    application/json:
+                      schema:
+                        $ref: '#/components/schemas/HTTPValidationError-Slice-V1'
+      responses:
+        '202':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Accepted-Slice-V1'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError-Slice-V1'
+      security:
+      - oAuth2ClientCredentials: []
+    servers:
+    - url: '{apiRoot}/geofencing-subscriptions/v0.3'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+    - url: '{apiRoot}/geofencing-subscriptions/v0.4'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+  /slice/v1/slices/{id}/deactivate:
+    post:
+      tags:
+      - Network Slicing v1.0.0
+      summary: Deactivate a network slice.
+      description: Deactivate a network slice. The slice state must be active to be able to perform this operation.
+      operationId: deactivate_slice
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 36
+          title: Id
+      callbacks:
+        notification:
+          '{$request.body#/notificationUrl}':
+            post:
+              summary: Notification
+              operationId: notification__request_body__notificationUrl__post
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/ServiceOrderClientNotif-Slice-V1'
+              responses:
+                '200':
+                  description: Successful Response
+                  content:
+                    application/json:
+                      schema:
+                        $ref: '#/components/schemas/ServiceOrderClientNotif-Slice-V1'
+                '422':
+                  description: Validation Error
+                  content:
+                    application/json:
+                      schema:
+                        $ref: '#/components/schemas/HTTPValidationError-Slice-V1'
+      responses:
+        '202':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Accepted-Slice-V1'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError-Slice-V1'
+      security:
+      - oAuth2ClientCredentials: []
+    servers:
+    - url: '{apiRoot}/geofencing-subscriptions/v0.3'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+    - url: '{apiRoot}/geofencing-subscriptions/v0.4'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+components:
+  schemas:
+    Accepted-Slice-V1:
+      properties:
+        status:
+          type: string
+          maxLength: 20
+          title: Status
+          default: Accepted
+      type: object
+      title: Accepted
+    Slice-Input-Slice-V1:
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          maxLength: 64
+          minLength: 5
+          pattern: ^[a-zA-Z0-9][a-zA-Z0-9-]{3,63}[a-zA-Z0-9]$
+          title: Name
+          description: Optional short name for the slice. Must be ASCII characters, digits and dash. Like name of an event.
+          example: Concert-2029-Big-Arena
+        notificationUrl:
+          type: string
+          maxLength: 255
+          title: Notificationurl
+          description: Contact attached to the order to send back information regarding this order.
+        notificationAuthToken:
+          type:
+          - string
+          - 'null'
+          maxLength: 4096
+          title: Notificationauthtoken
+          description: Authorization token for notification sending.
+        networkIdentifier:
+          $ref: '#/components/schemas/NetworkIdentifier-Slice-V1'
+          description: PLMN ID with MCC and MNC codes.
+        sliceInfo:
+          $ref: '#/components/schemas/SliceInfo-Slice-V1'
+          description: Slice Service type(SST) and slice differentiator(SD).
+        areaOfService:
+          allOf:
+          - $ref: '#/components/schemas/AreaOfService-Slice-V1'
+          description: Specifies the area where the slice can be used
+        maxDataConnections:
+          type:
+          - integer
+          - 'null'
+          maximum: 1000000
+          minimum: 0
+          format: int32
+          title: Maxdataconnections
+          description: Maximum number of data connection sessions in the slice.
+        maxDevices:
+          type:
+          - integer
+          - 'null'
+          maximum: 1000
+          minimum: 0
+          format: int32
+          title: Maxdevices
+          description: Maximum number of devices using the slice.
+        delayTolerance:
+          type:
+          - string
+          - 'null'
+          maxLength: 20
+          title: Delaytolerance
+          description: Delaytolerance attribute, True/False or SUPPORTED/NOT SUPPORTED
+        servicePriority:
+          type:
+          - integer
+          - 'null'
+          maximum: 100
+          minimum: 0
+          format: int32
+          title: Servicepriority
+          description: ServicePriority attribute
+        sliceDownlinkThroughput:
+          allOf:
+          - $ref: '#/components/schemas/Throughput-Slice-V1'
+          description: Data rate parameters (max/guaranteed) supported by the network slice for all devices together in downlink
+        sliceUplinkThroughput:
+          allOf:
+          - $ref: '#/components/schemas/Throughput-Slice-V1'
+          description: Data rate parameters (max/guaranteed) supported by the network slice for all devices together in uplink
+        deviceDownlinkThroughput:
+          allOf:
+          - $ref: '#/components/schemas/Throughput-Slice-V1'
+          description: Data rate parameters (max/guaranteed) supported by the network slice per device in downlink
+        deviceUplinkThroughput:
+          allOf:
+          - $ref: '#/components/schemas/Throughput-Slice-V1'
+          description: Data rate parameters (max/guaranteed) supported by the network slice per device in uplink
+        isolationLevel:
+          allOf:
+          - $ref: '#/components/schemas/IsolationLevel-Slice-V1'
+          description: Parameter describing the isolation type
+        qos:
+          type:
+          - string
+          - 'null'
+          maxLength: 20
+          title: Qos
+          description: QoS Identifier
+        udm5Qi:
+          type:
+          - string
+          - 'null'
+          maxLength: 20
+          title: Udm5Qi
+          description: 5G QoS Identifier
+        customer:
+          allOf:
+          - $ref: '#/components/schemas/Customer-Slice-V1'
+          description: Customer created the slice
+      type: object
+      required:
+      - notificationUrl
+      - networkIdentifier
+      - sliceInfo
+      title: Slice
+    ValidationError-Slice-V1:
+      properties:
+        loc:
+          type: array
+          items:
+            type: string
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    SliceState-Slice-V1:
+      type: string
+      enum:
+      - PENDING
+      - AVAILABLE
+      - OPERATING
+      - DELETED
+      - FAILED
+      title: SliceState
+    NetworkIdentifier-Slice-V1:
+      properties:
+        mcc:
+          type: string
+          maxLength: 64
+          minLength: 2
+          pattern: '[0-9]{3}|[a-zA-Z]{2}|[A-Za-z]{3,64}'
+          title: Mcc
+          description: Country name, short name, or MCC code. One cannot use country names if a country has several MCC codes, such as the US.
+        mnc:
+          type: string
+          maxLength: 3
+          minLength: 2
+          pattern: ^[0-9]{2,3}$
+          title: Mnc
+      type: object
+      required:
+      - mcc
+      - mnc
+      title: NetworkIdentifier
+    ServiceOrderClientNotif-Slice-V1:
+      properties:
+        resource:
+          type: string
+          maxLength: 100
+          title: Resource
+          description: Resource ID/Slice name.
+        action:
+          $ref: '#/components/schemas/CSMF_action-Slice-V1'
+          description: CSMF operation, e.g. add/modify/delete.
+        outcome:
+          $ref: '#/components/schemas/ServiceOrderStateType-Slice-V1'
+          description: Outcome of the given operation, e.g completed,inprogress,failed.
+        current_slice_state:
+          $ref: '#/components/schemas/SliceState-Slice-V1'
+          description: 'Current slice state e.g. PENDING/OPERATING/AVAILABLE/DELETED. '
+      type: object
+      required:
+      - resource
+      - action
+      - outcome
+      - current_slice_state
+      title: ServiceOrderClientNotif
+    SliceData-Slice-V1:
+      properties:
+        slice:
+          $ref: '#/components/schemas/Slice-Output-Slice-V1'
+          description: Contains the network slice's details.
+        csi_id:
+          type:
+          - string
+          - 'null'
+          title: Csi Id
+          description: Communications Service Instance identifier.
+        name:
+          type: string
+          title: Name
+          description: Name/resource identifier of the network slice.
+        state:
+          $ref: '#/components/schemas/SliceState-Slice-V1'
+          description: Network slice's current state.
+        provisioner:
+          type: string
+          maxLength: 50
+          title: Provisioner
+          description: The organization provisioning the slice
+      type: object
+      required:
+      - slice
+      - name
+      - state
+      - provisioner
+      title: SliceData
+    Point-Slice-V1:
+      properties:
+        lat:
+          type: number
+          maximum: 90
+          minimum: -90
+          title: Latitude
+          default: 0
+        lon:
+          type: number
+          maximum: 180
+          minimum: -180
+          title: Longitude
+          default: 0
+      type: object
+      title: Point
+    SliceInfo-Slice-V1:
+      properties:
+        serviceType:
+          type: integer
+          format: int32
+          title: Servicetype
+          description: Name or ID of slice type (e.g. eMBB, URLLC, MIoT or numeric SST).
+        differentiator:
+          type:
+          - string
+          - 'null'
+          maxLength: 25
+          pattern: ^[A-Fa-f0-9]{1,6}$
+          title: Differentiator
+          description: Differentiator identifies the slice within the type.
+      type: object
+      required:
+      - serviceType
+      title: SliceInfo
+    IsolationLevel-Slice-V1:
+      type: string
+      enum:
+      - NO-ISOLATION
+      - PHYSICAL-ISOLATION
+      - LOGICAL-ISOLATION
+      title: IsolationLevel
+    ServiceOrderStateType-Slice-V1:
+      type: string
+      enum:
+      - acknowledged
+      - rejected
+      - pending
+      - held
+      - inProgress
+      - cancelled
+      - completed
+      - failed
+      - partial
+      - assessingCancellation
+      - pendingCancellation
+      title: ServiceOrderStateType
+    Slice-Output-Slice-V1:
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          maxLength: 64
+          minLength: 5
+          pattern: ^[a-zA-Z0-9][a-zA-Z0-9-]{3,63}[a-zA-Z0-9]$
+          title: Name
+          description: Optional short name for the slice. Must be ASCII characters, digits and dash. Like name of an event.
+          example: Concert-2029-Big-Arena
+        notificationUrl:
+          type: string
+          maxLength: 255
+          title: Notificationurl
+          description: Contact attached to the order to send back information regarding this order.
+        notificationAuthToken:
+          type:
+          - string
+          - 'null'
+          maxLength: 4096
+          title: Notificationauthtoken
+          description: Authorization token for notification sending.
+        networkIdentifier:
+          $ref: '#/components/schemas/NetworkIdentifier-Slice-V1'
+          description: PLMN ID with MCC and MNC codes.
+        sliceInfo:
+          $ref: '#/components/schemas/SliceInfo-Slice-V1'
+          description: Slice Service type(SST) and slice differentiator(SD).
+        areaOfService:
+          allOf:
+          - $ref: '#/components/schemas/AreaOfService-Slice-V1'
+          description: Specifies the area where the slice can be used
+        maxDataConnections:
+          type:
+          - integer
+          - 'null'
+          maximum: 1000000
+          minimum: 0
+          format: int32
+          title: Maxdataconnections
+          description: Maximum number of data connection sessions in the slice.
+        maxDevices:
+          type:
+          - integer
+          - 'null'
+          maximum: 1000
+          minimum: 0
+          format: int32
+          title: Maxdevices
+          description: Maximum number of devices using the slice.
+        delayTolerance:
+          type:
+          - string
+          - 'null'
+          maxLength: 20
+          title: Delaytolerance
+          description: Delaytolerance attribute, True/False or SUPPORTED/NOT SUPPORTED
+        servicePriority:
+          type:
+          - integer
+          - 'null'
+          maximum: 100
+          minimum: 0
+          format: int32
+          title: Servicepriority
+          description: ServicePriority attribute
+        sliceDownlinkThroughput:
+          allOf:
+          - $ref: '#/components/schemas/Throughput-Slice-V1'
+          description: Data rate parameters (max/guaranteed) supported by the network slice for all devices together in downlink
+        sliceUplinkThroughput:
+          allOf:
+          - $ref: '#/components/schemas/Throughput-Slice-V1'
+          description: Data rate parameters (max/guaranteed) supported by the network slice for all devices together in uplink
+        deviceDownlinkThroughput:
+          allOf:
+          - $ref: '#/components/schemas/Throughput-Slice-V1'
+          description: Data rate parameters (max/guaranteed) supported by the network slice per device in downlink
+        deviceUplinkThroughput:
+          allOf:
+          - $ref: '#/components/schemas/Throughput-Slice-V1'
+          description: Data rate parameters (max/guaranteed) supported by the network slice per device in uplink
+        isolationLevel:
+          allOf:
+          - $ref: '#/components/schemas/IsolationLevel-Slice-V1'
+          description: Parameter describing the isolation type
+        qos:
+          type:
+          - string
+          - 'null'
+          maxLength: 20
+          title: Qos
+          description: QoS Identifier
+        udm5Qi:
+          type:
+          - string
+          - 'null'
+          maxLength: 20
+          title: Udm5Qi
+          description: 5G QoS Identifier
+        customer:
+          allOf:
+          - $ref: '#/components/schemas/Customer-Slice-V1'
+          description: Customer created the slice
+      type: object
+      required:
+      - notificationUrl
+      - networkIdentifier
+      - sliceInfo
+      title: Slice
+    Throughput-Slice-V1:
+      properties:
+        guaranteed:
+          type:
+          - number
+          - 'null'
+          title: Guaranteed
+          description: Guaranteed throughput in kbps.
+        maximum:
+          type:
+          - number
+          - 'null'
+          title: Maximum
+          description: Maximum throughput in kbps.
+      type: object
+      title: Throughput
+    HTTPValidationError-Slice-V1:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError-Slice-V1'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    CSMF_action-Slice-V1:
+      type: string
+      enum:
+      - add
+      - modify
+      - delete
+      - noChange
+      title: CSMF_action
+    AreaOfService-Slice-V1:
+      properties:
+        polygon:
+          items:
+            $ref: '#/components/schemas/Point-Slice-V1'
+          type: array
+          minItems: 4
+          title: Polygon
+          description: Corners of the polygon defining the area that must be covered. The actual area may be larger, depending on cell areas.
+      type: object
+      required:
+      - polygon
+      title: AreaOfService
+    Customer-Slice-V1:
+      properties:
+        name:
+          type: string
+          maxLength: 250
+          title: Name
+        description:
+          type:
+          - string
+          - 'null'
+          maxLength: 100
+          title: Description
+          description: Description of the slice, e.g. "B2B_5G_eMBB_Slice"
+        address:
+          type:
+          - string
+          - 'null'
+          maxLength: 250
+          title: Address
+          description: Address of the customer ordering slice creation.
+        contact:
+          type:
+          - string
+          - 'null'
+          maxLength: 250
+          title: Contact
+          description: Contact of the customer ordering slice creation.
+      type: object
+      required:
+      - name
+      title: Customer
+  parameters:
+    x-rapidapi-host:
+      name: x-rapidapi-host
+      in: header
+      required: true
+      description: The API's Host value as defined in the RapidAPI Hub.
+      schema:
+        type: string
+        example: network-as-code.p-eu.rapidapi.com
+  securitySchemes:
+    openId:
+      description: OpenID Connect authentication
+      type: openIdConnect
+      openIdConnectUrl: https://example.com/.well-known/openid-configuration
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-rapidapi-key
+      description: Your RapidAPI key
+externalDocs:
+  description: Project documentation at Camara
+  url: https://github.com/camaraproject/DeviceLocation
+x-refined-from:
+- nokia-network-as-code-camara-openapi.yml
+- nokia-network-as-code-platform-openapi.json

@@ -1,0 +1,391 @@
+openapi: 3.2.0
+info:
+  title: Network as Code Number Verification v2.1 API
+  version: 1.0.0
+  description: Nokia's Network as Code API for programmable networks.
+  x-category: Other
+  x-long-description: Nokia's Network as Code API for programmable networks
+  x-website: ''
+  x-public: true
+  x-thumbnail: https://rapidapi-prod-prodeu-apis.s3.eu-central-1.amazonaws.com/87fa562b-c40b-4a8f-9847-108b8973ce6f.png
+  x-version-lifecycle: active
+  x-badges: []
+  termsOfService: https://developer.networkascode.nokia.io/legal/terms-of-service
+  x-collections: []
+servers:
+- url: https://network-as-code.p-eu.rapidapi.com
+security:
+- ApiKeyAuth: []
+tags:
+- name: Number Verification v2.1
+paths:
+  /passthrough/camara/v1/number-verification/number-verification/v2/verify:
+    post:
+      tags:
+      - Number Verification v2.1
+      summary: Verifies if the received hashed/plain text phone number matches the phone number associated with the access token
+      parameters:
+      - name: x-correlator
+        in: header
+        required: false
+        description: Correlation id for the different services
+        schema: {}
+      - $ref: '#/components/parameters/x-rapidapi-host'
+      operationId: phoneNumberVerify-NV-V2
+      description: 'Verifies if the specified phone number (either in plain text or hashed format) matches the one that the user is currently using. Only one of the plain or hashed formats must be provided.
+
+        - The number verification will be done for the user that has authenticated via mobile network
+
+        - It returns true/false depending on if the hashed phone number received as input matches the authenticated user''s `device phone number` associated to the access token
+
+        '
+      responses:
+        '200':
+          content:
+            application/json:
+              examples:
+                Example_1:
+                  value:
+                    devicePhoneNumberVerified: true
+              schema:
+                type: object
+                description: Number verification result
+                required:
+                - devicePhoneNumberVerified
+                properties:
+                  devicePhoneNumberVerified:
+                    description: Number verification. True, if it matches
+                    type: boolean
+          description: ''
+        '400':
+          content:
+            application/json:
+              examples:
+                Example_1:
+                  value:
+                    status: 400
+                    code: INVALID_ARGUMENT
+                    message: Client specified an invalid argument, request body or query param
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - status
+                  - code
+                  - message
+                  properties:
+                    status:
+                      type: integer
+                      description: HTTP response status code
+                    code:
+                      type: string
+                      description: A human-readable code to describe the error
+                    message:
+                      type: string
+                      description: A human-readable description of what the event represents
+                - type: object
+                  properties:
+                    status:
+                      enum:
+                      - 400
+                    code:
+                      enum:
+                      - INVALID_ARGUMENT
+          description: ''
+        '401':
+          content:
+            application/json:
+              examples:
+                GENERIC_401_UNAUTHENTICATED:
+                  description: Request cannot be authenticated and a new authentication is required
+                  value:
+                    status: 401
+                    code: UNAUTHENTICATED
+                    message: Request not authenticated due to missing, invalid, or expired credentials. A new authentication is required.
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - status
+                  - code
+                  - message
+                  properties:
+                    status:
+                      type: integer
+                      description: HTTP response status code
+                    code:
+                      type: string
+                      description: A human-readable code to describe the error
+                    message:
+                      type: string
+                      description: A human-readable description of what the event represents
+                - type: object
+                  properties:
+                    status:
+                      enum:
+                      - 401
+                    code:
+                      enum:
+                      - UNAUTHENTICATED
+          description: ''
+        '403':
+          content:
+            application/json:
+              examples:
+                GENERIC_403_USER_NOT_AUTHENTICATED_BY_MOBILE_NETWORK:
+                  value:
+                    status: 403
+                    code: NUMBER_VERIFICATION.USER_NOT_AUTHENTICATED_BY_MOBILE_NETWORK
+                    message: Client must authenticate via the mobile network to use this service
+                GENERIC_403_PERMISSION_DENIED:
+                  description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+                  value:
+                    status: 403
+                    code: PERMISSION_DENIED
+                    message: Client does not have sufficient permissions to perform this action.
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - status
+                  - code
+                  - message
+                  properties:
+                    status:
+                      type: integer
+                      description: HTTP response status code
+                    code:
+                      type: string
+                      description: A human-readable code to describe the error
+                    message:
+                      type: string
+                      description: A human-readable description of what the event represents
+                - type: object
+                  properties:
+                    status:
+                      enum:
+                      - 403
+                    code:
+                      enum:
+                      - PERMISSION_DENIED
+                      - NUMBER_VERIFICATION.USER_NOT_AUTHENTICATED_BY_MOBILE_NETWORK
+          description: ''
+      requestBody:
+        content:
+          application/json:
+            examples:
+              NUMBER_VERIFY_TRUE_PHONE_NUMBER:
+                value:
+                  phoneNumber: '+99999991000'
+              NUMBER_VERIFY_FALSE_PHONE_NUMBER:
+                value:
+                  phoneNumber: '+99999991001'
+              NUMBER_VERIFY_PHONE_NUMBER_EMPTY_CREDENTIAL:
+                value:
+                  phoneNumber: '+99999991000'
+                  credential: null
+            schema:
+              description: Payload to verify the phone number. Exactly one of `phoneNumber` or `hashedPhoneNumber` is required; `credential` is optional.
+              oneOf:
+              - type: object
+                additionalProperties: false
+                required:
+                - phoneNumber
+                properties:
+                  phoneNumber:
+                    type: string
+                    pattern: ^\+[1-9][0-9]{4,14}$
+                    description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+                  credential:
+                    description: 'Nokia proprietary optional field. Encoded SD-JWT; when extracted and decoded, it may contain the TS.43 operator token and related claims.
+
+                      '
+              - type: object
+                additionalProperties: false
+                required:
+                - hashedPhoneNumber
+                properties:
+                  hashedPhoneNumber:
+                    description: Hashed phone number. SHA-256 (in hexadecimal representation) of the mobile phone number in **E.164 format (starting with country code)**. Prefixed with '+'.
+                    type: string
+                    pattern: ^[a-fA-F0-9]{64}$
+                  credential:
+                    description: 'Nokia proprietary optional field. Encoded SD-JWT; when extracted and decoded, it may contain the TS.43 operator token and related claims.
+
+                      '
+        description: ''
+  /passthrough/camara/v1/number-verification/number-verification/v2/device-phone-number:
+    get:
+      tags:
+      - Number Verification v2.1
+      summary: Returns the phone number associated with the access token
+      parameters:
+      - name: x-correlator
+        in: header
+        required: false
+        description: Correlation id for the different services
+        schema: {}
+      - $ref: '#/components/parameters/x-rapidapi-host'
+      operationId: phoneNumberShare-NV-V2
+      description: 'Returns the phone number so the API clients can verify the number themselves:
+
+        - It will be done for the user that has authenticated via mobile network
+
+        - It returns the authenticated user''s `device phone number` associated to the access token
+
+        '
+      responses:
+        '200':
+          content:
+            application/json:
+              examples:
+                Example_1:
+                  value:
+                    devicePhoneNumber: '+123456789'
+              schema:
+                type: object
+                description: Number verification share result
+                required:
+                - devicePhoneNumber
+                properties:
+                  devicePhoneNumber:
+                    type: string
+                    pattern: ^\+[1-9][0-9]{4,14}$
+                    description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+          description: ''
+        '400':
+          content:
+            application/json:
+              examples:
+                Example_1:
+                  value:
+                    status: 400
+                    code: INVALID_ARGUMENT
+                    message: Client specified an invalid argument, request body or query param
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - status
+                  - code
+                  - message
+                  properties:
+                    status:
+                      type: integer
+                      description: HTTP response status code
+                    code:
+                      type: string
+                      description: A human-readable code to describe the error
+                    message:
+                      type: string
+                      description: A human-readable description of what the event represents
+                - type: object
+                  properties:
+                    status:
+                      enum:
+                      - 400
+                    code:
+                      enum:
+                      - INVALID_ARGUMENT
+          description: ''
+        '401':
+          content:
+            application/json:
+              examples:
+                GENERIC_401_UNAUTHENTICATED:
+                  description: Request cannot be authenticated and a new authentication is required
+                  value:
+                    status: 401
+                    code: UNAUTHENTICATED
+                    message: Request not authenticated due to missing, invalid, or expired credentials. A new authentication is required.
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - status
+                  - code
+                  - message
+                  properties:
+                    status:
+                      type: integer
+                      description: HTTP response status code
+                    code:
+                      type: string
+                      description: A human-readable code to describe the error
+                    message:
+                      type: string
+                      description: A human-readable description of what the event represents
+                - type: object
+                  properties:
+                    status:
+                      enum:
+                      - 401
+                    code:
+                      enum:
+                      - UNAUTHENTICATED
+          description: ''
+        '403':
+          content:
+            application/json:
+              examples:
+                GENERIC_403_PERMISSION_DENIED:
+                  description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+                  value:
+                    status: 403
+                    code: PERMISSION_DENIED
+                    message: Client does not have sufficient permissions to perform this action.
+                GENERIC_403_USER_NOT_AUTHENTICATED_BY_MOBILE_NETWORK:
+                  value:
+                    status: 403
+                    code: NUMBER_VERIFICATION.USER_NOT_AUTHENTICATED_BY_MOBILE_NETWORK
+                    message: Client must authenticate via the mobile network to use this service
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - status
+                  - code
+                  - message
+                  properties:
+                    status:
+                      type: integer
+                      description: HTTP response status code
+                    code:
+                      type: string
+                      description: A human-readable code to describe the error
+                    message:
+                      type: string
+                      description: A human-readable description of what the event represents
+                - type: object
+                  properties:
+                    status:
+                      enum:
+                      - 403
+                    code:
+                      enum:
+                      - PERMISSION_DENIED
+                      - NUMBER_VERIFICATION.USER_NOT_AUTHENTICATED_BY_MOBILE_NETWORK
+          description: ''
+components:
+  parameters:
+    x-rapidapi-host:
+      name: x-rapidapi-host
+      in: header
+      required: true
+      description: The API's Host value as defined in the RapidAPI Hub.
+      schema:
+        type: string
+        example: network-as-code.p-eu.rapidapi.com
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-rapidapi-key
+      description: Your RapidAPI key
+x-rapidapi-info:
+  apiVersionId: apiversion_969ae0b0-88c0-4670-9353-9c09d02c076f
+  apiId: api_47e41e89-ab4a-40fa-87de-c528077c9945
+x-documentation:
+  tutorials: []
+  spotlights: []
+x-gateways: []

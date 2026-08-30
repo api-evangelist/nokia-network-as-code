@@ -1,0 +1,1260 @@
+openapi: 3.2.0
+info:
+  title: Nokia Network As Code Device Roaming Status Subscriptions v0.7 API
+  version: 1.0.0
+  termsOfService: https://developer.networkascode.nokia.io/legal/terms-of-service
+  x-refined-note:
+  - x-badges differs across the merged source definitions and was not carried
+  - x-camara-commonalities differs across the merged source definitions and was not carried
+  - x-category differs across the merged source definitions and was not carried
+  - x-collections differs across the merged source definitions and was not carried
+  - x-long-description differs across the merged source definitions and was not carried
+  - x-public differs across the merged source definitions and was not carried
+  - x-thumbnail differs across the merged source definitions and was not carried
+  - x-version-lifecycle differs across the merged source definitions and was not carried
+  - x-website differs across the merged source definitions and was not carried
+  description: 'Operations tagged Device Roaming Status Subscriptions v0.7 across 2 of this provider''s published API definitions: nokia-network-as-code-camara-openapi.yml, nokia-network-as-code-platform-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: '{apiRoot}/geofencing-subscriptions/v0.3'
+  variables:
+    apiRoot:
+      default: http://localhost:9091
+      description: API root
+- url: '{apiRoot}/geofencing-subscriptions/v0.4'
+  variables:
+    apiRoot:
+      default: http://localhost:9091
+      description: API root
+- url: https://network-as-code.p-eu.rapidapi.com
+tags:
+- name: Device Roaming Status Subscriptions v0.7
+paths:
+  /device-status/device-roaming-status-subscriptions/v0.7/subscriptions:
+    post:
+      tags:
+      - Device Roaming Status Subscriptions v0.7
+      summary: Create a device roaming status event subscription for a device
+      description: Create a device roaming status event subscription for a device
+      operationId: createDeviceRoamingStatusSubscription
+      parameters:
+      - $ref: '#/components/parameters/x-correlator-DS-ROS-V0'
+      security:
+      - openId:
+        - device-roaming-status-subscriptions:org.camaraproject.device-roaming-status-subscriptions.v0.roaming-status:create
+        - device-roaming-status-subscriptions:org.camaraproject.device-roaming-status-subscriptions.v0.roaming-on:create
+        - device-roaming-status-subscriptions:org.camaraproject.device-roaming-status-subscriptions.v0.roaming-off:create
+        - device-roaming-status-subscriptions:org.camaraproject.device-roaming-status-subscriptions.v0.roaming-change-country:create
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubscriptionRequest-DS-ROS-V0'
+            examples:
+              Create Roaming Status Subscription:
+                $ref: '#/components/examples/CREATE_RS_SUBSCRIPTION-DS-ROS-V0'
+              Create Roaming Change Country Subscription:
+                $ref: '#/components/examples/CREATE_RCC_SUBSCRIPTION-DS-ROS-V0'
+              Create Roaming On Subscription:
+                $ref: '#/components/examples/CREATE_RON_SUBSCRIPTION-DS-ROS-V0'
+              Create Roaming Off Subscription:
+                $ref: '#/components/examples/CREATE_ROFF_SUBSCRIPTION-DS-ROS-V0'
+      callbacks:
+        notifications:
+          '{$request.body#/sink}':
+            post:
+              summary: notifications callback
+              description: 'Important: this endpoint is to be implemented by the API consumer.
+
+                The Device status server will call this endpoint whenever any device roaming status related event occurs.
+
+                '
+              operationId: postNotification
+              parameters:
+              - $ref: '#/components/parameters/x-correlator-DS-ROS-V0'
+              requestBody:
+                required: true
+                content:
+                  application/cloudevents+json:
+                    schema:
+                      $ref: '#/components/schemas/CloudEvent-DS-ROS-V0'
+                    examples:
+                      roaming-status:
+                        $ref: '#/components/examples/ROAMING_STATUS-DS-ROS-V0'
+                      roaming-change-country:
+                        $ref: '#/components/examples/ROAMING_CHANGE_COUNTRY-DS-ROS-V0'
+                      roaming-on:
+                        $ref: '#/components/examples/ROAMING_ON-DS-ROS-V0'
+                      roaming-off:
+                        $ref: '#/components/examples/ROAMING_OFF-DS-ROS-V0'
+                      subscription-ends:
+                        $ref: '#/components/examples/SUBSCRIPTION_ENDS-DS-ROS-V0'
+              responses:
+                '204':
+                  description: Successful notification
+                  headers:
+                    x-correlator:
+                      $ref: '#/components/headers/x-correlator-DS-ROS-V0'
+                '400':
+                  $ref: '#/components/responses/Generic400-DS-ROS-V0'
+                '401':
+                  $ref: '#/components/responses/Generic401-DS-ROS-V0'
+                '403':
+                  $ref: '#/components/responses/Generic403-DS-ROS-V0'
+                '410':
+                  $ref: '#/components/responses/Generic410-DS-ROS-V0'
+                '429':
+                  $ref: '#/components/responses/Generic429-DS-ROS-V0'
+              security:
+              - {}
+              - notificationsBearerAuth: []
+      responses:
+        '201':
+          description: Created
+          headers:
+            x-correlator:
+              $ref: '#/components/headers/x-correlator-DS-ROS-V0'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription-DS-ROS-V0'
+              examples:
+                subscription-active:
+                  $ref: '#/components/examples/SUBSCRIPTION_ACTIVE-DS-ROS-V0'
+        '202':
+          description: Request accepted to be processed. It applies for async creation process.
+          headers:
+            x-correlator:
+              $ref: '#/components/headers/x-correlator-DS-ROS-V0'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionAsync-DS-ROS-V0'
+        '400':
+          $ref: '#/components/responses/CreateSubscriptionBadRequest400-DS-ROS-V0'
+        '401':
+          $ref: '#/components/responses/Generic401-DS-ROS-V0'
+        '403':
+          $ref: '#/components/responses/SubscriptionPermissionDenied403-DS-ROS-V0'
+        '409':
+          $ref: '#/components/responses/Generic409-DS-ROS-V0'
+        '422':
+          $ref: '#/components/responses/CreateSubscriptionUnprocessableEntity422-DS-ROS-V0'
+        '429':
+          $ref: '#/components/responses/Generic429-DS-ROS-V0'
+    get:
+      tags:
+      - Device Roaming Status Subscriptions v0.7
+      summary: Retrieve a list of device roaming status event subscription
+      description: Retrieve a list of device roaming status event subscription(s)
+      operationId: retrieveDeviceRoamingStatusSubscriptionList
+      parameters:
+      - $ref: '#/components/parameters/x-correlator-DS-ROS-V0'
+      security:
+      - openId:
+        - device-roaming-status-subscriptions:read
+      responses:
+        '200':
+          description: List of event subscription details
+          headers:
+            x-correlator:
+              $ref: '#/components/headers/x-correlator-DS-ROS-V0'
+          content:
+            application/json:
+              schema:
+                type: array
+                minItems: 0
+                items:
+                  $ref: '#/components/schemas/Subscription-DS-ROS-V0'
+        '400':
+          $ref: '#/components/responses/Generic400-DS-ROS-V0'
+        '401':
+          $ref: '#/components/responses/Generic401-DS-ROS-V0'
+        '403':
+          $ref: '#/components/responses/Generic403-DS-ROS-V0'
+    servers:
+    - url: '{apiRoot}/geofencing-subscriptions/v0.3'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+    - url: '{apiRoot}/geofencing-subscriptions/v0.4'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+  /device-status/device-roaming-status-subscriptions/v0.7/subscriptions/{subscriptionId}:
+    get:
+      tags:
+      - Device Roaming Status Subscriptions v0.7
+      summary: Retrieve a roaming status event subscription for a device
+      description: retrieve device roaming status subscription information for a given subscription.
+      operationId: retrieveDeviceRoamingStatusSubscription
+      security:
+      - openId:
+        - device-roaming-status-subscriptions:read
+      parameters:
+      - $ref: '#/components/parameters/SubscriptionId-DS-ROS-V0'
+      - $ref: '#/components/parameters/x-correlator-DS-ROS-V0'
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-correlator:
+              $ref: '#/components/headers/x-correlator-DS-ROS-V0'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription-DS-ROS-V0'
+              examples:
+                subscription-active:
+                  $ref: '#/components/examples/SUBSCRIPTION_ACTIVE-DS-ROS-V0'
+                subscription-activation-requested:
+                  $ref: '#/components/examples/SUBSCRIPTION_ACTIVATION_REQUESTED-DS-ROS-V0'
+                subscription-deleted:
+                  $ref: '#/components/examples/SUBSCRIPTION_DELETED-DS-ROS-V0'
+        '400':
+          $ref: '#/components/responses/SubscriptionIdRequired400-DS-ROS-V0'
+        '401':
+          $ref: '#/components/responses/Generic401-DS-ROS-V0'
+        '403':
+          $ref: '#/components/responses/Generic403-DS-ROS-V0'
+        '404':
+          $ref: '#/components/responses/Generic404-DS-ROS-V0'
+    delete:
+      tags:
+      - Device Roaming Status Subscriptions v0.7
+      summary: Delete a device-roaming-status event subscription for a device
+      operationId: deleteDeviceRoamingStatusSubscription
+      description: Delete a given device-roaming-status subscription by ID
+      security:
+      - openId:
+        - device-roaming-status-subscriptions:delete
+      parameters:
+      - $ref: '#/components/parameters/SubscriptionId-DS-ROS-V0'
+      - $ref: '#/components/parameters/x-correlator-DS-ROS-V0'
+      responses:
+        '202':
+          description: Request accepted to be processed. It applies for async deletion process.
+          headers:
+            x-correlator:
+              $ref: '#/components/headers/x-correlator-DS-ROS-V0'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionAsync-DS-ROS-V0'
+        '204':
+          description: device-roaming-status subscription deleted
+          headers:
+            x-correlator:
+              $ref: '#/components/headers/x-correlator-DS-ROS-V0'
+        '400':
+          $ref: '#/components/responses/SubscriptionIdRequired400-DS-ROS-V0'
+        '401':
+          $ref: '#/components/responses/Generic401-DS-ROS-V0'
+        '403':
+          $ref: '#/components/responses/Generic403-DS-ROS-V0'
+        '404':
+          $ref: '#/components/responses/Generic404-DS-ROS-V0'
+    servers:
+    - url: '{apiRoot}/geofencing-subscriptions/v0.3'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+    - url: '{apiRoot}/geofencing-subscriptions/v0.4'
+      variables:
+        apiRoot:
+          default: http://localhost:9091
+          description: API root
+components:
+  schemas:
+    CloudEvent-DS-ROS-V0:
+      description: The notification callback
+      required:
+      - id
+      - source
+      - specversion
+      - type
+      - time
+      properties:
+        id:
+          type: string
+          description: identifier of this event, that must be unique in the source context.
+        source:
+          $ref: '#/components/schemas/Source-DS-ROS-V0'
+        type:
+          $ref: '#/components/schemas/EventTypeNotification-DS-ROS-V0'
+        specversion:
+          type: string
+          description: Version of the specification to which this event conforms (must be 1.0 if it conforms to cloudevents 1.0.2 version)
+          enum:
+          - '1.0'
+        datacontenttype:
+          type: string
+          description: media-type that describes the event payload encoding, must be "application/json" for CAMARA APIs
+          enum:
+          - application/json
+        data:
+          type: object
+          description: Event details payload described in each CAMARA API and referenced by its type
+        time:
+          $ref: '#/components/schemas/DateTime-DS-ROS-V0'
+      discriminator:
+        propertyName: type
+        mapping:
+          org.camaraproject.device-roaming-status-subscriptions.v0.roaming-status: '#/components/schemas/EventRoamingStatus'
+          org.camaraproject.device-roaming-status-subscriptions.v0.roaming-change-country: '#/components/schemas/EventRoamingChangeCountry'
+          org.camaraproject.device-roaming-status-subscriptions.v0.roaming-off: '#/components/schemas/EventRoamingOff'
+          org.camaraproject.device-roaming-status-subscriptions.v0.roaming-on: '#/components/schemas/EventRoamingOn'
+          org.camaraproject.device-roaming-status-subscriptions.v0.subscription-ends: '#/components/schemas/EventSubscriptionEnds'
+    PhoneNumber-DS-ROS-V0:
+      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+      type: string
+      pattern: ^\+[1-9][0-9]{4,14}$
+      example: '+99999991000'
+    DeviceIpv6Address-DS-ROS-V0:
+      description: 'The device should be identified by the observed IPv6 address, or by any single IPv6 address from within the subnet allocated to the device (e.g. adding ::0 to the /64 prefix).
+
+        '
+      type: string
+      format: ipv6
+      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
+    CreateSubscriptionDetail-DS-ROS-V0:
+      description: The detail of the requested event subscription.
+      type: object
+      properties:
+        device:
+          $ref: '#/components/schemas/Device-DS-ROS-V0'
+    ErrorInfo-DS-ROS-V0:
+      type: object
+      required:
+      - status
+      - code
+      - message
+      properties:
+        status:
+          type: integer
+          description: HTTP response status code
+        code:
+          type: string
+          description: Code given to this error
+        message:
+          type: string
+          description: Detailed error description
+    SingleIpv4Addr-DS-ROS-V0:
+      description: A single IPv4 address with no subnet mask
+      type: string
+      format: ipv4
+      example: 84.125.93.10
+    DeviceIpv4Addr-DS-ROS-V0:
+      type: object
+      description: 'The device should be identified by either the public (observed) IP address and port as seen by the application server, or the private (local) and any public (observed) IP addresses in use by the device (this information can be obtained by various means, for example from some DNS servers).
+
+
+        If the allocated and observed IP addresses are the same (i.e. NAT is not in use) then  the same address should be specified for both publicAddress and privateAddress.
+
+
+        If NAT64 is in use, the device should be identified by its publicAddress and publicPort, or separately by its allocated IPv6 address (field ipv6Address of the Device object)
+
+
+        In all cases, publicAddress must be specified, along with at least one of either privateAddress or publicPort, dependent upon which is known. In general, mobile devices cannot be identified by their public IPv4 address alone.
+
+        '
+      properties:
+        publicAddress:
+          $ref: '#/components/schemas/SingleIpv4Addr-DS-ROS-V0'
+        privateAddress:
+          $ref: '#/components/schemas/SingleIpv4Addr-DS-ROS-V0'
+        publicPort:
+          $ref: '#/components/schemas/Port-DS-ROS-V0'
+      anyOf:
+      - required:
+        - publicAddress
+        - privateAddress
+      - required:
+        - publicAddress
+        - publicPort
+      example:
+        publicAddress: 84.125.93.10
+        publicPort: 59765
+    SinkCredential-DS-ROS-V0:
+      description: A sink credential provides authentication or authorization information necessary to enable delivery of events to a target.
+      type: object
+      properties:
+        credentialType:
+          type: string
+          enum:
+          - PLAIN
+          - ACCESSTOKEN
+          - REFRESHTOKEN
+          description: 'The type of the credential.
+
+            Note: Type of the credential - MUST be set to ACCESSTOKEN for now
+
+            '
+      discriminator:
+        propertyName: credentialType
+        mapping:
+          PLAIN: '#/components/schemas/PlainCredential'
+          ACCESSTOKEN: '#/components/schemas/AccessTokenCredential'
+          REFRESHTOKEN: '#/components/schemas/RefreshTokenCredential'
+      required:
+      - credentialType
+    Source-DS-ROS-V0:
+      type: string
+      format: uri-reference
+      minLength: 1
+      description: "Identifies the context in which an event happened - be a non-empty `URI-reference` like:\n- URI with a DNS authority:\n\n\n\n\n  * https://github.com/cloudevents\n  * mailto:cncf-wg-serverless@lists.cncf.io\n- Universally-unique URN with a UUID:\n\n\n\n\n  * urn:uuid:6e8bc430-9c3a-11d9-9669-0800200c9a66\n- Application-specific identifier:\n\n\n\n\n  * /cloudevents/spec/pull/123\n  * 1-555-123-4567\n"
+      example: https://notificationSendServer12.supertelco.com
+    NetworkAccessIdentifier-DS-ROS-V0:
+      description: A public identifier addressing a subscription in a mobile network. In 3GPP terminology, it corresponds to the GPSI formatted with the External Identifier ({Local Identifier}@{Domain Identifier}). Unlike the telephone number, the network access identifier is not subjected to portability ruling in force, and is individually managed by each operator.
+      type: string
+      example: 123456789@domain.com
+    Device-DS-ROS-V0:
+      description: 'End-user equipment able to connect to a mobile network. Examples of devices include smartphones or IoT sensors/actuators.
+
+
+        The developer can choose to provide the below specified device identifiers:
+
+
+        * `ipv4Address`
+
+        * `ipv6Address`
+
+        * `phoneNumber`
+
+        * `networkAccessIdentifier`
+
+
+        NOTE: the MNO might support only a subset of these options. The API invoker can provide multiple identifiers to be compatible across different MNOs. In this case the identifiers MUST belong to the same device.
+
+        '
+      type: object
+      properties:
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber-DS-ROS-V0'
+        networkAccessIdentifier:
+          $ref: '#/components/schemas/NetworkAccessIdentifier-DS-ROS-V0'
+        ipv4Address:
+          $ref: '#/components/schemas/DeviceIpv4Addr-DS-ROS-V0'
+        ipv6Address:
+          $ref: '#/components/schemas/DeviceIpv6Address-DS-ROS-V0'
+      minProperties: 1
+    EventTypeNotification-DS-ROS-V0:
+      type: string
+      description: 'roaming-status - Event triggered when the device switch from roaming ON to roaming OFF and conversely
+
+
+        roaming-on - Event triggered when the device switch from roaming OFF to roaming ON
+
+
+        roaming-off - Event triggered when the device switch from roaming ON to roaming OFF
+
+
+        roaming-change-country - Event triggered when the device in roaming change country code
+
+
+        subscription-ends - Event triggered when the subscription is terminated
+
+        '
+      enum:
+      - org.camaraproject.device-roaming-status-subscriptions.v0.roaming-status
+      - org.camaraproject.device-roaming-status-subscriptions.v0.roaming-on
+      - org.camaraproject.device-roaming-status-subscriptions.v0.roaming-off
+      - org.camaraproject.device-roaming-status-subscriptions.v0.roaming-change-country
+      - org.camaraproject.device-roaming-status-subscriptions.v0.subscription-ends
+    SubscriptionAsync-DS-ROS-V0:
+      description: Response for a device reachability status operation managed asynchronously (Creation or Deletion)
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/SubscriptionId-DS-ROS-V0'
+    Subscription-DS-ROS-V0:
+      description: Represents a event-type subscription.
+      type: object
+      required:
+      - sink
+      - protocol
+      - config
+      - types
+      - id
+      properties:
+        protocol:
+          $ref: '#/components/schemas/Protocol-DS-ROS-V0'
+        sink:
+          type: string
+          format: url
+          description: The address to which events shall be delivered using the selected protocol.
+          example: https://endpoint.example.com/sink
+        types:
+          description: "Camara Event types eligible to be delivered by this subscription.\nNote: for the Commonalities meta-release v0.4 we enforce to have only event type per subscription then for following meta-release use of array MUST be decided\n\n\n\n\n at API project level.\n"
+          type: array
+          minItems: 1
+          maxItems: 1
+          items:
+            $ref: '#/components/schemas/SubscriptionEventType-DS-ROS-V0'
+        config:
+          $ref: '#/components/schemas/Config-DS-ROS-V0'
+        id:
+          $ref: '#/components/schemas/SubscriptionId-DS-ROS-V0'
+        startsAt:
+          type: string
+          format: date-time
+          description: 'Date when the event subscription will begin/began
+
+            It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
+
+            Recommended format is yyyy-MM-dd''T''HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z)
+
+            '
+          example: '2023-07-03T12:27:08.312Z'
+        expiresAt:
+          type: string
+          format: date-time
+          description: 'Date when the event subscription will expire. Only provided when `subscriptionExpireTime` is indicated by API client or Telco Operator has specific policy about that.
+
+            It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
+
+            Recommended format is yyyy-MM-dd''T''HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z)
+
+            '
+          example: '2023-07-03T12:27:08.312Z'
+        status:
+          type: string
+          description: "Current status of the subscription - Management of Subscription State engine is not mandatory for now. Note not all statuses may be considered to be implemented. Details:\n\n\n\n\n  - `ACTIVATION_REQUESTED`: Subscription creation (POST) is triggered but subscription creation process is not finished yet.\n  - `ACTIVE`: Subscription creation process is completed. Subscription is fully operative.\n  - `INACTIVE`: Subscription is temporarily inactive, but its workflow logic is not deleted.\n  - `EXPIRED`: Subscription is ended (no longer active). This status applies when subscription is ended due to `SUBSCRIPTION_EXPIRED` or `ACCESS_TOKEN_EXPIRED` event.\n  - `DELETED`: Subscription is ended as deleted (no longer active). This status applies when subscription information is kept (i.e. subscription workflow is no longer active but its meta-information is kept)."
+          enum:
+          - ACTIVATION_REQUESTED
+          - ACTIVE
+          - EXPIRED
+          - INACTIVE
+          - DELETED
+      discriminator:
+        propertyName: protocol
+        mapping:
+          HTTP: '#/components/schemas/HTTPSubscriptionResponse'
+          MQTT3: '#/components/schemas/MQTTSubscriptionResponse'
+          MQTT5: '#/components/schemas/MQTTSubscriptionResponse'
+          AMQP: '#/components/schemas/AMQPSubscriptionResponse'
+          NATS: '#/components/schemas/NATSSubscriptionResponse'
+          KAFKA: '#/components/schemas/ApacheKafkaSubscriptionResponse'
+      example:
+        id: 550e8400-e29b-41d4-a716-446655440000
+        sink: https://endpoint.example.com/sink
+        protocol: HTTP
+        types:
+        - org.camaraproject.device-roaming-status-subscriptions.v0.roaming-status
+        config:
+          subscriptionDetail:
+            device:
+              phoneNumber: '+99999991000'
+          subscriptionExpireTime: '2024-07-17T13:18:23.682Z'
+          subscriptionMaxEvents: 5
+          initialEvent: true
+        startsAt: '2024-07-03T21:12:02.871Z'
+        expiresAt: '2024-07-03T21:12:02.871Z'
+        status: ACTIVE
+    DateTime-DS-ROS-V0:
+      type: string
+      format: date-time
+      description: Timestamp of when the occurrence happened. Must adhere to RFC 3339.
+      example: '2018-04-05T17:31:00Z'
+    Config-DS-ROS-V0:
+      description: 'Implementation-specific configuration parameters needed by the subscription manager for acquiring events.
+
+        In CAMARA we have predefined attributes like `subscriptionExpireTime`, `subscriptionMaxEvents`, `initialEvent`
+
+        Specific event type attributes must be defined in `subscriptionDetail`
+
+        Note: if a request is performed for several event type, all subscribed event will use same `config` parameters.
+
+        '
+      type: object
+      required:
+      - subscriptionDetail
+      properties:
+        subscriptionDetail:
+          $ref: '#/components/schemas/CreateSubscriptionDetail-DS-ROS-V0'
+        subscriptionExpireTime:
+          type: string
+          format: date-time
+          example: '2023-01-17T13:18:23.682Z'
+          description: The subscription expiration time (in date-time format) requested by the API consumer. Up to API project decision to keep it.
+        subscriptionMaxEvents:
+          type: integer
+          description: Identifies the maximum number of event reports to be generated (>=1) requested by the API consumer - Once this number is reached, the subscription ends. Up to API project decision to keep it.
+          minimum: 1
+          example: 5
+        initialEvent:
+          type: boolean
+          description: 'Set to `true` by API consumer if consumer wants to get an event as soon as the subscription is created and current situation reflects event request.Up to API project decision to keep it.
+
+            Example: Consumer request Roaming event. If consumer sets initialEvent to true and device is in roaming situation, an event is triggered
+
+            Up to API project decision to keep it.
+
+            '
+    SubscriptionEventType-DS-ROS-V0:
+      type: string
+      description: 'roaming-status - Event triggered when the device switch from roaming ON to roaming OFF and conversely
+
+
+        roaming-on - Event triggered when the device switch from roaming OFF to roaming ON
+
+
+        roaming-off - Event triggered when the device switch from roaming ON to roaming OFF
+
+
+        roaming-change-country - Event triggered when the device in roaming change country code
+
+        '
+      enum:
+      - org.camaraproject.device-roaming-status-subscriptions.v0.roaming-status
+      - org.camaraproject.device-roaming-status-subscriptions.v0.roaming-on
+      - org.camaraproject.device-roaming-status-subscriptions.v0.roaming-off
+      - org.camaraproject.device-roaming-status-subscriptions.v0.roaming-change-country
+    Port-DS-ROS-V0:
+      description: TCP or UDP port number
+      type: integer
+      minimum: 0
+      maximum: 65535
+    Protocol-DS-ROS-V0:
+      type: string
+      enum:
+      - HTTP
+      - MQTT3
+      - MQTT5
+      - AMQP
+      - NATS
+      - KAFKA
+      description: Identifier of a delivery protocol. Only HTTP is allowed for now
+      example: HTTP
+    SubscriptionId-DS-ROS-V0:
+      type: string
+      description: The unique identifier of the subscription in the scope of the subscription manager. When this information is contained within an event notification, this concept SHALL be referred as `subscriptionId` as per [Commonalities Event Notification Model](https://github.com/camaraproject/Commonalities/blob/r2.3/documentation/API-design-guidelines.md#122-event-notification).
+      example: qs15-h556-rt89-1298
+    SubscriptionRequest-DS-ROS-V0:
+      description: The request for creating a event-type event subscription
+      type: object
+      required:
+      - sink
+      - protocol
+      - config
+      - types
+      properties:
+        protocol:
+          $ref: '#/components/schemas/Protocol-DS-ROS-V0'
+        sink:
+          type: string
+          format: uri
+          description: The address to which events shall be delivered using the selected protocol.
+          example: https://endpoint.example.com/sink
+        sinkCredential:
+          $ref: '#/components/schemas/SinkCredential-DS-ROS-V0'
+        types:
+          description: 'Camara Event types eligible to be delivered by this subscription.
+
+            Note: for the current Commonalities version (v0.5) only one event type per subscription is allowed, yet in the following releases use of array of event types SHALL be specified without changing this definition.
+
+            '
+          type: array
+          minItems: 1
+          maxItems: 1
+          items:
+            $ref: '#/components/schemas/SubscriptionEventType-DS-ROS-V0'
+        config:
+          $ref: '#/components/schemas/Config-DS-ROS-V0'
+      discriminator:
+        propertyName: protocol
+        mapping:
+          HTTP: '#/components/schemas/HTTPSubscriptionRequest'
+          MQTT3: '#/components/schemas/MQTTSubscriptionRequest'
+          MQTT5: '#/components/schemas/MQTTSubscriptionRequest'
+          AMQP: '#/components/schemas/AMQPSubscriptionRequest'
+          NATS: '#/components/schemas/NATSSubscriptionRequest'
+          KAFKA: '#/components/schemas/ApacheKafkaSubscriptionRequest'
+  responses:
+    Generic400-DS-ROS-V0:
+      description: Bad Request
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-DS-ROS-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-DS-ROS-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 400
+                code:
+                  enum:
+                  - INVALID_ARGUMENT
+          examples:
+            GENERIC_400_INVALID_ARGUMENT:
+              description: Invalid Argument. Generic Syntax Exception
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Client specified an invalid argument, request body or query param.
+    Generic410-DS-ROS-V0:
+      description: Gone
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-DS-ROS-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-DS-ROS-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 410
+                code:
+                  enum:
+                  - GONE
+          examples:
+            GENERIC_410_GONE:
+              description: Use in notifications flow to allow API Consumer to indicate that its callback is no longer available
+              value:
+                status: 410
+                code: GONE
+                message: Access to the target resource is no longer available.
+    CreateSubscriptionUnprocessableEntity422-DS-ROS-V0:
+      description: Unprocessable Entity
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-DS-ROS-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-DS-ROS-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 422
+                code:
+                  enum:
+                  - IDENTIFIER_MISMATCH
+                  - SERVICE_NOT_APPLICABLE
+                  - MISSING_IDENTIFIER
+                  - UNSUPPORTED_IDENTIFIER
+                  - UNNECESSARY_IDENTIFIER
+                  - MULTIEVENT_SUBSCRIPTION_NOT_SUPPORTED
+          examples:
+            GENERIC_422_IDENTIFIER_MISMATCH:
+              description: Inconsistency between identifiers not pointing to the same device
+              value:
+                status: 422
+                code: IDENTIFIER_MISMATCH
+                message: Provided identifiers are not consistent.
+            GENERIC_422_SERVICE_NOT_APPLICABLE:
+              description: Service not applicable for the provided identifier
+              value:
+                status: 422
+                code: SERVICE_NOT_APPLICABLE
+                message: The service is not available for the provided identifier.
+            GENERIC_422_MISSING_IDENTIFIER:
+              description: An identifier is not included in the request and the device or phone number identification cannot be derived from the 3-legged access token
+              value:
+                status: 422
+                code: MISSING_IDENTIFIER
+                message: The device cannot be identified.
+            GENERIC_422_UNSUPPORTED_IDENTIFIER:
+              description: None of the provided identifiers is supported by the implementation
+              value:
+                status: 422
+                code: UNSUPPORTED_IDENTIFIER
+                message: The identifier provided is not supported.
+            GENERIC_422_UNNECESSARY_IDENTIFIER:
+              description: An explicit identifier is provided when a device or phone number has already been identified from the access token
+              value:
+                status: 422
+                code: UNNECESSARY_IDENTIFIER
+                message: The device is already identified by the access token.
+            GENERIC_422_MULTIEVENT_SUBSCRIPTION_NOT_SUPPORTED:
+              description: Multi event types subscription is not supported
+              value:
+                status: 422
+                code: MULTIEVENT_SUBSCRIPTION_NOT_SUPPORTED
+                message: Multi event types subscription not managed
+    SubscriptionIdRequired400-DS-ROS-V0:
+      description: Problem with the client request
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-DS-ROS-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-DS-ROS-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 400
+                code:
+                  enum:
+                  - INVALID_ARGUMENT
+          examples:
+            GENERIC_400_INVALID_ARGUMENT:
+              description: Invalid Argument. Generic Syntax Exception
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Client specified an invalid argument, request body or query param.
+            GENERIC_400_SUBSCRIPTION_ID_REQUIRED:
+              description: subscription id is required
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: 'Expected property is missing: subscriptionId'
+    Generic409-DS-ROS-V0:
+      description: Conflict
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-DS-ROS-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-DS-ROS-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 409
+                code:
+                  enum:
+                  - ABORTED
+                  - ALREADY_EXISTS
+          examples:
+            GENERIC_409_ABORTED:
+              description: Concurreny of processes of the same nature/scope
+              value:
+                status: 409
+                code: ABORTED
+                message: Concurrency conflict.
+            GENERIC_409_ALREADY_EXISTS:
+              description: Trying to create an existing resource
+              value:
+                status: 409
+                code: ALREADY_EXISTS
+                message: The resource that a client tried to create already exists.
+    Generic404-DS-ROS-V0:
+      description: Resource Not Found
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-DS-ROS-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-DS-ROS-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 404
+                code:
+                  enum:
+                  - NOT_FOUND
+          examples:
+            GENERIC_404_NOT_FOUND:
+              description: Resource is not found
+              value:
+                status: 404
+                code: NOT_FOUND
+                message: The specified resource is not found.
+    SubscriptionPermissionDenied403-DS-ROS-V0:
+      description: Client does not have sufficient permission
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-DS-ROS-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-DS-ROS-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 403
+                code:
+                  enum:
+                  - PERMISSION_DENIED
+                  - SUBSCRIPTION_MISMATCH
+          examples:
+            GENERIC_403_PERMISSION_DENIED:
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action.
+            GENERIC_403_SUBSCRIPTION_MISMATCH:
+              description: Inconsistent access token for requested subscription
+              value:
+                status: 403
+                code: SUBSCRIPTION_MISMATCH
+                message: Inconsistent access token for requested events subscription
+    Generic403-DS-ROS-V0:
+      description: Client does not have sufficient permission
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-DS-ROS-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-DS-ROS-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 403
+                code:
+                  enum:
+                  - PERMISSION_DENIED
+          examples:
+            GENERIC_403_PERMISSION_DENIED:
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action.
+    Generic401-DS-ROS-V0:
+      description: Authentication problem with the client request
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-DS-ROS-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-DS-ROS-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 401
+                code:
+                  enum:
+                  - UNAUTHENTICATED
+                  - AUTHENTICATION_REQUIRED
+          examples:
+            GENERIC_401_UNAUTHENTICATED:
+              description: Request cannot be authenticated
+              value:
+                status: 401
+                code: UNAUTHENTICATED
+                message: Request not authenticated due to missing, invalid, or expired credentials.
+            GENERIC_401_AUTHENTICATION_REQUIRED:
+              description: New authentication is needed, authentication is no longer valid
+              value:
+                status: 401
+                code: AUTHENTICATION_REQUIRED
+                message: New authentication is required.
+    CreateSubscriptionBadRequest400-DS-ROS-V0:
+      description: Problem with the client request
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-DS-ROS-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-DS-ROS-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 400
+                code:
+                  enum:
+                  - INVALID_ARGUMENT
+                  - OUT_OF_RANGE
+                  - INVALID_PROTOCOL
+                  - INVALID_CREDENTIAL
+                  - INVALID_TOKEN
+          examples:
+            GENERIC_400_INVALID_ARGUMENT:
+              description: Invalid Argument. Generic Syntax Exception
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Client specified an invalid argument, request body or query param.
+            GENERIC_400_OUT_OF_RANGE:
+              description: Out of Range. Specific Syntax Exception used when a given field has a pre-defined range or a invalid filter criteria combination is requested
+              value:
+                status: 400
+                code: OUT_OF_RANGE
+                message: Client specified an invalid range.
+            GENERIC_400_INVALID_PROTOCOL:
+              description: Invalid protocol for events subscription management
+              value:
+                status: 400
+                code: INVALID_PROTOCOL
+                message: Only HTTP is supported
+            GENERIC_400_INVALID_CREDENTIAL:
+              description: Invalid sink credential type
+              value:
+                status: 400
+                code: INVALID_CREDENTIAL
+                message: Only Access token is supported
+            GENERIC_400_INVALID_TOKEN:
+              description: Invalid token type for sink credential of type ACCESSTOKEN
+              value:
+                status: 400
+                code: INVALID_TOKEN
+                message: Only bearer token is supported
+    Generic429-DS-ROS-V0:
+      description: Too Many Requests
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-DS-ROS-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-DS-ROS-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 429
+                code:
+                  enum:
+                  - QUOTA_EXCEEDED
+                  - TOO_MANY_REQUESTS
+          examples:
+            GENERIC_429_QUOTA_EXCEEDED:
+              description: Request is rejected due to exceeding a business quota limit
+              value:
+                status: 429
+                code: QUOTA_EXCEEDED
+                message: Out of resource quota.
+            GENERIC_429_TOO_MANY_REQUESTS:
+              description: Access to the API has been temporarily blocked due to rate or spike arrest limits being reached
+              value:
+                status: 429
+                code: TOO_MANY_REQUESTS
+                message: Rate limit reached.
+  examples:
+    ROAMING_CHANGE_COUNTRY-DS-ROS-V0:
+      value:
+        id: '123657'
+        source: https://notificationSendServer12.supertelco.com
+        type: org.camaraproject.device-roaming-status-subscriptions.v0.roaming-change-country
+        specversion: '1.0'
+        datacontenttype: application/json
+        data:
+          device:
+            phoneNumber: '+99999991000'
+          countryCode: 214
+          countryName:
+          - ES
+          subscriptionId: qs15-h556-rt89-1298
+        time: '2023-01-19T13:18:23.682Z'
+    SUBSCRIPTION_DELETED-DS-ROS-V0:
+      value:
+        id: 550e8400-e29b-41d4-a716-446655440000
+        sink: https://endpoint.example.com/sink
+        protocol: HTTP
+        types:
+        - org.camaraproject.device-roaming-status-subscriptions.v0.roaming-on
+        config:
+          subscriptionDetail:
+            device:
+              phoneNumber: '+99999991000'
+          subscriptionExpireTime: '2024-07-17T13:18:23.682Z'
+          subscriptionMaxEvents: 5
+          initialEvent: true
+        startsAt: '2024-07-03T21:12:02.871Z'
+        expiresAt: '2024-07-03T21:12:02.871Z'
+        status: DELETED
+    SUBSCRIPTION_ENDS-DS-ROS-V0:
+      value:
+        id: '123658'
+        source: https://notificationSendServer12.supertelco.com
+        type: org.camaraproject.device-roaming-status-subscriptions.v0.subscription-ends
+        specversion: '1.0'
+        datacontenttype: application/json
+        data:
+          device:
+            phoneNumber: '+99999991000'
+          terminationReason: SUBSCRIPTION_EXPIRED
+          subscriptionId: qs15-h556-rt89-1298
+        time: '2023-01-19T13:18:23.682Z'
+    ROAMING_OFF-DS-ROS-V0:
+      value:
+        id: '123655'
+        source: https://notificationSendServer12.supertelco.com
+        type: org.camaraproject.device-roaming-status-subscriptions.v0.roaming-off
+        specversion: '1.0'
+        datacontenttype: application/json
+        data:
+          device:
+            phoneNumber: '+99999991000'
+          subscriptionId: qs15-h556-rt89-1298
+        time: '2023-01-18T13:18:23.682Z'
+    CREATE_RS_SUBSCRIPTION-DS-ROS-V0:
+      value:
+        sink: https://endpoint.example.com/sink
+        protocol: HTTP
+        types:
+        - org.camaraproject.device-roaming-status-subscriptions.v0.roaming-status
+        config:
+          subscriptionDetail:
+            device:
+              phoneNumber: '+99999991000'
+          subscriptionMaxEvents: 5
+          initialEvent: true
+    SUBSCRIPTION_ACTIVE-DS-ROS-V0:
+      value:
+        id: 550e8400-e29b-41d4-a716-446655440000
+        sink: https://endpoint.example.com/sink
+        protocol: HTTP
+        types:
+        - org.camaraproject.device-roaming-status-subscriptions.v0.roaming-on
+        config:
+          subscriptionDetail:
+            device:
+              phoneNumber: '+99999991000'
+          subscriptionExpireTime: '2024-07-17T13:18:23.682Z'
+          subscriptionMaxEvents: 5
+          initialEvent: true
+        startsAt: '2024-07-03T21:12:02.871Z'
+        expiresAt: '2024-07-03T21:12:02.871Z'
+        status: ACTIVE
+    CREATE_RCC_SUBSCRIPTION-DS-ROS-V0:
+      value:
+        sink: https://endpoint.example.com/sink
+        protocol: HTTP
+        types:
+        - org.camaraproject.device-roaming-status-subscriptions.v0.roaming-change-country
+        config:
+          subscriptionDetail:
+            device:
+              phoneNumber: '+99999991000'
+          subscriptionMaxEvents: 5
+          initialEvent: true
+    ROAMING_STATUS-DS-ROS-V0:
+      value:
+        id: '123654'
+        source: https://notificationSendServer12.supertelco.com
+        type: org.camaraproject.device-roaming-status-subscriptions.v0.roaming-status
+        specversion: '1.0'
+        datacontenttype: application/json
+        data:
+          device:
+            phoneNumber: '+99999991000'
+          roaming: true
+          subscriptionId: qs15-h556-rt89-1298
+        time: '2023-01-17T13:18:23.682Z'
+    CREATE_ROFF_SUBSCRIPTION-DS-ROS-V0:
+      value:
+        sink: https://endpoint.example.com/sink
+        protocol: HTTP
+        types:
+        - org.camaraproject.device-roaming-status-subscriptions.v0.roaming-off
+        config:
+          subscriptionDetail:
+            device:
+              phoneNumber: '+99999991000'
+          subscriptionMaxEvents: 5
+          initialEvent: true
+    SUBSCRIPTION_ACTIVATION_REQUESTED-DS-ROS-V0:
+      value:
+        id: 550e8400-e29b-41d4-a716-446655440000
+        sink: https://endpoint.example.com/sink
+        protocol: HTTP
+        types:
+        - org.camaraproject.device-roaming-status-subscriptions.v0.roaming-on
+        config:
+          subscriptionDetail:
+            device:
+              phoneNumber: '+99999991000'
+          subscriptionExpireTime: '2024-07-17T13:18:23.682Z'
+          subscriptionMaxEvents: 5
+          initialEvent: true
+        startsAt: '2024-07-03T21:12:02.871Z'
+        expiresAt: '2024-07-03T21:12:02.871Z'
+        status: ACTIVATION_REQUESTED
+    CREATE_RON_SUBSCRIPTION-DS-ROS-V0:
+      value:
+        sink: https://endpoint.example.com/sink
+        protocol: HTTP
+        types:
+        - org.camaraproject.device-roaming-status-subscriptions.v0.roaming-on
+        config:
+          subscriptionDetail:
+            device:
+              phoneNumber: '+99999991000'
+          subscriptionMaxEvents: 5
+          initialEvent: true
+    ROAMING_ON-DS-ROS-V0:
+      value:
+        id: '123656'
+        source: https://notificationSendServer12.supertelco.com
+        type: org.camaraproject.device-roaming-status-subscriptions.v0.roaming-on
+        specversion: '1.0'
+        datacontenttype: application/json
+        data:
+          device:
+            phoneNumber: '+99999991000'
+          subscriptionId: qs15-h556-rt89-1298
+        time: '2023-01-19T13:18:23.682Z'
+  headers:
+    x-correlator-DS-ROS-V0:
+      description: Correlation id for the different services
+      schema:
+        type: string
+        pattern: ^[a-zA-Z0-9-]{0,55}$
+        example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
+  parameters:
+    SubscriptionId-DS-ROS-V0:
+      name: subscriptionId
+      in: path
+      description: Subscription identifier that was obtained from the create event subscription operation
+      required: true
+      schema:
+        $ref: '#/components/schemas/SubscriptionId-DS-ROS-V0'
+    x-correlator-DS-ROS-V0:
+      name: x-correlator
+      in: header
+      description: Correlation id for the different services
+      schema:
+        type: string
+        pattern: ^[a-zA-Z0-9-]{0,55}$
+        example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
+    x-rapidapi-host:
+      name: x-rapidapi-host
+      in: header
+      required: true
+      description: The API's Host value as defined in the RapidAPI Hub.
+      schema:
+        type: string
+        example: network-as-code.p-eu.rapidapi.com
+  securitySchemes:
+    openId:
+      description: OpenID Connect authentication
+      type: openIdConnect
+      openIdConnectUrl: https://example.com/.well-known/openid-configuration
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-rapidapi-key
+      description: Your RapidAPI key
+externalDocs:
+  description: Project documentation at Camara
+  url: https://github.com/camaraproject/DeviceLocation
+x-refined-from:
+- nokia-network-as-code-camara-openapi.yml
+- nokia-network-as-code-platform-openapi.json
