@@ -33,14 +33,12 @@ paths:
     post:
       tags:
       - Number Verification v1.0.0
-      summary: Verifies if the received hashed/plain text phone number matches the phone number associated with the access token
+      summary: Verifies if the received hashed/plain text phone number matches the phone…
       description: 'Verifies if the specified phone number (either in plain text or hashed format) matches the one that the user is currently using. Only one of the plain or hashed formats must be provided.
 
         - The number verification will be done for the user that has authenticated via mobile network
 
-        - It returns true/false depending on if the hashed phone number received as input matches the authenticated user''s `device phone number` associated to the access token
-
-        '
+        - It returns true/false depending on if the hashed phone number received as input matches the authenticated user''s `device phone number` associated to the access token'
       operationId: phoneNumberVerify
       parameters:
       - in: header
@@ -127,9 +125,7 @@ paths:
 
         - It will be done for the user that has authenticated via mobile network
 
-        - It returns the authenticated user''s `device phone number` associated to the access token
-
-        '
+        - It returns the authenticated user''s `device phone number` associated to the access token'
       operationId: phoneNumberShare
       parameters:
       - in: header
@@ -207,21 +203,19 @@ components:
       properties:
         devicePhoneNumber:
           $ref: '#/components/schemas/DevicePhoneNumber-NV-V1'
-    NumberVerificationRequestBody-NV-V1:
+    DevicePhoneNumber-NV-V1:
+      type: string
+      pattern: ^\+[1-9][0-9]{4,14}$
+      example: '+123456789'
+      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+    NumberVerificationMatchResponse-NV-V1:
       type: object
-      description: Payload to verify the phone number.
-      minProperties: 1
-      maxProperties: 1
+      description: Number verification result
+      required:
+      - devicePhoneNumberVerified
       properties:
-        phoneNumber:
-          type: string
-          pattern: ^\+[1-9][0-9]{4,14}$
-          example: '+123456789'
-          description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
-        hashedPhoneNumber:
-          description: Hashed phone number. SHA-256 (in hexadecimal representation) of the mobile phone number in **E.164 format (starting with country code)**. Prefixed with '+'.
-          type: string
-          example: 32f67ab4e4312618b09cd23ed8ce41b13e095fe52b73b2e8da8ef49830e50dba
+        devicePhoneNumberVerified:
+          $ref: '#/components/schemas/DevicePhoneNumberVerified-NV-V1'
     ErrorInfo-NV-V1:
       type: object
       required:
@@ -238,22 +232,24 @@ components:
         message:
           type: string
           description: Detailed error description
-    DevicePhoneNumber-NV-V1:
-      type: string
-      pattern: ^\+[1-9][0-9]{4,14}$
-      example: '+123456789'
-      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
-    NumberVerificationMatchResponse-NV-V1:
+    NumberVerificationRequestBody-NV-V1:
       type: object
-      description: Number verification result
-      required:
-      - devicePhoneNumberVerified
+      description: Payload to verify the phone number.
+      minProperties: 1
+      maxProperties: 1
       properties:
-        devicePhoneNumberVerified:
-          $ref: '#/components/schemas/DevicePhoneNumberVerified-NV-V1'
+        phoneNumber:
+          type: string
+          pattern: ^\+[1-9][0-9]{4,14}$
+          example: '+123456789'
+          description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+        hashedPhoneNumber:
+          description: Hashed phone number. SHA-256 (in hexadecimal representation) of the mobile phone number in **E.164 format (starting with country code)**. Prefixed with '+'.
+          type: string
+          example: 32f67ab4e4312618b09cd23ed8ce41b13e095fe52b73b2e8da8ef49830e50dba
   responses:
-    Generic504-NV-V1:
-      description: Request time exceeded. If it happens repeatedly, consider reducing the request complexity
+    Generic400-NV-V1:
+      description: Problem with the client request
       headers:
         x-correlator:
           $ref: '#/components/headers/x-correlator-NV-V1'
@@ -262,9 +258,22 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorInfo-NV-V1'
           example:
-            status: 504
-            code: TIMEOUT
-            message: Request timeout exceeded. Try later.
+            status: 400
+            code: INVALID_ARGUMENT
+            message: Client specified an invalid argument, request body or query param
+    Generic503-NV-V1:
+      description: Service unavailable. Typically the server is down.
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-NV-V1'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-NV-V1'
+          example:
+            status: 503
+            code: UNAVAILABLE
+            message: Service unavailable
     Generic401-NV-V1:
       description: Unauthorized
       headers:
@@ -287,19 +296,6 @@ components:
                 status: 401
                 code: AUTHENTICATION_REQUIRED
                 message: New authentication is required.
-    Generic503-NV-V1:
-      description: Service unavailable. Typically the server is down.
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator-NV-V1'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo-NV-V1'
-          example:
-            status: 503
-            code: UNAVAILABLE
-            message: Service unavailable
     Generic500-NV-V1:
       description: Server error
       headers:
@@ -313,8 +309,8 @@ components:
             status: 500
             code: INTERNAL
             message: Server error
-    Generic400-NV-V1:
-      description: Problem with the client request
+    Generic504-NV-V1:
+      description: Request time exceeded. If it happens repeatedly, consider reducing the request complexity
       headers:
         x-correlator:
           $ref: '#/components/headers/x-correlator-NV-V1'
@@ -323,9 +319,9 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorInfo-NV-V1'
           example:
-            status: 400
-            code: INVALID_ARGUMENT
-            message: Client specified an invalid argument, request body or query param
+            status: 504
+            code: TIMEOUT
+            message: Request timeout exceeded. Try later.
     PhoneNumberVerificationPermissionDenied403-NV-V1:
       description: "Client does not have sufficient permission.\nIn addition to regular scenario of `PERMISSION_DENIED`, other scenarios may exist:\n\n\n\n\n  - Client authentication was not via mobile network. In order to check the authentication method, AMR parameter value in the 3-legged user's access token can be used and make sure that the authentication was not either by SMS+OTP nor username/password (`{\"code\": \"NUMBER_VERIFICATION.USER_NOT_AUTHENTICATED_BY_MOBILE_NETWORK\",\"message\": \"Client must authenticate via the mobile network to use this service\"}`)\n  - Phone number cannot be deducted from access token context.(`{\"code\": \"INVALID_TOKEN_CONTEXT\",\"message\": \"Phone number cannot be deducted from access token context\"}`)\n"
       headers:

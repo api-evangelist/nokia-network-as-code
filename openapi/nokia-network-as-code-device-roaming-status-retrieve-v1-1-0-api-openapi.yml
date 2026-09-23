@@ -32,7 +32,6 @@ paths:
         schema: {}
       - $ref: '#/components/parameters/x-rapidapi-host'
       operationId: getRoamingStatus
-      description: Get the current roaming status and the country information
       responses:
         '200':
           content:

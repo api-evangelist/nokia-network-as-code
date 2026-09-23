@@ -1,6 +1,6 @@
 openapi: 3.2.0
 info:
-  title: Network as Code Device Reachability Status Subscriptions v0.8 API
+  title: Network as Code Device Reachability Status Subscriptions…
   version: 1.0.0
   description: Nokia's Network as Code API for programmable networks.
   x-category: Other
@@ -986,7 +986,6 @@ paths:
         schema: {}
       - $ref: '#/components/parameters/x-rapidapi-host'
       operationId: createDeviceReachabilityStatusSubscription-DS-RES-V080
-      description: Create a device reachability status event subscription for a device
       responses:
         '201':
           content:

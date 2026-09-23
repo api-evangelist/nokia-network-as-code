@@ -23,7 +23,7 @@ paths:
     post:
       tags:
       - Number Verification v2.1
-      summary: Verifies if the received hashed/plain text phone number matches the phone number associated with the access token
+      summary: Verifies if the received hashed/plain text phone number matches the phone…
       parameters:
       - name: x-correlator
         in: header
@@ -36,9 +36,7 @@ paths:
 
         - The number verification will be done for the user that has authenticated via mobile network
 
-        - It returns true/false depending on if the hashed phone number received as input matches the authenticated user''s `device phone number` associated to the access token
-
-        '
+        - It returns true/false depending on if the hashed phone number received as input matches the authenticated user''s `device phone number` associated to the access token'
       responses:
         '200':
           content:
@@ -231,9 +229,7 @@ paths:
 
         - It will be done for the user that has authenticated via mobile network
 
-        - It returns the authenticated user''s `device phone number` associated to the access token
-
-        '
+        - It returns the authenticated user''s `device phone number` associated to the access token'
       responses:
         '200':
           content:

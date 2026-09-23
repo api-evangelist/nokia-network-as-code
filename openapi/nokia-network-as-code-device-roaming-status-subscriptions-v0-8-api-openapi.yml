@@ -978,7 +978,6 @@ paths:
         schema: {}
       - $ref: '#/components/parameters/x-rapidapi-host'
       operationId: createDeviceRoamingStatusSubscription-DS-ROS-V080
-      description: Create a device roaming status event subscription for a device
       responses:
         '201':
           content:

@@ -34,9 +34,7 @@ paths:
       tags:
       - Location Verification v1.0.0
       summary: Verify the location of a device
-      description: 'Verify whether the location of a device is within a requested area. The operation returns a verification result and, optionally, a match rate estimation for the location verification in percent.
-
-        '
+      description: Verify whether the location of a device is within a requested area. The operation returns a verification result and, optionally, a match rate estimation for the location verification in percent.
       operationId: verifyLocation
       parameters:
       - $ref: '#/components/parameters/x-correlator-LocV-V1'
@@ -133,181 +131,96 @@ paths:
           default: http://localhost:9091
           description: API root
 components:
-  schemas:
-    DeviceIpv4Addr-LocV-V1:
-      type: object
-      description: 'The device should be identified by either the public (observed) IP address and port as seen by the application server, or the private (local) and any public (observed) IP addresses in use by the device (this information can be obtained by various means, for example from some DNS servers).
-
-
-        If the allocated and observed IP addresses are the same (i.e. NAT is not in use) then  the same address should be specified for both publicAddress and privateAddress.
-
-
-        If NAT64 is in use, the device should be identified by its publicAddress and publicPort, or separately by its allocated IPv6 address (field ipv6Address of the Device object)
-
-
-        In all cases, publicAddress must be specified, along with at least one of either privateAddress or publicPort, dependent upon which is known. In general, mobile devices cannot be identified by their public IPv4 address alone.
-
-        '
-      properties:
-        publicAddress:
-          $ref: '#/components/schemas/SingleIpv4Addr-LocV-V1'
-        privateAddress:
-          $ref: '#/components/schemas/SingleIpv4Addr-LocV-V1'
-        publicPort:
-          $ref: '#/components/schemas/Port-LocV-V1'
-      anyOf:
-      - required:
-        - publicAddress
-        - privateAddress
-      - required:
-        - publicAddress
-        - publicPort
-      example:
-        publicAddress: 84.125.93.10
-        publicPort: 59765
-    ErrorInfo-LocV-V1:
-      description: Common schema for errors
-      type: object
-      required:
-      - status
-      - code
-      - message
-      properties:
-        status:
-          type: integer
-          description: HTTP status code returned along with this error response
-        code:
-          type: string
-          description: Code given to this error
-        message:
-          type: string
-          description: Detailed error description
-    DeviceIpv6Address-LocV-V1:
-      description: 'The device should be identified by the observed IPv6 address, or by any single IPv6 address from within the subnet allocated to the device (e.g. adding ::0 to the /64 prefix).
-
-        '
-      type: string
-      format: ipv6
-      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
-    Port-LocV-V1:
-      description: TCP or UDP port number
-      type: integer
-      minimum: 0
-      maximum: 65535
-    Area-LocV-V1:
-      description: Base schema for all areas
-      type: object
-      properties:
-        areaType:
-          $ref: '#/components/schemas/AreaType-LocV-V1'
-      required:
-      - areaType
-      discriminator:
-        propertyName: areaType
-        mapping:
-          CIRCLE: '#/components/schemas/Circle'
-    VerifyLocationResponse-LocV-V1:
-      description: Response to a location verification request
-      type: object
-      required:
-      - verificationResult
-      properties:
-        lastLocationTime:
-          $ref: '#/components/schemas/LastLocationTime-LocV-V1'
-        verificationResult:
-          $ref: '#/components/schemas/VerificationResult-LocV-V1'
-        matchRate:
-          $ref: '#/components/schemas/MatchRate-LocV-V1'
-    AreaType-LocV-V1:
-      type: string
-      description: 'Type of this area.
-
-        CIRCLE - The area is defined as a circle.
-
-        '
-      enum:
-      - CIRCLE
-    VerifyLocationRequest-LocV-V1:
-      description: Request to verify the location of a device. Device is not required when using a 3-legged access token, following the rules in the description.
-      type: object
-      properties:
-        device:
-          $ref: '#/components/schemas/Device-LocV-V1'
-        area:
-          $ref: '#/components/schemas/Area-LocV-V1'
-        maxAge:
-          $ref: '#/components/schemas/MaxAge-LocV-V1'
-      required:
-      - area
-    MaxAge-LocV-V1:
-      description: The maximum age (in seconds) for the location known by the implementation, which is accepted for the verification. Absence of maxAge means "any age" and maxAge=0 means a fresh calculation.
-      type: integer
-      example: 120
-    NetworkAccessIdentifier-LocV-V1:
-      description: A public identifier addressing a subscription in a mobile network. In 3GPP terminology, it corresponds to the GPSI formatted with the External Identifier ({Local Identifier}@{Domain Identifier}). Unlike the telephone number, the network access identifier is not subjected to portability ruling in force, and is individually managed by each operator.
-      type: string
-      example: 123456789@domain.com
-    SingleIpv4Addr-LocV-V1:
-      description: A single IPv4 address with no subnet mask
-      type: string
-      format: ipv4
-      example: 84.125.93.10
-    Device-LocV-V1:
-      description: 'End-user equipment able to connect to a mobile network. Examples of devices include smartphones or IoT sensors/actuators.
-
-
-        The developer can choose to provide the below specified device identifiers:
-
-
-        * `ipv4Address`
-
-        * `ipv6Address`
-
-        * `phoneNumber`
-
-        * `networkAccessIdentifier`
-
-
-        NOTE1: the MNO might support only a subset of these options. The API invoker can provide multiple identifiers to be compatible across different MNOs. In this case the identifiers MUST belong to the same device
-
-        NOTE2: for the Commonalities release v0.4, we are enforcing that the networkAccessIdentifier is only part of the schema for future-proofing, and CAMARA does not currently allow its use. After the CAMARA meta-release work is concluded and the relevant issues are resolved, its use will need to be explicitly documented in the guidelines.
-
-        '
-      type: object
-      properties:
-        phoneNumber:
-          $ref: '#/components/schemas/PhoneNumber-LocV-V1'
-        networkAccessIdentifier:
-          $ref: '#/components/schemas/NetworkAccessIdentifier-LocV-V1'
-        ipv4Address:
-          $ref: '#/components/schemas/DeviceIpv4Addr-LocV-V1'
-        ipv6Address:
-          $ref: '#/components/schemas/DeviceIpv6Address-LocV-V1'
-      minProperties: 1
-    MatchRate-LocV-V1:
-      description: Estimation of the match rate between the area in the request (R), and area where the network locates the device (N), calculated as the percent value of the intersection of both areas divided by the network area, that is (R ∩ N) / N * 100. Included only if VerificationResult is PARTIAL.
-      type: integer
-      minimum: 1
-      maximum: 99
-    LastLocationTime-LocV-V1:
-      description: Timestamp of the last location information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z)
-      example: '2023-09-07T10:40:52Z'
-      format: date-time
-      type: string
-    VerificationResult-LocV-V1:
-      description: "Result of a verification request:\n  - `TRUE`: when the network locates the device within the requested area,\n  - `FALSE`: when the requested area does not match the area where the network locates the device,\n  - `UNKNOWN`: when the network cannot locate the device,\n  - `PARTIAL`: when the requested area partially match the area where the network locates the device. A `match_rate` is included in the response.\n"
-      type: string
-      enum:
-      - 'TRUE'
-      - 'FALSE'
-      - UNKNOWN
-      - PARTIAL
-    PhoneNumber-LocV-V1:
-      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
-      type: string
-      pattern: ^\+[1-9][0-9]{4,14}$
-      example: '+123456789'
   responses:
+    Generic403-LocV-V1:
+      description: Forbidden
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-LocV-V1'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-LocV-V1'
+          examples:
+            GENERIC_403_PERMISSION_DENIED:
+              summary: Generic Permission Denied
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action.
+            GENERIC_403_INVALID_TOKEN_CONTEXT:
+              summary: Invalid access token context
+              description: Reflects some inconsistency between information in some field of the API and the related OAuth2 Token
+              value:
+                status: 403
+                code: INVALID_TOKEN_CONTEXT
+                message: '{{field}} is not consistent with access token.'
+    Generic401-LocV-V1:
+      description: Unauthorized
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-LocV-V1'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-LocV-V1'
+          examples:
+            GENERIC_401_UNAUTHENTICATED:
+              summary: Generic Unauthenticated
+              description: Request cannot be authenticated
+              value:
+                status: 401
+                code: UNAUTHENTICATED
+                message: Request not authenticated due to missing, invalid, or expired credentials.
+            GENERIC_401_AUTHENTICATION_REQUIRED:
+              summary: Generic Authentication Required
+              description: New authentication is needed, authentication is no longer valid
+              value:
+                status: 401
+                code: AUTHENTICATION_REQUIRED
+                message: New authentication is required.
+    Generic404-LocV-V1:
+      description: Not found
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-LocV-V1'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-LocV-V1'
+          examples:
+            GENERIC_404_NOT_FOUND:
+              summary: Generic Not Found
+              description: Resource is not found
+              value:
+                status: 404
+                code: NOT_FOUND
+                message: '{{resource}} is not found'
+            GENERIC_404_DEVICE_NOT_FOUND:
+              summary: Some identifier cannot be matched to a device
+              description: One or more of the provided device identifiers do not match any device
+              value:
+                status: 404
+                code: DEVICE_NOT_FOUND
+                message: No device found for a provided identifier
+    Generic503-LocV-V1:
+      description: Service unavailable
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-LocV-V1'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-LocV-V1'
+          examples:
+            GENERIC_503_UNAVAILABLE:
+              summary: Generic Unavailable
+              description: Service is not available. Temporary situation usually related to maintenance process in the server side
+              value:
+                status: 503
+                code: UNAVAILABLE
+                message: Service unavailable
     VerifyLocationUnprocessableEntity422-LocV-V1:
       description: Unprocessable Entity
       headers:
@@ -360,6 +273,45 @@ components:
                 status: 422
                 code: UNIDENTIFIABLE_DEVICE
                 message: A device must be provided
+    Generic500-LocV-V1:
+      description: Internal server error
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-LocV-V1'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-LocV-V1'
+          examples:
+            GENERIC_500_INTERNAL:
+              summary: Generic Internal
+              description: Problem in Server side. Regular Server Exception
+              value:
+                status: 500
+                code: INTERNAL
+                message: Internal server error
+    Generic429-LocV-V1:
+      description: Too Many Requests
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-LocV-V1'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-LocV-V1'
+          examples:
+            GENERIC_429_QUOTA_EXCEEDED:
+              description: Request is rejected due to exceeding a business quota limit
+              value:
+                status: 429
+                code: QUOTA_EXCEEDED
+                message: Either out of resource quota or reaching rate limiting.
+            GENERIC_429_TOO_MANY_REQUESTS:
+              description: API Server request limit is overpassed
+              value:
+                status: 429
+                code: TOO_MANY_REQUESTS
+                message: Either out of resource quota or reaching rate limiting.
     Generic400-LocV-V1:
       description: Bad Request
       headers:
@@ -384,134 +336,180 @@ components:
                 status: 400
                 code: OUT_OF_RANGE
                 message: Client specified an invalid range.
-    Generic503-LocV-V1:
-      description: Service unavailable
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator-LocV-V1'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo-LocV-V1'
-          examples:
-            GENERIC_503_UNAVAILABLE:
-              summary: Generic Unavailable
-              description: Service is not available. Temporary situation usually related to maintenance process in the server side
-              value:
-                status: 503
-                code: UNAVAILABLE
-                message: Service unavailable
-    Generic404-LocV-V1:
-      description: Not found
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator-LocV-V1'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo-LocV-V1'
-          examples:
-            GENERIC_404_NOT_FOUND:
-              summary: Generic Not Found
-              description: Resource is not found
-              value:
-                status: 404
-                code: NOT_FOUND
-                message: '{{resource}} is not found'
-            GENERIC_404_DEVICE_NOT_FOUND:
-              summary: Some identifier cannot be matched to a device
-              description: One or more of the provided device identifiers do not match any device
-              value:
-                status: 404
-                code: DEVICE_NOT_FOUND
-                message: No device found for a provided identifier
-    Generic429-LocV-V1:
-      description: Too Many Requests
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator-LocV-V1'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo-LocV-V1'
-          examples:
-            GENERIC_429_QUOTA_EXCEEDED:
-              description: Request is rejected due to exceeding a business quota limit
-              value:
-                status: 429
-                code: QUOTA_EXCEEDED
-                message: Either out of resource quota or reaching rate limiting.
-            GENERIC_429_TOO_MANY_REQUESTS:
-              description: API Server request limit is overpassed
-              value:
-                status: 429
-                code: TOO_MANY_REQUESTS
-                message: Either out of resource quota or reaching rate limiting.
-    Generic401-LocV-V1:
-      description: Unauthorized
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator-LocV-V1'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo-LocV-V1'
-          examples:
-            GENERIC_401_UNAUTHENTICATED:
-              summary: Generic Unauthenticated
-              description: Request cannot be authenticated
-              value:
-                status: 401
-                code: UNAUTHENTICATED
-                message: Request not authenticated due to missing, invalid, or expired credentials.
-            GENERIC_401_AUTHENTICATION_REQUIRED:
-              summary: Generic Authentication Required
-              description: New authentication is needed, authentication is no longer valid
-              value:
-                status: 401
-                code: AUTHENTICATION_REQUIRED
-                message: New authentication is required.
-    Generic403-LocV-V1:
-      description: Forbidden
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator-LocV-V1'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo-LocV-V1'
-          examples:
-            GENERIC_403_PERMISSION_DENIED:
-              summary: Generic Permission Denied
-              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
-              value:
-                status: 403
-                code: PERMISSION_DENIED
-                message: Client does not have sufficient permissions to perform this action.
-            GENERIC_403_INVALID_TOKEN_CONTEXT:
-              summary: Invalid access token context
-              description: Reflects some inconsistency between information in some field of the API and the related OAuth2 Token
-              value:
-                status: 403
-                code: INVALID_TOKEN_CONTEXT
-                message: '{{field}} is not consistent with access token.'
-    Generic500-LocV-V1:
-      description: Internal server error
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator-LocV-V1'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo-LocV-V1'
-          examples:
-            GENERIC_500_INTERNAL:
-              summary: Generic Internal
-              description: Problem in Server side. Regular Server Exception
-              value:
-                status: 500
-                code: INTERNAL
-                message: Internal server error
+  schemas:
+    VerifyLocationRequest-LocV-V1:
+      description: Request to verify the location of a device. Device is not required when using a 3-legged access token, following the rules in the description.
+      type: object
+      properties:
+        device:
+          $ref: '#/components/schemas/Device-LocV-V1'
+        area:
+          $ref: '#/components/schemas/Area-LocV-V1'
+        maxAge:
+          $ref: '#/components/schemas/MaxAge-LocV-V1'
+      required:
+      - area
+    MaxAge-LocV-V1:
+      description: The maximum age (in seconds) for the location known by the implementation, which is accepted for the verification. Absence of maxAge means "any age" and maxAge=0 means a fresh calculation.
+      type: integer
+      example: 120
+    ErrorInfo-LocV-V1:
+      description: Common schema for errors
+      type: object
+      required:
+      - status
+      - code
+      - message
+      properties:
+        status:
+          type: integer
+          description: HTTP status code returned along with this error response
+        code:
+          type: string
+          description: Code given to this error
+        message:
+          type: string
+          description: Detailed error description
+    Device-LocV-V1:
+      description: 'End-user equipment able to connect to a mobile network. Examples of devices include smartphones or IoT sensors/actuators.
+
+
+        The developer can choose to provide the below specified device identifiers:
+
+
+        * `ipv4Address`
+
+        * `ipv6Address`
+
+        * `phoneNumber`
+
+        * `networkAccessIdentifier`
+
+
+        NOTE1: the MNO might support only a subset of these options. The API invoker can provide multiple identifiers to be compatible across different MNOs. In this case the identifiers MUST belong to the same device
+
+        NOTE2: for the Commonalities release v0.4, we are enforcing that the networkAccessIdentifier is only part of the schema for future-proofing, and CAMARA does not currently allow its use. After the CAMARA meta-release work is concluded and the relevant issues are resolved, its use will need to be explicitly documented in the guidelines.
+
+        '
+      type: object
+      properties:
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber-LocV-V1'
+        networkAccessIdentifier:
+          $ref: '#/components/schemas/NetworkAccessIdentifier-LocV-V1'
+        ipv4Address:
+          $ref: '#/components/schemas/DeviceIpv4Addr-LocV-V1'
+        ipv6Address:
+          $ref: '#/components/schemas/DeviceIpv6Address-LocV-V1'
+      minProperties: 1
+    Port-LocV-V1:
+      description: TCP or UDP port number
+      type: integer
+      minimum: 0
+      maximum: 65535
+    AreaType-LocV-V1:
+      type: string
+      description: 'Type of this area.
+
+        CIRCLE - The area is defined as a circle.
+
+        '
+      enum:
+      - CIRCLE
+    DeviceIpv4Addr-LocV-V1:
+      type: object
+      description: 'The device should be identified by either the public (observed) IP address and port as seen by the application server, or the private (local) and any public (observed) IP addresses in use by the device (this information can be obtained by various means, for example from some DNS servers).
+
+
+        If the allocated and observed IP addresses are the same (i.e. NAT is not in use) then  the same address should be specified for both publicAddress and privateAddress.
+
+
+        If NAT64 is in use, the device should be identified by its publicAddress and publicPort, or separately by its allocated IPv6 address (field ipv6Address of the Device object)
+
+
+        In all cases, publicAddress must be specified, along with at least one of either privateAddress or publicPort, dependent upon which is known. In general, mobile devices cannot be identified by their public IPv4 address alone.
+
+        '
+      properties:
+        publicAddress:
+          $ref: '#/components/schemas/SingleIpv4Addr-LocV-V1'
+        privateAddress:
+          $ref: '#/components/schemas/SingleIpv4Addr-LocV-V1'
+        publicPort:
+          $ref: '#/components/schemas/Port-LocV-V1'
+      anyOf:
+      - required:
+        - publicAddress
+        - privateAddress
+      - required:
+        - publicAddress
+        - publicPort
+      example:
+        publicAddress: 84.125.93.10
+        publicPort: 59765
+    VerifyLocationResponse-LocV-V1:
+      description: Response to a location verification request
+      type: object
+      required:
+      - verificationResult
+      properties:
+        lastLocationTime:
+          $ref: '#/components/schemas/LastLocationTime-LocV-V1'
+        verificationResult:
+          $ref: '#/components/schemas/VerificationResult-LocV-V1'
+        matchRate:
+          $ref: '#/components/schemas/MatchRate-LocV-V1'
+    PhoneNumber-LocV-V1:
+      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+      type: string
+      pattern: ^\+[1-9][0-9]{4,14}$
+      example: '+123456789'
+    SingleIpv4Addr-LocV-V1:
+      description: A single IPv4 address with no subnet mask
+      type: string
+      format: ipv4
+      example: 84.125.93.10
+    NetworkAccessIdentifier-LocV-V1:
+      description: A public identifier addressing a subscription in a mobile network. In 3GPP terminology, it corresponds to the GPSI formatted with the External Identifier ({Local Identifier}@{Domain Identifier}). Unlike the telephone number, the network access identifier is not subjected to portability ruling in force, and is individually managed by each operator.
+      type: string
+      example: 123456789@domain.com
+    DeviceIpv6Address-LocV-V1:
+      description: 'The device should be identified by the observed IPv6 address, or by any single IPv6 address from within the subnet allocated to the device (e.g. adding ::0 to the /64 prefix).
+
+        '
+      type: string
+      format: ipv6
+      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
+    VerificationResult-LocV-V1:
+      description: "Result of a verification request:\n  - `TRUE`: when the network locates the device within the requested area,\n  - `FALSE`: when the requested area does not match the area where the network locates the device,\n  - `UNKNOWN`: when the network cannot locate the device,\n  - `PARTIAL`: when the requested area partially match the area where the network locates the device. A `match_rate` is included in the response.\n"
+      type: string
+      enum:
+      - 'TRUE'
+      - 'FALSE'
+      - UNKNOWN
+      - PARTIAL
+    MatchRate-LocV-V1:
+      description: Estimation of the match rate between the area in the request (R), and area where the network locates the device (N), calculated as the percent value of the intersection of both areas divided by the network area, that is (R ∩ N) / N * 100. Included only if VerificationResult is PARTIAL.
+      type: integer
+      minimum: 1
+      maximum: 99
+    LastLocationTime-LocV-V1:
+      description: Timestamp of the last location information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z)
+      example: '2023-09-07T10:40:52Z'
+      format: date-time
+      type: string
+    Area-LocV-V1:
+      description: Base schema for all areas
+      type: object
+      properties:
+        areaType:
+          $ref: '#/components/schemas/AreaType-LocV-V1'
+      required:
+      - areaType
+      discriminator:
+        propertyName: areaType
+        mapping:
+          CIRCLE: '#/components/schemas/Circle'
   headers:
     x-correlator-LocV-V1:
       description: Correlation id for the different services

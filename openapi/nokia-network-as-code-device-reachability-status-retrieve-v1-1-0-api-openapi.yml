@@ -1,6 +1,6 @@
 openapi: 3.2.0
 info:
-  title: Network as Code Device Reachability Status Retrieve v1.1.0 API
+  title: Network as Code Device Reachability Status Retrieve v1.1.0…
   version: 1.0.0
   description: Nokia's Network as Code API for programmable networks.
   x-category: Other
@@ -32,7 +32,6 @@ paths:
         schema: {}
       - $ref: '#/components/parameters/x-rapidapi-host'
       operationId: getReachabilityStatus
-      description: Get the current reachability status information
       responses:
         '200':
           content:

@@ -34,9 +34,7 @@ paths:
       tags:
       - KYC Tenure v0.1
       summary: The KYC Tenure service API
-      description: 'Verifies a specified length of tenure, based on a provided date, for a network subscriber to establish a level of trust for the network subscription identifier.
-
-        '
+      description: Verifies a specified length of tenure, based on a provided date, for a network subscriber to establish a level of trust for the network subscription identifier.
       security:
       - openId:
         - kyc-tenure:check-tenure
@@ -105,6 +103,40 @@ paths:
           description: API root
 components:
   schemas:
+    PhoneNumber-KYC-T-V0:
+      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+      type: string
+      pattern: ^\+[1-9][0-9]{4,14}$
+      example: '+99999991000'
+    Tenure-KYC-T-V0:
+      description: Specifies date from which continuous tenure of the identified mobile subscriber is required to be confirmed
+      type: object
+      properties:
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber-KYC-T-V0'
+        tenureDate:
+          type: string
+          description: The date, in RFC 3339 / ISO 8601 compliant format "YYYY-MM-DD", from which continuous tenure of the identified network subscriber is required to be confirmed
+          format: date
+          example: '2023-07-03'
+      required:
+      - tenureDate
+    ErrorInfo-KYC-T-V0:
+      type: object
+      required:
+      - message
+      - status
+      - code
+      properties:
+        message:
+          type: string
+          description: A human readable description of what the event represent
+        status:
+          type: integer
+          description: HTTP response status code
+        code:
+          type: string
+          description: Friendly Code to describe the error
     TenureInfo-KYC-T-V0:
       properties:
         tenureDateCheck:
@@ -133,105 +165,7 @@ components:
           - Business
       required:
       - tenureDateCheck
-    Tenure-KYC-T-V0:
-      description: Specifies date from which continuous tenure of the identified mobile subscriber is required to be confirmed
-      type: object
-      properties:
-        phoneNumber:
-          $ref: '#/components/schemas/PhoneNumber-KYC-T-V0'
-        tenureDate:
-          type: string
-          description: The date, in RFC 3339 / ISO 8601 compliant format "YYYY-MM-DD", from which continuous tenure of the identified network subscriber is required to be confirmed
-          format: date
-          example: '2023-07-03'
-      required:
-      - tenureDate
-    PhoneNumber-KYC-T-V0:
-      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
-      type: string
-      pattern: ^\+[1-9][0-9]{4,14}$
-      example: '+99999991000'
-    ErrorInfo-KYC-T-V0:
-      type: object
-      required:
-      - message
-      - status
-      - code
-      properties:
-        message:
-          type: string
-          description: A human readable description of what the event represent
-        status:
-          type: integer
-          description: HTTP response status code
-        code:
-          type: string
-          description: Friendly Code to describe the error
   responses:
-    Generic403-KYC-T-V0:
-      description: Forbidden
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/X-Correlator-KYC-T-V0'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo-KYC-T-V0'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 403
-                code:
-                  enum:
-                  - PERMISSION_DENIED
-          examples:
-            GENERIC_403_PERMISSION_DENIED:
-              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
-              value:
-                status: 403
-                code: PERMISSION_DENIED
-                message: Client does not have sufficient permissions to perform this action.
-    Generic422-KYC-T-V0:
-      description: Unprocessable Content
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/X-Correlator-KYC-T-V0'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo-KYC-T-V0'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 422
-                code:
-                  enum:
-                  - SERVICE_NOT_APPLICABLE
-                  - MISSING_IDENTIFIER
-                  - UNNECESSARY_IDENTIFIER
-          examples:
-            GENERIC_422_SERVICE_NOT_APPLICABLE:
-              description: Service is not applicable for the provided phone number
-              value:
-                status: 422
-                code: SERVICE_NOT_APPLICABLE
-                message: The service is not applicable for the provided phone number
-            GENERIC_422_MISSING_IDENTIFIER:
-              description: No phone number has been provided either explicitly or associated with the access token
-              value:
-                status: 422
-                code: MISSING_IDENTIFIER
-                message: No phone number has been provided
-            GENERIC_422_UNNECESSARY_IDENTIFIER:
-              description: An explicit phone number has been provided when one is already associated with the access token
-              value:
-                status: 422
-                code: UNNECESSARY_IDENTIFIER
-                message: An explicit phone number has been provided when one is already associated with the access token
     Generic400-KYC-T-V0:
       description: Bad Request
       headers:
@@ -264,6 +198,31 @@ components:
                 status: 400
                 code: OUT_OF_RANGE
                 message: Client specified an invalid range.
+    Generic403-KYC-T-V0:
+      description: Forbidden
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/X-Correlator-KYC-T-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-KYC-T-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 403
+                code:
+                  enum:
+                  - PERMISSION_DENIED
+          examples:
+            GENERIC_403_PERMISSION_DENIED:
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action.
     Generic404-KYC-T-V0:
       description: Not found
       headers:
@@ -321,6 +280,45 @@ components:
                 status: 401
                 code: AUTHENTICATION_REQUIRED
                 message: New authentication is required.
+    Generic422-KYC-T-V0:
+      description: Unprocessable Content
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/X-Correlator-KYC-T-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-KYC-T-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 422
+                code:
+                  enum:
+                  - SERVICE_NOT_APPLICABLE
+                  - MISSING_IDENTIFIER
+                  - UNNECESSARY_IDENTIFIER
+          examples:
+            GENERIC_422_SERVICE_NOT_APPLICABLE:
+              description: Service is not applicable for the provided phone number
+              value:
+                status: 422
+                code: SERVICE_NOT_APPLICABLE
+                message: The service is not applicable for the provided phone number
+            GENERIC_422_MISSING_IDENTIFIER:
+              description: No phone number has been provided either explicitly or associated with the access token
+              value:
+                status: 422
+                code: MISSING_IDENTIFIER
+                message: No phone number has been provided
+            GENERIC_422_UNNECESSARY_IDENTIFIER:
+              description: An explicit phone number has been provided when one is already associated with the access token
+              value:
+                status: 422
+                code: UNNECESSARY_IDENTIFIER
+                message: An explicit phone number has been provided when one is already associated with the access token
   headers:
     X-Correlator-KYC-T-V0:
       description: Correlation id for the different services

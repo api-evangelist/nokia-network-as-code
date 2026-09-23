@@ -272,18 +272,200 @@ paths:
           default: http://localhost:9091
           description: API root
 components:
+  examples:
+    CIRCLE_AREA_ENTERED-Geo-V0:
+      description: The cloud event when a geofence area was entered
+      value:
+        id: '123655'
+        source: https://notificationSendServer12.supertelco.com
+        type: org.camaraproject.geofencing-subscriptions.v0.area-entered
+        specversion: '1.0'
+        datacontenttype: application/json
+        time: '2023-03-22T05:40:23.682Z'
+        data:
+          subscriptionId: 987654321
+          device:
+            phoneNumber: 123456789
+          area:
+            areaType: CIRCLE
+            center:
+              latitude: 50.735851
+              longitude: 7.10066
+            radius: 2000
+    CIRCLE_AREA_LEFT-Geo-V0:
+      description: The cloud event when a geofence area was left
+      value:
+        id: '123655'
+        source: https://notificationSendServer12.supertelco.com
+        type: org.camaraproject.geofencing-subscriptions.v0.area-left
+        specversion: '1.0'
+        datacontenttype: application/json
+        time: '2023-03-22T05:40:23.682Z'
+        data:
+          subscriptionId: 987654321
+          device:
+            phoneNumber: 123456789
+          area:
+            areaType: CIRCLE
+            center:
+              latitude: 50.735851
+              longitude: 7.10066
+            radius: 2000
+    REQUEST_CIRCLE_AREA_ENTERED-Geo-V0:
+      description: A sample geofence for entering for a circle area
+      value:
+        protocol: HTTP
+        sink: https://notificationSendServer12.supertelco.com
+        types:
+        - org.camaraproject.geofencing-subscriptions.v0.area-entered
+        config:
+          subscriptionDetail:
+            device:
+              phoneNumber: '+99999991000'
+            area:
+              areaType: CIRCLE
+              center:
+                latitude: 50.735851
+                longitude: 7.10066
+              radius: 2000
+          initialEvent: true
+          subscriptionMaxEvents: 10
+          subscriptionExpireTime: '2045-03-22T05:40:58.469Z'
+    SUBSCRIPTION_ENDS-Geo-V0:
+      description: The cloud event when a geofence subscription ends
+      value:
+        id: '123655'
+        source: https://notificationSendServer12.supertelco.com
+        type: org.camaraproject.geofencing-subscriptions.v0.subscription-ends
+        specversion: '1.0'
+        datacontenttype: application/json
+        time: '2023-03-22T05:40:23.682Z'
+        data:
+          subscriptionId: 987654321
+          device:
+            phoneNumber: 123456789
+          area:
+            areaType: CIRCLE
+            center:
+              latitude: 50.735851
+              longitude: 7.10066
+            radius: 2000
+          terminationReason: SUBSCRIPTION_EXPIRED
+    REQUEST_CIRCLE_AREA_LEFT-Geo-V0:
+      description: A sample geofence for leaving a circle area
+      value:
+        protocol: HTTP
+        sink: https://notificationSendServer12.supertelco.com
+        types:
+        - org.camaraproject.geofencing-subscriptions.v0.area-left
+        config:
+          subscriptionDetail:
+            device:
+              phoneNumber: '+99999991001'
+            area:
+              areaType: CIRCLE
+              center:
+                latitude: 41.354178
+                longitude: 2.12692
+              radius: 2000
+          initialEvent: true
+          subscriptionMaxEvents: 10
+          subscriptionExpireTime: '2045-03-22T05:40:58.469Z'
+    SUBSCRIPTION_UNPROCESSABLE-Geo-V0:
+      description: The cloud event when the subscription process was aborted.
+      value:
+        id: '123655'
+        source: https://notificationSendServer12.supertelco.com
+        type: org.camaraproject.geofencing-subscriptions.v0.subscription-ends
+        specversion: '1.0'
+        datacontenttype: application/json
+        time: '2023-03-22T05:40:23.682Z'
+        data:
+          device:
+            phoneNumber: 123456789
+          area:
+            areaType: CIRCLE
+            center:
+              latitude: 50.735851
+              longitude: 7.10066
+            radius: 2000
+          terminationReason: SUBSCRIPTION_UNPROCESSABLE
+          terminationDescription: The requested area cannot be covered by the network.
   schemas:
-    SubscriptionEventType-Geo-V0:
-      type: string
-      description: 'area-entered - Event triggered when the device enters the given area
+    CloudEvent-Geo-V0:
+      description: The notification callback
+      required:
+      - id
+      - source
+      - specversion
+      - type
+      - time
+      - data
+      properties:
+        id:
+          type: string
+          description: identifier of this event, that must be unique in the source context.
+        source:
+          $ref: '#/components/schemas/Source-Geo-V0'
+        type:
+          $ref: '#/components/schemas/NotificationEventType-Geo-V0'
+        specversion:
+          type: string
+          description: Version of the specification to which this event conforms (must be 1.0 if it conforms to cloudevents 1.0.2 version)
+          enum:
+          - '1.0'
+        datacontenttype:
+          type: string
+          description: media-type that describes the event payload encoding, must be "application/json" for CAMARA APIs
+          enum:
+          - application/json
+        data:
+          type: object
+          description: Event details payload described in each CAMARA API and referenced by its type
+        time:
+          $ref: '#/components/schemas/DateTime-Geo-V0'
+      discriminator:
+        propertyName: type
+        mapping:
+          org.camaraproject.geofencing-subscriptions.v0.area-left: '#/components/schemas/EventAreaLeft'
+          org.camaraproject.geofencing-subscriptions.v0.area-entered: '#/components/schemas/EventAreaEntered'
+          org.camaraproject.geofencing-subscriptions.v0.subscription-ends: '#/components/schemas/EventSubscriptionEnds'
+    Device-Geo-V0:
+      description: 'End-user equipment able to connect to a mobile network. Examples of devices include smartphones or IoT sensors/actuators.
 
 
-        area-left - Event triggered when the device leaves the given area
+        The developer can choose to provide the below specified device identifiers:
+
+
+        * `ipv4Address`
+
+        * `ipv6Address`
+
+        * `phoneNumber`
+
+        * `networkAccessIdentifier`
+
+
+        NOTE1: the MNO might support only a subset of these options. The API invoker can provide multiple identifiers to be compatible across different MNOs. In this case the identifiers MUST belong to the same device. When returned as part of a response, the device object must include the same identifier values that were provided originally. Please note that IP addresses of devices can change and get reused, so the original values may no longer identify the same device. They identified the device at the time of the subscription request.
+
+        NOTE2: for the Commonalities release v0.4, we are enforcing that the networkAccessIdentifier is only part of the schema for future-proofing, and CAMARA does not currently allow its use. After the CAMARA meta-release work is concluded and the relevant issues are resolved, its use will need to be explicitly documented in the guidelines.
 
         '
-      enum:
-      - org.camaraproject.geofencing-subscriptions.v0.area-entered
-      - org.camaraproject.geofencing-subscriptions.v0.area-left
+      type: object
+      properties:
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber-Geo-V0'
+        networkAccessIdentifier:
+          $ref: '#/components/schemas/NetworkAccessIdentifier-Geo-V0'
+        ipv4Address:
+          $ref: '#/components/schemas/DeviceIpv4Addr-Geo-V0'
+        ipv6Address:
+          $ref: '#/components/schemas/DeviceIpv6Address-Geo-V0'
+      minProperties: 1
+    SubscriptionId-Geo-V0:
+      type: string
+      description: The unique identifier of the subscription in the scope of the subscription manager. When this information is contained within an event notification, this concept SHALL be referred as `subscriptionId` as per [Commonalities Event Notification Model](https://github.com/camaraproject/Commonalities/blob/main/documentation/API-design-guidelines.md#122-event-notification).
+      example: qs15-h556-rt89-1298
     Area-Geo-V0:
       type: object
       properties:
@@ -296,11 +478,81 @@ components:
         mapping:
           CIRCLE: '#/components/schemas/Circle'
           POI: '#/components/schemas/Poi'
-    DateTime-Geo-V0:
+    AreaType-Geo-V0:
       type: string
-      format: date-time
-      description: Timestamp of when the occurrence happened. Must adhere to RFC 3339.
-      example: '2018-04-05T17:31:00Z'
+      description: 'Type of this area.
+
+        CIRCLE - The area is defined as a circle.
+
+        POI - The area is defined by a named point of interest.
+
+        '
+      enum:
+      - CIRCLE
+      - POI
+    SubscriptionAsync-Geo-V0:
+      description: Response for a event-type subscription request managed asynchronously (Creation or Deletion)
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/SubscriptionId-Geo-V0'
+    Protocol-Geo-V0:
+      type: string
+      enum:
+      - HTTP
+      - MQTT3
+      - MQTT5
+      - AMQP
+      - NATS
+      - KAFKA
+      description: Identifier of a delivery protocol. Only HTTP is allowed for now
+      example: HTTP
+    SubscriptionEventType-Geo-V0:
+      type: string
+      description: 'area-entered - Event triggered when the device enters the given area
+
+
+        area-left - Event triggered when the device leaves the given area
+
+        '
+      enum:
+      - org.camaraproject.geofencing-subscriptions.v0.area-entered
+      - org.camaraproject.geofencing-subscriptions.v0.area-left
+    ErrorInfo-Geo-V0:
+      description: The error info object for possible error cases
+      type: object
+      required:
+      - status
+      - code
+      - message
+      properties:
+        status:
+          type: integer
+          description: HTTP response status code
+        code:
+          type: string
+          description: Code given to this error
+        message:
+          type: string
+          description: Detailed error description
+    SinkCredential-Geo-V0:
+      type: object
+      properties:
+        credentialType:
+          type: string
+          enum:
+          - PLAIN
+          - ACCESSTOKEN
+          - REFRESHTOKEN
+          description: The type of the credential.
+      discriminator:
+        propertyName: credentialType
+        mapping:
+          PLAIN: '#/components/schemas/PlainCredential'
+          ACCESSTOKEN: '#/components/schemas/AccessTokenCredential'
+          REFRESHTOKEN: '#/components/schemas/RefreshTokenCredential'
+      required:
+      - credentialType
     SubscriptionDetail-Geo-V0:
       description: The detail of the requested event subscription
       type: object
@@ -312,6 +564,32 @@ components:
       required:
       - device
       - area
+    Port-Geo-V0:
+      description: TCP or UDP port number
+      type: integer
+      minimum: 0
+      maximum: 65535
+    Source-Geo-V0:
+      type: string
+      format: uri-reference
+      minLength: 1
+      description: "Identifies the context in which an event happened - be a non-empty `URI-reference` like:\n- URI with a DNS authority:\n\n\n\n\n  * https://github.com/cloudevents\n  * mailto:cncf-wg-serverless@lists.cncf.io\n- Universally-unique URN with a UUID:\n\n\n\n\n  * urn:uuid:6e8bc430-9c3a-11d9-9669-0800200c9a66\n- Application-specific identifier:\n\n\n\n\n  * /cloudevents/spec/pull/123\n  * 1-555-123-4567\n"
+      example: https://notificationSendServer12.supertelco.com
+    NotificationEventType-Geo-V0:
+      type: string
+      description: 'area-entered - Event triggered when the device enters the given area
+
+
+        area-left - Event triggered when the device leaves the given area
+
+
+        subscription-ends - Event triggered when the subscription ends
+
+        '
+      enum:
+      - org.camaraproject.geofencing-subscriptions.v0.area-entered
+      - org.camaraproject.geofencing-subscriptions.v0.area-left
+      - org.camaraproject.geofencing-subscriptions.v0.subscription-ends
     Config-Geo-V0:
       description: 'Implementation-specific configuration parameters needed by the subscription manager for acquiring events.
 
@@ -345,41 +623,11 @@ components:
             Example: Consumer request area entered event. If consumer sets initialEvent to true and device is already in the geofence, an event is triggered
 
             '
-    NetworkAccessIdentifier-Geo-V0:
-      description: A public identifier addressing a subscription in a mobile network. In 3GPP terminology, it corresponds to the GPSI formatted with the External Identifier ({Local Identifier}@{Domain Identifier}). Unlike the telephone number, the network access identifier is not subjected to portability ruling in force, and is individually managed by each operator.
+    DateTime-Geo-V0:
       type: string
-      example: 123456789@domain.com
-    DeviceIpv4Addr-Geo-V0:
-      type: object
-      description: 'The device should be identified by either the public (observed) IP address and port as seen by the application server, or the private (local) and any public (observed) IP addresses in use by the device (this information can be obtained by various means, for example from some DNS servers).
-
-
-        If the allocated and observed IP addresses are the same (i.e. NAT is not in use) then  the same address should be specified for both publicAddress and privateAddress.
-
-
-        If NAT64 is in use, the device should be identified by its publicAddress and publicPort, or separately by its allocated IPv6 address (field ipv6Address of the Device object)
-
-
-        In all cases, publicAddress must be specified, along with at least one of either privateAddress or publicPort, dependent upon which is known. In general, mobile devices cannot be identified by their public IPv4 address alone.
-
-        '
-      properties:
-        publicAddress:
-          $ref: '#/components/schemas/SingleIpv4Addr-Geo-V0'
-        privateAddress:
-          $ref: '#/components/schemas/SingleIpv4Addr-Geo-V0'
-        publicPort:
-          $ref: '#/components/schemas/Port-Geo-V0'
-      anyOf:
-      - required:
-        - publicAddress
-        - privateAddress
-      - required:
-        - publicAddress
-        - publicPort
-      example:
-        publicAddress: 84.125.93.10
-        publicPort: 59765
+      format: date-time
+      description: Timestamp of when the occurrence happened. Must adhere to RFC 3339.
+      example: '2018-04-05T17:31:00Z'
     SubscriptionRequest-Geo-V0:
       description: The request for creating a event-type event subscription
       type: object
@@ -422,47 +670,13 @@ components:
           AMQP: '#/components/schemas/AMQPSubscriptionRequest'
           NATS: '#/components/schemas/NATSSubscriptionRequest'
           KAFKA: '#/components/schemas/ApacheKafkaSubscriptionRequest'
-    NotificationEventType-Geo-V0:
-      type: string
-      description: 'area-entered - Event triggered when the device enters the given area
-
-
-        area-left - Event triggered when the device leaves the given area
-
-
-        subscription-ends - Event triggered when the subscription ends
+    DeviceIpv6Address-Geo-V0:
+      description: 'The device should be identified by the observed IPv6 address, or by any single IPv6 address from within the subnet allocated to the device (e.g. adding ::0 to the /64 prefix).
 
         '
-      enum:
-      - org.camaraproject.geofencing-subscriptions.v0.area-entered
-      - org.camaraproject.geofencing-subscriptions.v0.area-left
-      - org.camaraproject.geofencing-subscriptions.v0.subscription-ends
-    SubscriptionId-Geo-V0:
       type: string
-      description: The unique identifier of the subscription in the scope of the subscription manager. When this information is contained within an event notification, this concept SHALL be referred as `subscriptionId` as per [Commonalities Event Notification Model](https://github.com/camaraproject/Commonalities/blob/main/documentation/API-design-guidelines.md#122-event-notification).
-      example: qs15-h556-rt89-1298
-    PhoneNumber-Geo-V0:
-      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
-      type: string
-      pattern: ^\+[1-9][0-9]{4,14}$
-      example: '+123456789'
-    Protocol-Geo-V0:
-      type: string
-      enum:
-      - HTTP
-      - MQTT3
-      - MQTT5
-      - AMQP
-      - NATS
-      - KAFKA
-      description: Identifier of a delivery protocol. Only HTTP is allowed for now
-      example: HTTP
-    Source-Geo-V0:
-      type: string
-      format: uri-reference
-      minLength: 1
-      description: "Identifies the context in which an event happened - be a non-empty `URI-reference` like:\n- URI with a DNS authority:\n\n\n\n\n  * https://github.com/cloudevents\n  * mailto:cncf-wg-serverless@lists.cncf.io\n- Universally-unique URN with a UUID:\n\n\n\n\n  * urn:uuid:6e8bc430-9c3a-11d9-9669-0800200c9a66\n- Application-specific identifier:\n\n\n\n\n  * /cloudevents/spec/pull/123\n  * 1-555-123-4567\n"
-      example: https://notificationSendServer12.supertelco.com
+      format: ipv6
+      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
     Subscription-Geo-V0:
       description: Represents a event-type subscription.
       type: object
@@ -522,147 +736,90 @@ components:
           AMQP: '#/components/schemas/AMQPSubscriptionResponse'
           NATS: '#/components/schemas/NATSSubscriptionResponse'
           KAFKA: '#/components/schemas/ApacheKafkaSubscriptionResponse'
-    SubscriptionAsync-Geo-V0:
-      description: Response for a event-type subscription request managed asynchronously (Creation or Deletion)
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/SubscriptionId-Geo-V0'
-    AreaType-Geo-V0:
+    NetworkAccessIdentifier-Geo-V0:
+      description: A public identifier addressing a subscription in a mobile network. In 3GPP terminology, it corresponds to the GPSI formatted with the External Identifier ({Local Identifier}@{Domain Identifier}). Unlike the telephone number, the network access identifier is not subjected to portability ruling in force, and is individually managed by each operator.
       type: string
-      description: 'Type of this area.
-
-        CIRCLE - The area is defined as a circle.
-
-        POI - The area is defined by a named point of interest.
-
-        '
-      enum:
-      - CIRCLE
-      - POI
-    DeviceIpv6Address-Geo-V0:
-      description: 'The device should be identified by the observed IPv6 address, or by any single IPv6 address from within the subnet allocated to the device (e.g. adding ::0 to the /64 prefix).
-
-        '
-      type: string
-      format: ipv6
-      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
-    Device-Geo-V0:
-      description: 'End-user equipment able to connect to a mobile network. Examples of devices include smartphones or IoT sensors/actuators.
-
-
-        The developer can choose to provide the below specified device identifiers:
-
-
-        * `ipv4Address`
-
-        * `ipv6Address`
-
-        * `phoneNumber`
-
-        * `networkAccessIdentifier`
-
-
-        NOTE1: the MNO might support only a subset of these options. The API invoker can provide multiple identifiers to be compatible across different MNOs. In this case the identifiers MUST belong to the same device. When returned as part of a response, the device object must include the same identifier values that were provided originally. Please note that IP addresses of devices can change and get reused, so the original values may no longer identify the same device. They identified the device at the time of the subscription request.
-
-        NOTE2: for the Commonalities release v0.4, we are enforcing that the networkAccessIdentifier is only part of the schema for future-proofing, and CAMARA does not currently allow its use. After the CAMARA meta-release work is concluded and the relevant issues are resolved, its use will need to be explicitly documented in the guidelines.
-
-        '
-      type: object
-      properties:
-        phoneNumber:
-          $ref: '#/components/schemas/PhoneNumber-Geo-V0'
-        networkAccessIdentifier:
-          $ref: '#/components/schemas/NetworkAccessIdentifier-Geo-V0'
-        ipv4Address:
-          $ref: '#/components/schemas/DeviceIpv4Addr-Geo-V0'
-        ipv6Address:
-          $ref: '#/components/schemas/DeviceIpv6Address-Geo-V0'
-      minProperties: 1
-    SinkCredential-Geo-V0:
-      type: object
-      properties:
-        credentialType:
-          type: string
-          enum:
-          - PLAIN
-          - ACCESSTOKEN
-          - REFRESHTOKEN
-          description: The type of the credential.
-      discriminator:
-        propertyName: credentialType
-        mapping:
-          PLAIN: '#/components/schemas/PlainCredential'
-          ACCESSTOKEN: '#/components/schemas/AccessTokenCredential'
-          REFRESHTOKEN: '#/components/schemas/RefreshTokenCredential'
-      required:
-      - credentialType
-    ErrorInfo-Geo-V0:
-      description: The error info object for possible error cases
-      type: object
-      required:
-      - status
-      - code
-      - message
-      properties:
-        status:
-          type: integer
-          description: HTTP response status code
-        code:
-          type: string
-          description: Code given to this error
-        message:
-          type: string
-          description: Detailed error description
-    CloudEvent-Geo-V0:
-      description: The notification callback
-      required:
-      - id
-      - source
-      - specversion
-      - type
-      - time
-      - data
-      properties:
-        id:
-          type: string
-          description: identifier of this event, that must be unique in the source context.
-        source:
-          $ref: '#/components/schemas/Source-Geo-V0'
-        type:
-          $ref: '#/components/schemas/NotificationEventType-Geo-V0'
-        specversion:
-          type: string
-          description: Version of the specification to which this event conforms (must be 1.0 if it conforms to cloudevents 1.0.2 version)
-          enum:
-          - '1.0'
-        datacontenttype:
-          type: string
-          description: media-type that describes the event payload encoding, must be "application/json" for CAMARA APIs
-          enum:
-          - application/json
-        data:
-          type: object
-          description: Event details payload described in each CAMARA API and referenced by its type
-        time:
-          $ref: '#/components/schemas/DateTime-Geo-V0'
-      discriminator:
-        propertyName: type
-        mapping:
-          org.camaraproject.geofencing-subscriptions.v0.area-left: '#/components/schemas/EventAreaLeft'
-          org.camaraproject.geofencing-subscriptions.v0.area-entered: '#/components/schemas/EventAreaEntered'
-          org.camaraproject.geofencing-subscriptions.v0.subscription-ends: '#/components/schemas/EventSubscriptionEnds'
-    Port-Geo-V0:
-      description: TCP or UDP port number
-      type: integer
-      minimum: 0
-      maximum: 65535
+      example: 123456789@domain.com
     SingleIpv4Addr-Geo-V0:
       description: A single IPv4 address with no subnet mask
       type: string
       format: ipv4
       example: 84.125.93.10
+    DeviceIpv4Addr-Geo-V0:
+      type: object
+      description: 'The device should be identified by either the public (observed) IP address and port as seen by the application server, or the private (local) and any public (observed) IP addresses in use by the device (this information can be obtained by various means, for example from some DNS servers).
+
+
+        If the allocated and observed IP addresses are the same (i.e. NAT is not in use) then  the same address should be specified for both publicAddress and privateAddress.
+
+
+        If NAT64 is in use, the device should be identified by its publicAddress and publicPort, or separately by its allocated IPv6 address (field ipv6Address of the Device object)
+
+
+        In all cases, publicAddress must be specified, along with at least one of either privateAddress or publicPort, dependent upon which is known. In general, mobile devices cannot be identified by their public IPv4 address alone.
+
+        '
+      properties:
+        publicAddress:
+          $ref: '#/components/schemas/SingleIpv4Addr-Geo-V0'
+        privateAddress:
+          $ref: '#/components/schemas/SingleIpv4Addr-Geo-V0'
+        publicPort:
+          $ref: '#/components/schemas/Port-Geo-V0'
+      anyOf:
+      - required:
+        - publicAddress
+        - privateAddress
+      - required:
+        - publicAddress
+        - publicPort
+      example:
+        publicAddress: 84.125.93.10
+        publicPort: 59765
+    PhoneNumber-Geo-V0:
+      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+      type: string
+      pattern: ^\+[1-9][0-9]{4,14}$
+      example: '+123456789'
   responses:
+    Generic404-Geo-V0:
+      description: Not found
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-Geo-V0'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-Geo-V0'
+          examples:
+            GENERIC_404_NOT_FOUND:
+              description: Resource is not found
+              value:
+                status: 404
+                code: NOT_FOUND
+                message: The specified resource is not found.
+    Generic429-Geo-V0:
+      description: Too Many Requests
+      headers:
+        X-Correlator:
+          $ref: '#/components/headers/x-correlator-Geo-V0'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-Geo-V0'
+          examples:
+            GENERIC_429_QUOTA_EXCEEDED:
+              description: Request is rejected due to exceeding a business quota limit
+              value:
+                status: 429
+                code: QUOTA_EXCEEDED
+                message: Either out of resource quota or reaching rate limiting.
+            GENERIC_429_TOO_MANY_REQUESTS:
+              description: API Server request limit is overpassed
+              value:
+                status: 429
+                code: TOO_MANY_REQUESTS
+                message: Either out of resource quota or reaching rate limiting.
     Generic503-Geo-V0:
       description: Service unavailable. Typically the server is down.
       headers:
@@ -679,6 +836,41 @@ components:
                 status: 503
                 code: UNAVAILABLE
                 message: Service Unavailable.
+    SubscriptionIdRequired-Geo-V0:
+      description: Problem with the client request
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-Geo-V0'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-Geo-V0'
+          examples:
+            Generic400:
+              summary: Schema validation failed
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Client specified an invalid argument, request body or query param
+            subscriptionIdRequired:
+              summary: subscription id is required
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: 'Expected property is missing: subscriptionId'
+    Generic401-Geo-V0:
+      description: Authentication problem with the client request
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-Geo-V0'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-Geo-V0'
+          example:
+            status: 401
+            code: UNAUTHENTICATED
+            message: Request not authenticated due to missing, invalid, or expired credentials.
     CreateSubscriptionBadRequest400-Geo-V0:
       description: Problem with the client request
       headers:
@@ -709,83 +901,6 @@ components:
                 status: 400
                 code: INVALID_TOKEN
                 message: Only bearer token is supported
-    Generic500-Geo-V0:
-      description: Server error
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator-Geo-V0'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo-Geo-V0'
-          example:
-            status: 500
-            code: INTERNAL
-            message: Server error
-    Generic404-Geo-V0:
-      description: Not found
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator-Geo-V0'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo-Geo-V0'
-          examples:
-            GENERIC_404_NOT_FOUND:
-              description: Resource is not found
-              value:
-                status: 404
-                code: NOT_FOUND
-                message: The specified resource is not found.
-    Generic403-Geo-V0:
-      description: Forbidden
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator-Geo-V0'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo-Geo-V0'
-          example:
-            status: 403
-            code: PERMISSION_DENIED
-            message: Client does not have sufficient permissions to perform this action
-    Generic401-Geo-V0:
-      description: Authentication problem with the client request
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator-Geo-V0'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo-Geo-V0'
-          example:
-            status: 401
-            code: UNAUTHENTICATED
-            message: Request not authenticated due to missing, invalid, or expired credentials.
-    Generic429-Geo-V0:
-      description: Too Many Requests
-      headers:
-        X-Correlator:
-          $ref: '#/components/headers/x-correlator-Geo-V0'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo-Geo-V0'
-          examples:
-            GENERIC_429_QUOTA_EXCEEDED:
-              description: Request is rejected due to exceeding a business quota limit
-              value:
-                status: 429
-                code: QUOTA_EXCEEDED
-                message: Either out of resource quota or reaching rate limiting.
-            GENERIC_429_TOO_MANY_REQUESTS:
-              description: API Server request limit is overpassed
-              value:
-                status: 429
-                code: TOO_MANY_REQUESTS
-                message: Either out of resource quota or reaching rate limiting.
     CreateSubscriptionUnprocessableEntity422-Geo-V0:
       description: Unprocessable Entity
       headers:
@@ -823,8 +938,8 @@ components:
                 status: 422
                 code: POI_NOT_SUPPORTED
                 message: POI areaType only supported on CAMARA CSP
-    SubscriptionIdRequired-Geo-V0:
-      description: Problem with the client request
+    Generic500-Geo-V0:
+      description: Server error
       headers:
         x-correlator:
           $ref: '#/components/headers/x-correlator-Geo-V0'
@@ -832,19 +947,10 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorInfo-Geo-V0'
-          examples:
-            Generic400:
-              summary: Schema validation failed
-              value:
-                status: 400
-                code: INVALID_ARGUMENT
-                message: Client specified an invalid argument, request body or query param
-            subscriptionIdRequired:
-              summary: subscription id is required
-              value:
-                status: 400
-                code: INVALID_ARGUMENT
-                message: 'Expected property is missing: subscriptionId'
+          example:
+            status: 500
+            code: INTERNAL
+            message: Server error
     Generic400-Geo-V0:
       description: Bad Request
       headers:
@@ -858,125 +964,19 @@ components:
             status: 400
             code: INVALID_ARGUMENT
             message: Client specified an invalid argument, request body or query param
-  examples:
-    REQUEST_CIRCLE_AREA_ENTERED-Geo-V0:
-      description: A sample geofence for entering for a circle area
-      value:
-        protocol: HTTP
-        sink: https://notificationSendServer12.supertelco.com
-        types:
-        - org.camaraproject.geofencing-subscriptions.v0.area-entered
-        config:
-          subscriptionDetail:
-            device:
-              phoneNumber: '+99999991000'
-            area:
-              areaType: CIRCLE
-              center:
-                latitude: 50.735851
-                longitude: 7.10066
-              radius: 2000
-          initialEvent: true
-          subscriptionMaxEvents: 10
-          subscriptionExpireTime: '2045-03-22T05:40:58.469Z'
-    CIRCLE_AREA_LEFT-Geo-V0:
-      description: The cloud event when a geofence area was left
-      value:
-        id: '123655'
-        source: https://notificationSendServer12.supertelco.com
-        type: org.camaraproject.geofencing-subscriptions.v0.area-left
-        specversion: '1.0'
-        datacontenttype: application/json
-        time: '2023-03-22T05:40:23.682Z'
-        data:
-          subscriptionId: 987654321
-          device:
-            phoneNumber: 123456789
-          area:
-            areaType: CIRCLE
-            center:
-              latitude: 50.735851
-              longitude: 7.10066
-            radius: 2000
-    CIRCLE_AREA_ENTERED-Geo-V0:
-      description: The cloud event when a geofence area was entered
-      value:
-        id: '123655'
-        source: https://notificationSendServer12.supertelco.com
-        type: org.camaraproject.geofencing-subscriptions.v0.area-entered
-        specversion: '1.0'
-        datacontenttype: application/json
-        time: '2023-03-22T05:40:23.682Z'
-        data:
-          subscriptionId: 987654321
-          device:
-            phoneNumber: 123456789
-          area:
-            areaType: CIRCLE
-            center:
-              latitude: 50.735851
-              longitude: 7.10066
-            radius: 2000
-    REQUEST_CIRCLE_AREA_LEFT-Geo-V0:
-      description: A sample geofence for leaving a circle area
-      value:
-        protocol: HTTP
-        sink: https://notificationSendServer12.supertelco.com
-        types:
-        - org.camaraproject.geofencing-subscriptions.v0.area-left
-        config:
-          subscriptionDetail:
-            device:
-              phoneNumber: '+99999991001'
-            area:
-              areaType: CIRCLE
-              center:
-                latitude: 41.354178
-                longitude: 2.12692
-              radius: 2000
-          initialEvent: true
-          subscriptionMaxEvents: 10
-          subscriptionExpireTime: '2045-03-22T05:40:58.469Z'
-    SUBSCRIPTION_UNPROCESSABLE-Geo-V0:
-      description: The cloud event when the subscription process was aborted.
-      value:
-        id: '123655'
-        source: https://notificationSendServer12.supertelco.com
-        type: org.camaraproject.geofencing-subscriptions.v0.subscription-ends
-        specversion: '1.0'
-        datacontenttype: application/json
-        time: '2023-03-22T05:40:23.682Z'
-        data:
-          device:
-            phoneNumber: 123456789
-          area:
-            areaType: CIRCLE
-            center:
-              latitude: 50.735851
-              longitude: 7.10066
-            radius: 2000
-          terminationReason: SUBSCRIPTION_UNPROCESSABLE
-          terminationDescription: The requested area cannot be covered by the network.
-    SUBSCRIPTION_ENDS-Geo-V0:
-      description: The cloud event when a geofence subscription ends
-      value:
-        id: '123655'
-        source: https://notificationSendServer12.supertelco.com
-        type: org.camaraproject.geofencing-subscriptions.v0.subscription-ends
-        specversion: '1.0'
-        datacontenttype: application/json
-        time: '2023-03-22T05:40:23.682Z'
-        data:
-          subscriptionId: 987654321
-          device:
-            phoneNumber: 123456789
-          area:
-            areaType: CIRCLE
-            center:
-              latitude: 50.735851
-              longitude: 7.10066
-            radius: 2000
-          terminationReason: SUBSCRIPTION_EXPIRED
+    Generic403-Geo-V0:
+      description: Forbidden
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-Geo-V0'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-Geo-V0'
+          example:
+            status: 403
+            code: PERMISSION_DENIED
+            message: Client does not have sufficient permissions to perform this action
   parameters:
     x-correlator-Geo-V0:
       name: x-correlator

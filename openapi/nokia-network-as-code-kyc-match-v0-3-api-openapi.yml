@@ -33,8 +33,25 @@ paths:
     post:
       tags:
       - KYC Match v0.3
-      summary: Matching a customer identity by checking a set of attributes related against the account data bound to their phone number.
-      description: "Verify matching of a number of attributes related to a customer identity against the verified data bound to their phone number in the Operator systems. Regardless of whether the `phoneNumber` is explicitly stated in the request body, at least one of the other fields must be provided, otherwise a `HTTP 400 - KNOW_YOUR_CUSTOMER.INVALID_PARAM_COMBINATION` error will be returned.\n\nIn order to proceed with the match check, some Operators may have the requirement to perform an additional level of validation based on the `idDocument` property. This means that, in those cases, the `idDocument` is required and the provided value needs to match the one stored in the Operator system associated with the indicated `phoneNumber`. This validation will be done before proceeding with the match check of the rest of the properties. The following two rules apply only in the cases where the Operator have the requirement to validate the `idDocument`:\n- If no `idDocument` is provided, then a `HTTP 403 - KNOW_YOUR_CUSTOMER.ID_DOCUMENT_REQUIRED` error will be returned.\n- If the provided `idDocument` does not match the one stored in the Operator systems, then a `HTTP 403 - KNOW_YOUR_CUSTOMER.ID_DOCUMENT_MISMATCH` error will be returned.\n\nThe API will return the result of the matching process for each requested attribute. This means that the response will **only** contain the attributes for which validation has been requested. Possible values are:\n\n\n\n\n  - **true**: the attribute provided matches with the one in the Operator systems.\n  - **false**: the attribute provided does not match with the one in the Operator systems.\n  - **not_available**: the attribute is not available to validate."
+      summary: Matching a customer identity by checking a set of attributes related against…
+      description: 'Verify matching of a number of attributes related to a customer identity against the verified data bound to their phone number in the Operator systems. Regardless of whether the `phoneNumber` is explicitly stated in the request body, at least one of the other fields must be provided, otherwise a `HTTP 400 - KNOW_YOUR_CUSTOMER.INVALID_PARAM_COMBINATION` error will be returned.
+
+
+        In order to proceed with the match check, some Operators may have the requirement to perform an additional level of validation based on the `idDocument` property. This means that, in those cases, the `idDocument` is required and the provided value needs to match the one stored in the Operator system associated with the indicated `phoneNumber`. This validation will be done before proceeding with the match check of the rest of the properties. The following two rules apply only in the cases where the Operator have the requirement to validate the `idDocument`:
+
+        - If no `idDocument` is provided, then a `HTTP 403 - KNOW_YOUR_CUSTOMER.ID_DOCUMENT_REQUIRED` error will be returned.
+
+        - If the provided `idDocument` does not match the one stored in the Operator systems, then a `HTTP 403 - KNOW_YOUR_CUSTOMER.ID_DOCUMENT_MISMATCH` error will be returned.
+
+
+        The API will return the result of the matching process for each requested attribute. This means that the response will **only** contain the attributes for which validation has been requested. Possible values are:
+
+
+        - **true**: the attribute provided matches with the one in the Operator systems.
+
+        - **false**: the attribute provided does not match with the one in the Operator systems.
+
+        - **not_available**: the attribute is not available to validate.'
       operationId: verifyKYCMatch
       security:
       - openId:
@@ -186,6 +203,69 @@ components:
                 status: 401
                 code: AUTHENTICATION_REQUIRED
                 message: New authentication is required.
+    Generic404-KYC-M-V0:
+      description: Not found
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-KYC-M-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-KYC-M-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 404
+                code:
+                  enum:
+                  - NOT_FOUND
+                  - IDENTIFIER_NOT_FOUND
+          examples:
+            GENERIC_404_NOT_FOUND:
+              description: Resource is not found
+              value:
+                status: 404
+                code: NOT_FOUND
+            GENERIC_404_IDENTIFIER_NOT_FOUND:
+              description: The phone number is not associated with a CSP customer account
+              value:
+                status: 404
+                code: IDENTIFIER_NOT_FOUND
+                message: The phone number provided is not associated with a customer account
+    Generic422-KYC-M-V0:
+      description: Unprocessable Content
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-KYC-M-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-KYC-M-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 422
+                code:
+                  enum:
+                  - SERVICE_NOT_APPLICABLE
+                  - MISSING_IDENTIFIER
+          examples:
+            GENERIC_422_SERVICE_NOT_APPLICABLE:
+              description: Service is not applicable for the provided phone number
+              value:
+                status: 422
+                code: SERVICE_NOT_APPLICABLE
+                message: The service is not applicable for the provided phone number
+            GENERIC_422_MISSING_IDENTIFIER:
+              description: No phone number has been provided either explicitly or associated with the access token
+              value:
+                status: 422
+                code: MISSING_IDENTIFIER
+                message: No phone number has been provided
     Generic403-KYC-M-V0:
       description: Forbidden
       headers:
@@ -232,38 +312,6 @@ components:
                 status: 403
                 code: KNOW_YOUR_CUSTOMER.ID_DOCUMENT_MISMATCH
                 message: The idDocument needs to match the one associated with the provided phoneNumber
-    Generic422-KYC-M-V0:
-      description: Unprocessable Content
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator-KYC-M-V0'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo-KYC-M-V0'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 422
-                code:
-                  enum:
-                  - SERVICE_NOT_APPLICABLE
-                  - MISSING_IDENTIFIER
-          examples:
-            GENERIC_422_SERVICE_NOT_APPLICABLE:
-              description: Service is not applicable for the provided phone number
-              value:
-                status: 422
-                code: SERVICE_NOT_APPLICABLE
-                message: The service is not applicable for the provided phone number
-            GENERIC_422_MISSING_IDENTIFIER:
-              description: No phone number has been provided either explicitly or associated with the access token
-              value:
-                status: 422
-                code: MISSING_IDENTIFIER
-                message: No phone number has been provided
     Generic400-KYC-M-V0:
       description: Bad Request
       headers:
@@ -296,43 +344,7 @@ components:
                 status: 400
                 code: KNOW_YOUR_CUSTOMER.INVALID_PARAM_COMBINATION
                 message: Indicated parameter combination is invalid
-    Generic404-KYC-M-V0:
-      description: Not found
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator-KYC-M-V0'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo-KYC-M-V0'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 404
-                code:
-                  enum:
-                  - NOT_FOUND
-                  - IDENTIFIER_NOT_FOUND
-          examples:
-            GENERIC_404_NOT_FOUND:
-              description: Resource is not found
-              value:
-                status: 404
-                code: NOT_FOUND
-            GENERIC_404_IDENTIFIER_NOT_FOUND:
-              description: The phone number is not associated with a CSP customer account
-              value:
-                status: 404
-                code: IDENTIFIER_NOT_FOUND
-                message: The phone number provided is not associated with a customer account
   schemas:
-    MatchScoreResult-KYC-M-V0:
-      type: integer
-      description: Indicates the similarity score assigned to the input value when it does not exactly match the value stored in the operator's system. This property shall only be returned when the value of the corresponding match field is `false`.
-      minimum: 0
-      maximum: 100
     ErrorInfo-KYC-M-V0:
       type: object
       required:
@@ -349,12 +361,6 @@ components:
         message:
           type: string
           description: Detailed error description
-    MatchResult-KYC-M-V0:
-      type: string
-      enum:
-      - 'true'
-      - 'false'
-      - not_available
     KYC_MatchResponse-KYC-M-V0:
       type: object
       properties:
@@ -532,6 +538,17 @@ components:
           - MALE
           - FEMALE
           - OTHER
+    MatchScoreResult-KYC-M-V0:
+      type: integer
+      description: Indicates the similarity score assigned to the input value when it does not exactly match the value stored in the operator's system. This property shall only be returned when the value of the corresponding match field is `false`.
+      minimum: 0
+      maximum: 100
+    MatchResult-KYC-M-V0:
+      type: string
+      enum:
+      - 'true'
+      - 'false'
+      - not_available
   headers:
     x-correlator-KYC-M-V0:
       description: Correlation id for the different services

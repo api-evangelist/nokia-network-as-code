@@ -81,6 +81,8 @@ paths:
           $ref: '#/components/responses/Generic503-SIM-V1'
         '504':
           $ref: '#/components/responses/Generic504-SIM-V1'
+      summary: Retrieve sim swap date
+      x-summary-source: derived
     servers:
     - url: '{apiRoot}/geofencing-subscriptions/v0.3'
       variables:
@@ -149,6 +151,8 @@ paths:
           $ref: '#/components/responses/Generic503-SIM-V1'
         '504':
           $ref: '#/components/responses/Generic504-SIM-V1'
+      summary: Check sim swap
+      x-summary-source: derived
     servers:
     - url: '{apiRoot}/geofencing-subscriptions/v0.3'
       variables:
@@ -162,6 +166,114 @@ paths:
           description: API root
 components:
   responses:
+    Generic503-SIM-V1:
+      description: Service Unavailable
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-SIM-V1'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-SIM-V1'
+          examples:
+            GENERIC_503_UNAVAILABLE:
+              description: Service is not available. Temporary situation usually related to maintenance process in the server side
+              value:
+                status: 503
+                code: UNAVAILABLE
+                message: Service Unavailable.
+    Generic404-SIM-V1:
+      description: Not found
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-SIM-V1'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-SIM-V1'
+          examples:
+            GENERIC_404_NOT_FOUND:
+              description: Resource is not found
+              value:
+                status: 404
+                code: NOT_FOUND
+                message: The specified resource is not found.
+    Generic500-SIM-V1:
+      description: Internal Server Error
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-SIM-V1'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-SIM-V1'
+          examples:
+            GENERIC_500_INTERNAL:
+              description: Problem in Server side. Regular Server Exception
+              value:
+                status: 500
+                code: INTERNAL
+                message: Unknown server error. Typically a server bug.
+    Generic422-SIM-V1:
+      description: Unprocessable Content
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-SIM-V1'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-SIM-V1'
+          examples:
+            GENERIC_422_NOT_SUPPORTED:
+              description: Not Supported
+              value:
+                status: 422
+                code: NOT_SUPPORTED
+                message: Service not supported for this phoneNumber
+            UNIDENTIFIABLE_PHONE_NUMBER:
+              description: The phone number is not included in the request and the phone number information cannot be derived from the 3-legged access token
+              value:
+                status: 422
+                code: UNIDENTIFIABLE_PHONE_NUMBER
+                message: The phone number cannot be identified
+    Generic401-SIM-V1:
+      description: Unauthorized
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-SIM-V1'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-SIM-V1'
+          examples:
+            GENERIC_401_UNAUTHENTICATED:
+              description: Request cannot be authenticated
+              value:
+                status: 401
+                code: UNAUTHENTICATED
+                message: Request not authenticated due to missing, invalid, or expired credentials.
+    Generic403-SIM-V1:
+      description: Forbidden
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-SIM-V1'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-SIM-V1'
+          examples:
+            GENERIC_403_PERMISSION_DENIED:
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action.
+            GENERIC_403_INVALID_TOKEN_CONTEXT:
+              description: Reflect some inconsistency between information in some field of the API and the related OAuth2 Token
+              value:
+                status: 403
+                code: INVALID_TOKEN_CONTEXT
+                message: phoneNumber is not consistent with access token
     Generic504-SIM-V1:
       description: Gateway Timeout
       headers:
@@ -194,115 +306,45 @@ components:
                 status: 400
                 code: INVALID_ARGUMENT
                 message: Client specified an invalid argument, request body or query param.
-    Generic422-SIM-V1:
-      description: Unprocessable Content
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator-SIM-V1'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo-SIM-V1'
-          examples:
-            GENERIC_422_NOT_SUPPORTED:
-              description: Not Supported
-              value:
-                status: 422
-                code: NOT_SUPPORTED
-                message: Service not supported for this phoneNumber
-            UNIDENTIFIABLE_PHONE_NUMBER:
-              description: The phone number is not included in the request and the phone number information cannot be derived from the 3-legged access token
-              value:
-                status: 422
-                code: UNIDENTIFIABLE_PHONE_NUMBER
-                message: The phone number cannot be identified
-    Generic403-SIM-V1:
-      description: Forbidden
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator-SIM-V1'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo-SIM-V1'
-          examples:
-            GENERIC_403_PERMISSION_DENIED:
-              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
-              value:
-                status: 403
-                code: PERMISSION_DENIED
-                message: Client does not have sufficient permissions to perform this action.
-            GENERIC_403_INVALID_TOKEN_CONTEXT:
-              description: Reflect some inconsistency between information in some field of the API and the related OAuth2 Token
-              value:
-                status: 403
-                code: INVALID_TOKEN_CONTEXT
-                message: phoneNumber is not consistent with access token
-    Generic404-SIM-V1:
-      description: Not found
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator-SIM-V1'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo-SIM-V1'
-          examples:
-            GENERIC_404_NOT_FOUND:
-              description: Resource is not found
-              value:
-                status: 404
-                code: NOT_FOUND
-                message: The specified resource is not found.
-    Generic401-SIM-V1:
-      description: Unauthorized
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator-SIM-V1'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo-SIM-V1'
-          examples:
-            GENERIC_401_UNAUTHENTICATED:
-              description: Request cannot be authenticated
-              value:
-                status: 401
-                code: UNAUTHENTICATED
-                message: Request not authenticated due to missing, invalid, or expired credentials.
-    Generic503-SIM-V1:
-      description: Service Unavailable
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator-SIM-V1'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo-SIM-V1'
-          examples:
-            GENERIC_503_UNAVAILABLE:
-              description: Service is not available. Temporary situation usually related to maintenance process in the server side
-              value:
-                status: 503
-                code: UNAVAILABLE
-                message: Service Unavailable.
-    Generic500-SIM-V1:
-      description: Internal Server Error
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator-SIM-V1'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo-SIM-V1'
-          examples:
-            GENERIC_500_INTERNAL:
-              description: Problem in Server side. Regular Server Exception
-              value:
-                status: 500
-                code: INTERNAL
-                message: Unknown server error. Typically a server bug.
+  parameters:
+    x-correlator-SIM-V1:
+      name: x-correlator
+      in: header
+      description: Correlation id for the different services
+      schema:
+        type: string
+    x-rapidapi-host:
+      name: x-rapidapi-host
+      in: header
+      required: true
+      description: The API's Host value as defined in the RapidAPI Hub.
+      schema:
+        type: string
+        example: network-as-code.p-eu.rapidapi.com
   schemas:
+    CheckSimSwapInfo-SIM-V1:
+      type: object
+      required:
+      - swapped
+      properties:
+        swapped:
+          type: boolean
+          description: Indicates whether the SIM card has been swapped during the period within the provided age.
+    CreateCheckSimSwap-SIM-V1:
+      type: object
+      properties:
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber-SIM-V1'
+        maxAge:
+          type: integer
+          example: 240
+          description: 'Period in hours to be checked for SIM swap.
+
+            '
+          format: int32
+          minimum: 1
+          maximum: 2400
+          default: 240
     ErrorInfo-SIM-V1:
       type: object
       required:
@@ -319,6 +361,11 @@ components:
         message:
           type: string
           description: Detailed error description
+    CreateSimSwapDate-SIM-V1:
+      type: object
+      properties:
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber-SIM-V1'
     SimSwapInfo-SIM-V1:
       type: object
       required:
@@ -331,34 +378,6 @@ components:
           format: date-time
           description: Timestamp of latest SIM swap performed. It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z)
           example: '2023-07-03T14:27:08.312+02:00'
-    CreateCheckSimSwap-SIM-V1:
-      type: object
-      properties:
-        phoneNumber:
-          $ref: '#/components/schemas/PhoneNumber-SIM-V1'
-        maxAge:
-          type: integer
-          example: 240
-          description: 'Period in hours to be checked for SIM swap.
-
-            '
-          format: int32
-          minimum: 1
-          maximum: 2400
-          default: 240
-    CheckSimSwapInfo-SIM-V1:
-      type: object
-      required:
-      - swapped
-      properties:
-        swapped:
-          type: boolean
-          description: Indicates whether the SIM card has been swapped during the period within the provided age.
-    CreateSimSwapDate-SIM-V1:
-      type: object
-      properties:
-        phoneNumber:
-          $ref: '#/components/schemas/PhoneNumber-SIM-V1'
     PhoneNumber-SIM-V1:
       type: string
       pattern: ^\+[1-9][0-9]{4,14}$
@@ -369,21 +388,6 @@ components:
       description: Correlation id for the different services
       schema:
         type: string
-  parameters:
-    x-correlator-SIM-V1:
-      name: x-correlator
-      in: header
-      description: Correlation id for the different services
-      schema:
-        type: string
-    x-rapidapi-host:
-      name: x-rapidapi-host
-      in: header
-      required: true
-      description: The API's Host value as defined in the RapidAPI Hub.
-      schema:
-        type: string
-        example: network-as-code.p-eu.rapidapi.com
   securitySchemes:
     openId:
       description: OpenID Connect authentication

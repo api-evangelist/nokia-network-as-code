@@ -60,7 +60,7 @@ paths:
     get:
       tags:
       - NaC Authorization Server
-      summary: Get JWKS for an app.
+      summary: Get JWKS for an app
       operationId: get_jwks_apps__nac_app_ref___well_known_jwks_json_get
       parameters:
       - name: nac_app_ref
@@ -96,23 +96,15 @@ paths:
           description: API root
 components:
   schemas:
-    ClientCredential-Auth-V1:
+    HTTPValidationError-Auth-V1:
       properties:
-        client_id:
-          type: string
-          maxLength: 50
-          title: Client Id
-          description: The unique client_id string as issued by the authorization server.
-        client_secret:
-          type: string
-          maxLength: 50
-          title: Client Secret
-          description: The client_secret corresponding to the client_id.
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError-Auth-V1'
+          type: array
+          title: Detail
       type: object
-      required:
-      - client_id
-      - client_secret
-      title: ClientCredential
+      title: HTTPValidationError
     ValidationError-Auth-V1:
       properties:
         loc:
@@ -132,15 +124,23 @@ components:
       - msg
       - type
       title: ValidationError
-    HTTPValidationError-Auth-V1:
+    ClientCredential-Auth-V1:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError-Auth-V1'
-          type: array
-          title: Detail
+        client_id:
+          type: string
+          maxLength: 50
+          title: Client Id
+          description: The unique client_id string as issued by the authorization server.
+        client_secret:
+          type: string
+          maxLength: 50
+          title: Client Secret
+          description: The client_secret corresponding to the client_id.
       type: object
-      title: HTTPValidationError
+      required:
+      - client_id
+      - client_secret
+      title: ClientCredential
   parameters:
     x-rapidapi-host:
       name: x-rapidapi-host

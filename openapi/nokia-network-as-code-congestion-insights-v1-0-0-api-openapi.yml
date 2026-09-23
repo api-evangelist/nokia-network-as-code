@@ -191,7 +191,7 @@ paths:
           description: API root
   /congestion-insights/v0/query:
     post:
-      summary: Fetch congestion level for a device.
+      summary: Fetch congestion level for a device
       description: Fetch historical or predicted congestion level of a device for a given period.
       operationId: fetch
       requestBody:
@@ -266,89 +266,6 @@ components:
       - tmWdw
       - nsi
       title: CongestionAnalytics
-    HTTPValidationError-ConI-V1:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError-ConI-V1'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    DeviceIpv4Addr-ConI-V1:
-      properties:
-        publicAddress:
-          type:
-          - string
-          - 'null'
-          maxLength: 15
-          title: Publicaddress
-          description: Public IPv4 address of the device. Either of the device or the NAT the device is behind.
-        privateAddress:
-          type:
-          - string
-          - 'null'
-          maxLength: 15
-          title: Privateaddress
-          description: Private IPv4 address of the device, if it is behind a NAT.
-        publicPort:
-          type:
-          - integer
-          - 'null'
-          maximum: 65535
-          minimum: 0
-          format: int32
-          title: Publicport
-          description: Public port used by the device. Port is necessary, as private address ranges overlap, and public port is used to extend the range for CGNAT.
-      type: object
-      title: DeviceIpv4Addr
-    Device-ConI-V1:
-      properties:
-        phoneNumber:
-          type:
-          - string
-          - 'null'
-          maxLength: 16
-          pattern: ^\+[1-9][0-9]{4,14}$
-          title: Phonenumber
-          description: Phone number of the subscription, if any. Optional.
-        networkAccessIdentifier:
-          type:
-          - string
-          - 'null'
-          maxLength: 256
-          pattern: ^\S+@\S+\.\S+$
-          title: Networkaccessidentifier
-          description: Email address-like external identifier of the subscription registered at the operator. If both networkAccessIdentifier and phoneNumber are included, phoneNumber may be dropped and networkAccessIdentifier may be retained.
-        ipv4Address:
-          allOf:
-          - $ref: '#/components/schemas/DeviceIpv4Addr-ConI-V1'
-          description: IPv4 address of the device. IP address is needed for some flow-oriented services, such as QoD.
-        ipv6Address:
-          type:
-          - string
-          - 'null'
-          maxLength: 45
-          title: Ipv6Address
-          description: IPv6 address of the device. IP address is needed for some flow-oriented services, such as QoD.
-      type: object
-      title: Device
-    AnalyticsEventNotification-ConI-V1:
-      properties:
-        notifId:
-          type: string
-          maxLength: 100
-          title: Notifid
-        analyEventNotifs:
-          items:
-            $ref: '#/components/schemas/AnalyticsEventNotif-ConI-V1'
-          type: array
-          title: Analyeventnotifs
-      type: object
-      required:
-      - notifId
-      - analyEventNotifs
-      title: AnalyticsEventNotification
     CongestionData-ConI-V1:
       properties:
         timeIntervalStart:
@@ -375,11 +292,56 @@ components:
       - timeIntervalStop
       - congestionLevel
       title: CongestionData
+    SubscribeCongestionCreate-ConI-V1:
+      properties:
+        device:
+          $ref: '#/components/schemas/Device-ConI-V1'
+          description: Identifiers of the device
+        webhook:
+          $ref: '#/components/schemas/Webhook-ConI-V1'
+        subscriptionExpireTime:
+          type: string
+          format: date-time
+          title: Subscriptionexpiretime
+          description: Time when the subscription expires.
+      type: object
+      required:
+      - device
+      - webhook
+      - subscriptionExpireTime
+      title: SubscribeCongestionCreate
+    ThresholdLevel-ConI-V1:
+      properties:
+        congLevel:
+          type: integer
+          maximum: 100
+          minimum: 0
+          format: int32
+          title: Conglevel
+      type: object
+      required:
+      - congLevel
+      title: ThresholdLevel
     AnalyticsEvent-ConI-V1:
       type: string
       enum:
       - CONGESTION
       title: AnalyticsEvent
+    TimeAndDate-ConI-V1:
+      properties:
+        startTime:
+          type: string
+          format: date-time
+          title: Starttime
+        stopTime:
+          type: string
+          format: date-time
+          title: Stoptime
+      type: object
+      required:
+      - startTime
+      - stopTime
+      title: TimeAndDate
     SubscriptionInfo-ConI-V1:
       properties:
         device:
@@ -416,36 +378,6 @@ components:
       - subscriptionExpireTime
       - subscriptionId
       title: SubscriptionInfo
-    ThresholdLevel-ConI-V1:
-      properties:
-        congLevel:
-          type: integer
-          maximum: 100
-          minimum: 0
-          format: int32
-          title: Conglevel
-      type: object
-      required:
-      - congLevel
-      title: ThresholdLevel
-    SubscribeCongestionCreate-ConI-V1:
-      properties:
-        device:
-          $ref: '#/components/schemas/Device-ConI-V1'
-          description: Identifiers of the device
-        webhook:
-          $ref: '#/components/schemas/Webhook-ConI-V1'
-        subscriptionExpireTime:
-          type: string
-          format: date-time
-          title: Subscriptionexpiretime
-          description: Time when the subscription expires.
-      type: object
-      required:
-      - device
-      - webhook
-      - subscriptionExpireTime
-      title: SubscribeCongestionCreate
     FetchCongestion-ConI-V1:
       properties:
         device:
@@ -468,6 +400,15 @@ components:
       required:
       - device
       title: FetchCongestion
+    HTTPValidationError-ConI-V1:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError-ConI-V1'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     CongestInfo-ConI-V1:
       properties:
         cngAnas:
@@ -479,26 +420,22 @@ components:
       required:
       - cngAnas
       title: CongestInfo
-    AnalyticsEventNotif-ConI-V1:
+    AnalyticsEventNotification-ConI-V1:
       properties:
-        analyEvent:
-          $ref: '#/components/schemas/AnalyticsEvent-ConI-V1'
-        timeStamp:
+        notifId:
           type: string
-          format: date-time
-          title: Timestamp
-        congestInfos:
-          type:
-          - array
-          - 'null'
+          maxLength: 100
+          title: Notifid
+        analyEventNotifs:
           items:
-            $ref: '#/components/schemas/CongestInfo-ConI-V1'
-          title: Congestinfos
+            $ref: '#/components/schemas/AnalyticsEventNotif-ConI-V1'
+          type: array
+          title: Analyeventnotifs
       type: object
       required:
-      - analyEvent
-      - timeStamp
-      title: AnalyticsEventNotif
+      - notifId
+      - analyEventNotifs
+      title: AnalyticsEventNotification
     Webhook-ConI-V1:
       properties:
         notificationUrl:
@@ -519,6 +456,40 @@ components:
       required:
       - notificationUrl
       title: Webhook
+    CongestionLevel-ConI-V1:
+      type: string
+      enum:
+      - Low
+      - Medium
+      - High
+      title: CongestionLevel
+    DeviceIpv4Addr-ConI-V1:
+      properties:
+        publicAddress:
+          type:
+          - string
+          - 'null'
+          maxLength: 15
+          title: Publicaddress
+          description: Public IPv4 address of the device. Either of the device or the NAT the device is behind.
+        privateAddress:
+          type:
+          - string
+          - 'null'
+          maxLength: 15
+          title: Privateaddress
+          description: Private IPv4 address of the device, if it is behind a NAT.
+        publicPort:
+          type:
+          - integer
+          - 'null'
+          maximum: 65535
+          minimum: 0
+          format: int32
+          title: Publicport
+          description: Public port used by the device. Port is necessary, as private address ranges overlap, and public port is used to extend the range for CGNAT.
+      type: object
+      title: DeviceIpv4Addr
     ValidationError-ConI-V1:
       properties:
         loc:
@@ -538,28 +509,57 @@ components:
       - msg
       - type
       title: ValidationError
-    CongestionLevel-ConI-V1:
-      type: string
-      enum:
-      - Low
-      - Medium
-      - High
-      title: CongestionLevel
-    TimeAndDate-ConI-V1:
+    Device-ConI-V1:
       properties:
-        startTime:
+        phoneNumber:
+          type:
+          - string
+          - 'null'
+          maxLength: 16
+          pattern: ^\+[1-9][0-9]{4,14}$
+          title: Phonenumber
+          description: Phone number of the subscription, if any. Optional.
+        networkAccessIdentifier:
+          type:
+          - string
+          - 'null'
+          maxLength: 256
+          pattern: ^\S+@\S+\.\S+$
+          title: Networkaccessidentifier
+          description: Email address-like external identifier of the subscription registered at the operator. If both networkAccessIdentifier and phoneNumber are included, phoneNumber may be dropped and networkAccessIdentifier may be retained.
+        ipv4Address:
+          allOf:
+          - $ref: '#/components/schemas/DeviceIpv4Addr-ConI-V1'
+          description: IPv4 address of the device. IP address is needed for some flow-oriented services, such as QoD.
+        ipv6Address:
+          type:
+          - string
+          - 'null'
+          maxLength: 45
+          title: Ipv6Address
+          description: IPv6 address of the device. IP address is needed for some flow-oriented services, such as QoD.
+      type: object
+      title: Device
+    AnalyticsEventNotif-ConI-V1:
+      properties:
+        analyEvent:
+          $ref: '#/components/schemas/AnalyticsEvent-ConI-V1'
+        timeStamp:
           type: string
           format: date-time
-          title: Starttime
-        stopTime:
-          type: string
-          format: date-time
-          title: Stoptime
+          title: Timestamp
+        congestInfos:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CongestInfo-ConI-V1'
+          title: Congestinfos
       type: object
       required:
-      - startTime
-      - stopTime
-      title: TimeAndDate
+      - analyEvent
+      - timeStamp
+      title: AnalyticsEventNotif
   parameters:
     x-rapidapi-host:
       name: x-rapidapi-host

@@ -34,9 +34,7 @@ paths:
       tags:
       - Location Verification v0.2.0
       summary: Verify the location of a device
-      description: 'Verify whether the location of a device is within a requested area. The operation returns a verification result and, optionally, a match rate estimation for the location verification in percent.
-
-        '
+      description: Verify whether the location of a device is within a requested area. The operation returns a verification result and, optionally, a match rate estimation for the location verification in percent.
       operationId: verifyLocation-LocV-V0
       requestBody:
         required: true
@@ -131,11 +129,11 @@ paths:
           description: API root
 components:
   schemas:
-    PhoneNumber-LocV-V0:
-      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, optionally prefixed with '+'.
-      type: string
-      pattern: ^\+?[0-9]{5,15}$
-      example: '123456789'
+    MatchRate-LocV-V0:
+      description: Estimation of the match rate between the area in the request (R), and area where the network locates the device (N), calculated as the percent value of the intersection of both areas divided by the network area, that is (R ∩ N) / N * 100. Included only if VerificationResult is PARTIAL.
+      type: integer
+      minimum: 1
+      maximum: 99
     Device-LocV-V0:
       description: 'End-user equipment able to connect to a mobile network. Examples of devices include smartphones or IoT sensors/actuators.
 
@@ -166,14 +164,80 @@ components:
         ipv6Address:
           $ref: '#/components/schemas/DeviceIpv6Address-LocV-V0'
       minProperties: 1
-    VerificationResult-LocV-V0:
-      description: "Result of a verification request:\n  - `TRUE`: when the network locates the device within the requested area, \n  - `FALSE`: when the requested area does not match the area where the network locates the device,\n  - `UNKNOWN`: when the network cannot locate the device,\n  - `PARTIAL`: when the requested area partially match the area where the network locates the device. A `match_rate` could be included in the response.\n"
+    MaxAge-LocV-V0:
+      description: The maximum age (in seconds) of the available location, which is accepted for the verification.
+      type: integer
+      minimum: 60
+      example: 120
+    PhoneNumber-LocV-V0:
+      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, optionally prefixed with '+'.
       type: string
-      enum:
-      - 'TRUE'
-      - 'FALSE'
-      - UNKNOWN
-      - PARTIAL
+      pattern: ^\+?[0-9]{5,15}$
+      example: '123456789'
+    ErrorInfo-LocV-V0:
+      type: object
+      required:
+      - status
+      - code
+      - message
+      properties:
+        status:
+          type: integer
+          description: HTTP status code returned along with this error response
+        code:
+          type: string
+          description: Code given to this error
+        message:
+          type: string
+          description: Detailed error description
+    Port-LocV-V0:
+      description: TCP or UDP port number
+      type: integer
+      minimum: 0
+      maximum: 65535
+    NetworkAccessIdentifier-LocV-V0:
+      description: A public identifier addressing a subscription in a mobile network. In 3GPP terminology, it corresponds to the GPSI formatted with the External Identifier ({Local Identifier}@{Domain Identifier}). Unlike the telephone number, the network access identifier is not subjected to portability ruling in force, and is individually managed by each operator.
+      type: string
+      example: 123456789@domain.com
+    LastLocationTime-LocV-V0:
+      description: Timestamp of the last location information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z)
+      example: '2023-09-07T10:40:52Z'
+      format: date-time
+      type: string
+    DeviceIpv6Address-LocV-V0:
+      description: 'The device should be identified by the observed IPv6 address, or by any single IPv6 address from within the subnet allocated to the device (e.g. adding ::0 to the /64 prefix).
+
+        '
+      type: string
+      format: ipv6
+      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
+    VerifyLocationResponse-LocV-V0:
+      type: object
+      required:
+      - verificationResult
+      properties:
+        lastLocationTime:
+          $ref: '#/components/schemas/LastLocationTime-LocV-V0'
+        verificationResult:
+          $ref: '#/components/schemas/VerificationResult-LocV-V0'
+        matchRate:
+          $ref: '#/components/schemas/MatchRate-LocV-V0'
+    Area-LocV-V0:
+      type: object
+      properties:
+        areaType:
+          $ref: '#/components/schemas/AreaType-LocV-V0'
+      required:
+      - areaType
+      discriminator:
+        propertyName: areaType
+        mapping:
+          CIRCLE: '#/components/schemas/Circle'
+    SingleIpv4Addr-LocV-V0:
+      description: A single IPv4 address with no subnet mask
+      type: string
+      format: ipv4
+      example: 84.125.93.10
     VerifyLocationRequest-LocV-V0:
       type: object
       properties:
@@ -186,41 +250,6 @@ components:
       required:
       - device
       - area
-    Port-LocV-V0:
-      description: TCP or UDP port number
-      type: integer
-      minimum: 0
-      maximum: 65535
-    MatchRate-LocV-V0:
-      description: Estimation of the match rate between the area in the request (R), and area where the network locates the device (N), calculated as the percent value of the intersection of both areas divided by the network area, that is (R ∩ N) / N * 100. Included only if VerificationResult is PARTIAL.
-      type: integer
-      minimum: 1
-      maximum: 99
-    Area-LocV-V0:
-      type: object
-      properties:
-        areaType:
-          $ref: '#/components/schemas/AreaType-LocV-V0'
-      required:
-      - areaType
-      discriminator:
-        propertyName: areaType
-        mapping:
-          CIRCLE: '#/components/schemas/Circle'
-    MaxAge-LocV-V0:
-      description: The maximum age (in seconds) of the available location, which is accepted for the verification.
-      type: integer
-      minimum: 60
-      example: 120
-    SingleIpv4Addr-LocV-V0:
-      description: A single IPv4 address with no subnet mask
-      type: string
-      format: ipv4
-      example: 84.125.93.10
-    NetworkAccessIdentifier-LocV-V0:
-      description: A public identifier addressing a subscription in a mobile network. In 3GPP terminology, it corresponds to the GPSI formatted with the External Identifier ({Local Identifier}@{Domain Identifier}). Unlike the telephone number, the network access identifier is not subjected to portability ruling in force, and is individually managed by each operator.
-      type: string
-      example: 123456789@domain.com
     DeviceIpv4Addr-LocV-V0:
       type: object
       description: 'The device should be identified by either the public (observed) IP address and port as seen by the application server, or the private (local) and any public (observed) IP addresses in use by the device (this information can be obtained by various means, for example from some DNS servers).
@@ -261,66 +290,25 @@ components:
         '
       enum:
       - CIRCLE
-    ErrorInfo-LocV-V0:
-      type: object
-      required:
-      - status
-      - code
-      - message
-      properties:
-        status:
-          type: integer
-          description: HTTP status code returned along with this error response
-        code:
-          type: string
-          description: Code given to this error
-        message:
-          type: string
-          description: Detailed error description
-    DeviceIpv6Address-LocV-V0:
-      description: 'The device should be identified by the observed IPv6 address, or by any single IPv6 address from within the subnet allocated to the device (e.g. adding ::0 to the /64 prefix).
-
-        '
+    VerificationResult-LocV-V0:
+      description: "Result of a verification request:\n  - `TRUE`: when the network locates the device within the requested area, \n  - `FALSE`: when the requested area does not match the area where the network locates the device,\n  - `UNKNOWN`: when the network cannot locate the device,\n  - `PARTIAL`: when the requested area partially match the area where the network locates the device. A `match_rate` could be included in the response.\n"
       type: string
-      format: ipv6
-      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
-    VerifyLocationResponse-LocV-V0:
-      type: object
-      required:
-      - verificationResult
-      properties:
-        lastLocationTime:
-          $ref: '#/components/schemas/LastLocationTime-LocV-V0'
-        verificationResult:
-          $ref: '#/components/schemas/VerificationResult-LocV-V0'
-        matchRate:
-          $ref: '#/components/schemas/MatchRate-LocV-V0'
-    LastLocationTime-LocV-V0:
-      description: Timestamp of the last location information. It must follow RFC 3339 and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z)
-      example: '2023-09-07T10:40:52Z'
-      format: date-time
-      type: string
+      enum:
+      - 'TRUE'
+      - 'FALSE'
+      - UNKNOWN
+      - PARTIAL
   responses:
-    Generic500-LocV-V0:
-      description: Internal server error
+    Generic404-LocV-V0:
+      description: Not found
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorInfo-LocV-V0'
           example:
-            status: 500
-            code: INTERNAL
-            message: Internal server error
-    Generic503-LocV-V0:
-      description: Service unavailable
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo-LocV-V0'
-          example:
-            status: 503
-            code: UNAVAILABLE
-            message: Service unavailable
+            status: 404
+            code: NOT_FOUND
+            message: The specified resource is not found
     Generic403-LocV-V0:
       description: Permission denied
       content:
@@ -341,16 +329,26 @@ components:
             status: 400
             code: INVALID_ARGUMENT
             message: Invalid argument
-    Generic404-LocV-V0:
-      description: Not found
+    Generic503-LocV-V0:
+      description: Service unavailable
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorInfo-LocV-V0'
           example:
-            status: 404
-            code: NOT_FOUND
-            message: The specified resource is not found
+            status: 503
+            code: UNAVAILABLE
+            message: Service unavailable
+    Generic500-LocV-V0:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-LocV-V0'
+          example:
+            status: 500
+            code: INTERNAL
+            message: Internal server error
     Generic401-LocV-V0:
       description: Unauthenticated
       content:

@@ -34,7 +34,7 @@ paths:
       security:
       - openId:
         - call-forwarding-signal:unconditional-call-forwardings:read
-      summary: Retrieve the information about the status of the unconditional call forwarding service on a phone number (PhoneNumber)
+      summary: Retrieve the information about the status of the unconditional call forwarding…
       description: This endpoint provides information about the status of the unconditional call forwarding, beeing active or not.
       operationId: retrieveUnconditionalCallForwarding
       parameters:
@@ -96,7 +96,7 @@ paths:
       security:
       - openId:
         - call-forwarding-signal:call-forwardings:read
-      summary: Retrieve the information about the type of call forwarding service active on a phone number (PhoneNumber)
+      summary: Retrieve the information about the type of call forwarding service active on a…
       description: This endpoint provides information about wich type of call forwarding service is active. More than one service can be active, e.g. conditional and unconditional. This endpoit exceeds the main scope of the CFS API, for this reason an error code 501 can be returned.
       operationId: retrieveCallForwarding
       parameters:
@@ -156,65 +156,64 @@ paths:
           default: http://localhost:9091
           description: API root
 components:
-  headers:
-    x-correlator-Cfs-V0:
-      description: Correlation id for the different services
-      schema:
-        type: string
-        pattern: ^[a-zA-Z0-9-]{0,55}$
-  schemas:
-    CallForwardingSignal-Cfs-V0:
-      description: resource containing the list of the Call Forwarding Services active for the given phone number (PhoneNumber). The possible states are, 'inactive' (no call forwarding service activated), 'unconditional' (call forwarded independently from the device status), 'conditional_busy' (call forwarded if the device is on an active call), 'conditional_not_reachable' (call forwarded if the device is not reachable), 'conditional_no_answer' (call forwarded if the device doesn't answer the incoming call).
-      type: array
-      items:
-        type: string
-        enum:
-        - inactive
-        - unconditional
-        - conditional_busy
-        - conditional_not_reachable
-        - conditional_no_answer
-      example:
-      - unconditional
-      - conditional_busy
-      - conditional_no_answer
-      minItems: 1
-    CreateCallForwardingSignal-Cfs-V0:
-      description: resource containing the phone number (PhoneNumber) regarding which the Call Forwarding Service must be checked. To be valorised only in case of two-legged authentication. If valorised with three-legged authentication a 422-UNNECESSARY_IDENTIFIER error code is returned.
-      type: object
-      properties:
-        phoneNumber:
-          $ref: '#/components/schemas/PhoneNumber-Cfs-V0'
-    PhoneNumber-Cfs-V0:
-      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
-      type: string
-      pattern: ^\+[1-9][0-9]{4,14}$
-      example: '+99999991000'
-    UnconditionalCallForwardingSignal-Cfs-V0:
-      description: resource containing the information about the Unconditional Call Forwarding Service for the given phone number (PhoneNumber)
-      type: object
-      properties:
-        active:
-          type: boolean
-          description: Indicates if the unconditional call forwarding service is active.
-    ErrorInfo-Cfs-V0:
-      description: error info template
-      type: object
-      required:
-      - message
-      - status
-      - code
-      properties:
-        message:
-          type: string
-          description: A human readable description of what the event represent
-        status:
-          type: integer
-          description: HTTP response status code
-        code:
-          type: string
-          description: Friendly Code to describe the error
   responses:
+    Generic429-Cfs-V0:
+      description: Too Many Requests
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-Cfs-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-Cfs-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 429
+                code:
+                  enum:
+                  - QUOTA_EXCEEDED
+                  - TOO_MANY_REQUESTS
+          examples:
+            GENERIC_429_QUOTA_EXCEEDED:
+              description: Request is rejected due to exceeding a business quota limit
+              value:
+                status: 429
+                code: QUOTA_EXCEEDED
+                message: Out of resource quota.
+            GENERIC_429_TOO_MANY_REQUESTS:
+              description: Access to the API has been temporarily blocked due to rate or spike arrest limits being reached
+              value:
+                status: 429
+                code: TOO_MANY_REQUESTS
+                message: Rate limit reached.
+    Generic501-Cfs-V0:
+      description: Not Implemented
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-Cfs-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-Cfs-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 501
+                code:
+                  enum:
+                  - NOT_IMPLEMENTED
+          examples:
+            GENERIC_501_NOT_IMPLEMENTED:
+              description: Service not implemented. The use of this code should be avoided as far as possible to get the objective to reach aligned implementations
+              value:
+                status: 501
+                code: NOT_IMPLEMENTED
+                message: This functionality is not implemented yet.
     Generic422-Cfs-V0:
       description: Unprocessable Content
       headers:
@@ -254,6 +253,31 @@ components:
                 status: 422
                 code: UNNECESSARY_IDENTIFIER
                 message: The phone number is already identified by the access token.
+    Generic400-Cfs-V0:
+      description: Bad Request
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-Cfs-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-Cfs-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 400
+                code:
+                  enum:
+                  - INVALID_ARGUMENT
+          examples:
+            GENERIC_400_INVALID_ARGUMENT:
+              description: Invalid Argument. Generic Syntax Exception
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Client specified an invalid argument, request body or query param.
     Generic403-Cfs-V0:
       description: Forbidden
       headers:
@@ -279,31 +303,6 @@ components:
                 status: 403
                 code: PERMISSION_DENIED
                 message: Client does not have sufficient permissions to perform this action.
-    Generic501-Cfs-V0:
-      description: Not Implemented
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator-Cfs-V0'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo-Cfs-V0'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 501
-                code:
-                  enum:
-                  - NOT_IMPLEMENTED
-          examples:
-            GENERIC_501_NOT_IMPLEMENTED:
-              description: Service not implemented. The use of this code should be avoided as far as possible to get the objective to reach aligned implementations
-              value:
-                status: 501
-                code: NOT_IMPLEMENTED
-                message: This functionality is not implemented yet.
     Generic401-Cfs-V0:
       description: Unauthorized
       headers:
@@ -368,63 +367,12 @@ components:
                 status: 404
                 code: IDENTIFIER_NOT_FOUND
                 message: Device identifier not found.
-    Generic429-Cfs-V0:
-      description: Too Many Requests
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator-Cfs-V0'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo-Cfs-V0'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 429
-                code:
-                  enum:
-                  - QUOTA_EXCEEDED
-                  - TOO_MANY_REQUESTS
-          examples:
-            GENERIC_429_QUOTA_EXCEEDED:
-              description: Request is rejected due to exceeding a business quota limit
-              value:
-                status: 429
-                code: QUOTA_EXCEEDED
-                message: Out of resource quota.
-            GENERIC_429_TOO_MANY_REQUESTS:
-              description: Access to the API has been temporarily blocked due to rate or spike arrest limits being reached
-              value:
-                status: 429
-                code: TOO_MANY_REQUESTS
-                message: Rate limit reached.
-    Generic400-Cfs-V0:
-      description: Bad Request
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator-Cfs-V0'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo-Cfs-V0'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 400
-                code:
-                  enum:
-                  - INVALID_ARGUMENT
-          examples:
-            GENERIC_400_INVALID_ARGUMENT:
-              description: Invalid Argument. Generic Syntax Exception
-              value:
-                status: 400
-                code: INVALID_ARGUMENT
-                message: Client specified an invalid argument, request body or query param.
+  headers:
+    x-correlator-Cfs-V0:
+      description: Correlation id for the different services
+      schema:
+        type: string
+        pattern: ^[a-zA-Z0-9-]{0,55}$
   parameters:
     x-correlator-Cfs-V0:
       name: x-correlator
@@ -442,6 +390,58 @@ components:
       schema:
         type: string
         example: network-as-code.p-eu.rapidapi.com
+  schemas:
+    ErrorInfo-Cfs-V0:
+      description: error info template
+      type: object
+      required:
+      - message
+      - status
+      - code
+      properties:
+        message:
+          type: string
+          description: A human readable description of what the event represent
+        status:
+          type: integer
+          description: HTTP response status code
+        code:
+          type: string
+          description: Friendly Code to describe the error
+    PhoneNumber-Cfs-V0:
+      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+      type: string
+      pattern: ^\+[1-9][0-9]{4,14}$
+      example: '+99999991000'
+    UnconditionalCallForwardingSignal-Cfs-V0:
+      description: resource containing the information about the Unconditional Call Forwarding Service for the given phone number (PhoneNumber)
+      type: object
+      properties:
+        active:
+          type: boolean
+          description: Indicates if the unconditional call forwarding service is active.
+    CreateCallForwardingSignal-Cfs-V0:
+      description: resource containing the phone number (PhoneNumber) regarding which the Call Forwarding Service must be checked. To be valorised only in case of two-legged authentication. If valorised with three-legged authentication a 422-UNNECESSARY_IDENTIFIER error code is returned.
+      type: object
+      properties:
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber-Cfs-V0'
+    CallForwardingSignal-Cfs-V0:
+      description: resource containing the list of the Call Forwarding Services active for the given phone number (PhoneNumber). The possible states are, 'inactive' (no call forwarding service activated), 'unconditional' (call forwarded independently from the device status), 'conditional_busy' (call forwarded if the device is on an active call), 'conditional_not_reachable' (call forwarded if the device is not reachable), 'conditional_no_answer' (call forwarded if the device doesn't answer the incoming call).
+      type: array
+      items:
+        type: string
+        enum:
+        - inactive
+        - unconditional
+        - conditional_busy
+        - conditional_not_reachable
+        - conditional_no_answer
+      example:
+      - unconditional
+      - conditional_busy
+      - conditional_no_answer
+      minItems: 1
   securitySchemes:
     openId:
       description: OpenID Connect authentication
