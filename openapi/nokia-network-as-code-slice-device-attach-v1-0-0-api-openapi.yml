@@ -333,6 +333,197 @@ paths:
           description: API root
 components:
   schemas:
+    Customer-SliceAttach-V1:
+      properties:
+        name:
+          type: string
+          maxLength: 250
+          title: Name
+        description:
+          type:
+          - string
+          - 'null'
+          maxLength: 100
+          title: Description
+          description: Description of the slice, e.g. "B2B_5G_eMBB_Slice"
+        address:
+          type:
+          - string
+          - 'null'
+          maxLength: 250
+          title: Address
+          description: Address of the customer ordering slice creation.
+        contact:
+          type:
+          - string
+          - 'null'
+          maxLength: 250
+          title: Contact
+          description: Contact of the customer ordering slice creation.
+      type: object
+      required:
+      - name
+      title: Customer
+    Apps-SliceAttach-V1:
+      properties:
+        os:
+          type: string
+          maxLength: 100
+          title: Os
+          description: Operating system identifier, UUID
+          example: 09078034-07db-4b13-a970-ab80235f7369
+        apps:
+          items:
+            type: string
+            maxLength: 50
+          type: array
+          title: Apps
+          description: List of application identifiers
+      type: object
+      required:
+      - os
+      - apps
+      title: Apps
+    AttachStatus-SliceAttach-V1:
+      type: string
+      enum:
+      - ATTACHED
+      - DETACHED
+      title: AttachStatus
+    ValidationError-SliceAttach-V1:
+      properties:
+        loc:
+          type: array
+          items:
+            type: string
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    OrderState-SliceAttach-V1:
+      type: string
+      enum:
+      - Completed
+      - Accepted
+      - Rejected
+      - Acknowledged
+      title: OrderState
+    AttachInfo-Input-SliceAttach-V1:
+      properties:
+        nac_resource_id:
+          type: string
+          maxLength: 100
+          title: Nac Resource Id
+          description: Resource identifier of the attachment data.
+        resource:
+          $ref: '#/components/schemas/AttachResource-Input-SliceAttach-V1'
+          description: Original device attach request resources.
+        deviceStatus:
+          allOf:
+          - $ref: '#/components/schemas/AttachStatus-SliceAttach-V1'
+          description: Status of the device in relation to the given slice e.g. ATTACHED or DETACHED.
+        deviceAttachState:
+          allOf:
+          - $ref: '#/components/schemas/OrderState-SliceAttach-V1'
+          description: Progress/state of the device attach order, e.g. Completed, Accepted, Rejected.
+        applicationAttachSuccessful:
+          type:
+          - boolean
+          - 'null'
+          title: Applicationattachsuccessful
+          description: Denotes whether successful application attach subscription was subsequently sent.
+      type: object
+      required:
+      - nac_resource_id
+      - resource
+      title: AttachInfo
+    AttachResource-Output-SliceAttach-V1:
+      properties:
+        device:
+          $ref: '#/components/schemas/MobileSubscribersDevice-SliceAttach-V1'
+          description: Identifiers of the device. Phone number and imsi are mandatory for device attach operations.
+        customer:
+          allOf:
+          - $ref: '#/components/schemas/Customer-SliceAttach-V1'
+          description: Customer who orders the device attach operations.
+        sliceId:
+          type: string
+          maxLength: 64
+          minLength: 5
+          pattern: ^[a-zA-Z0-9][a-zA-Z0-9-]{3,63}[a-zA-Z0-9]$
+          title: Sliceid
+          description: Slice resource identifier, simple name or UUID.
+        mobile_services:
+          items:
+            type: string
+          type: array
+          maxItems: 10
+          title: Mobile Services
+          description: List of services allowed for the device.
+          default:
+          - Voice
+          - Voicemail
+          - 5G-Data
+        traffic_categories:
+          allOf:
+          - $ref: '#/components/schemas/TrafficCategories-SliceAttach-V1'
+          description: Denotes the operating system id and the applications' identifiers
+        webhook:
+          allOf:
+          - $ref: '#/components/schemas/Webhook-SliceAttach-V1'
+          description: Callback settings for the requester application.
+      type: object
+      required:
+      - device
+      - sliceId
+      title: AttachResource
+    AttachInfo-Output-SliceAttach-V1:
+      properties:
+        nac_resource_id:
+          type: string
+          maxLength: 100
+          title: Nac Resource Id
+          description: Resource identifier of the attachment data.
+        resource:
+          $ref: '#/components/schemas/AttachResource-Output-SliceAttach-V1'
+          description: Original device attach request resources.
+        deviceStatus:
+          allOf:
+          - $ref: '#/components/schemas/AttachStatus-SliceAttach-V1'
+          description: Status of the device in relation to the given slice e.g. ATTACHED or DETACHED.
+        deviceAttachState:
+          allOf:
+          - $ref: '#/components/schemas/OrderState-SliceAttach-V1'
+          description: Progress/state of the device attach order, e.g. Completed, Accepted, Rejected.
+        applicationAttachSuccessful:
+          type:
+          - boolean
+          - 'null'
+          title: Applicationattachsuccessful
+          description: Denotes whether successful application attach subscription was subsequently sent.
+      type: object
+      required:
+      - nac_resource_id
+      - resource
+      title: AttachInfo
+    HTTPValidationError-SliceAttach-V1:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError-SliceAttach-V1'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     AttachResource-Input-SliceAttach-V1:
       properties:
         device:
@@ -400,55 +591,6 @@ components:
           description: Public port used by the device. Port is necessary, as private address ranges overlap, and public port is used to extend the range for CGNAT.
       type: object
       title: DeviceIpv4Addr
-    Apps-SliceAttach-V1:
-      properties:
-        os:
-          type: string
-          maxLength: 100
-          title: Os
-          description: Operating system identifier, UUID
-          example: 09078034-07db-4b13-a970-ab80235f7369
-        apps:
-          items:
-            type: string
-            maxLength: 50
-          type: array
-          title: Apps
-          description: List of application identifiers
-      type: object
-      required:
-      - os
-      - apps
-      title: Apps
-    AttachInfo-Output-SliceAttach-V1:
-      properties:
-        nac_resource_id:
-          type: string
-          maxLength: 100
-          title: Nac Resource Id
-          description: Resource identifier of the attachment data.
-        resource:
-          $ref: '#/components/schemas/AttachResource-Output-SliceAttach-V1'
-          description: Original device attach request resources.
-        deviceStatus:
-          allOf:
-          - $ref: '#/components/schemas/AttachStatus-SliceAttach-V1'
-          description: Status of the device in relation to the given slice e.g. ATTACHED or DETACHED.
-        deviceAttachState:
-          allOf:
-          - $ref: '#/components/schemas/OrderState-SliceAttach-V1'
-          description: Progress/state of the device attach order, e.g. Completed, Accepted, Rejected.
-        applicationAttachSuccessful:
-          type:
-          - boolean
-          - 'null'
-          title: Applicationattachsuccessful
-          description: Denotes whether successful application attach subscription was subsequently sent.
-      type: object
-      required:
-      - nac_resource_id
-      - resource
-      title: AttachInfo
     TrafficCategories-SliceAttach-V1:
       properties:
         apps:
@@ -495,93 +637,6 @@ components:
           description: International mobile subscriber identity
       type: object
       title: MobileSubscribersDevice
-    OrderState-SliceAttach-V1:
-      type: string
-      enum:
-      - Completed
-      - Accepted
-      - Rejected
-      - Acknowledged
-      title: OrderState
-    Customer-SliceAttach-V1:
-      properties:
-        name:
-          type: string
-          maxLength: 250
-          title: Name
-        description:
-          type:
-          - string
-          - 'null'
-          maxLength: 100
-          title: Description
-          description: Description of the slice, e.g. "B2B_5G_eMBB_Slice"
-        address:
-          type:
-          - string
-          - 'null'
-          maxLength: 250
-          title: Address
-          description: Address of the customer ordering slice creation.
-        contact:
-          type:
-          - string
-          - 'null'
-          maxLength: 250
-          title: Contact
-          description: Contact of the customer ordering slice creation.
-      type: object
-      required:
-      - name
-      title: Customer
-    AttachInfo-Input-SliceAttach-V1:
-      properties:
-        nac_resource_id:
-          type: string
-          maxLength: 100
-          title: Nac Resource Id
-          description: Resource identifier of the attachment data.
-        resource:
-          $ref: '#/components/schemas/AttachResource-Input-SliceAttach-V1'
-          description: Original device attach request resources.
-        deviceStatus:
-          allOf:
-          - $ref: '#/components/schemas/AttachStatus-SliceAttach-V1'
-          description: Status of the device in relation to the given slice e.g. ATTACHED or DETACHED.
-        deviceAttachState:
-          allOf:
-          - $ref: '#/components/schemas/OrderState-SliceAttach-V1'
-          description: Progress/state of the device attach order, e.g. Completed, Accepted, Rejected.
-        applicationAttachSuccessful:
-          type:
-          - boolean
-          - 'null'
-          title: Applicationattachsuccessful
-          description: Denotes whether successful application attach subscription was subsequently sent.
-      type: object
-      required:
-      - nac_resource_id
-      - resource
-      title: AttachInfo
-    ValidationError-SliceAttach-V1:
-      properties:
-        loc:
-          type: array
-          items:
-            type: string
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     Webhook-SliceAttach-V1:
       properties:
         notificationUrl:
@@ -602,61 +657,6 @@ components:
       required:
       - notificationUrl
       title: Webhook
-    AttachStatus-SliceAttach-V1:
-      type: string
-      enum:
-      - ATTACHED
-      - DETACHED
-      title: AttachStatus
-    AttachResource-Output-SliceAttach-V1:
-      properties:
-        device:
-          $ref: '#/components/schemas/MobileSubscribersDevice-SliceAttach-V1'
-          description: Identifiers of the device. Phone number and imsi are mandatory for device attach operations.
-        customer:
-          allOf:
-          - $ref: '#/components/schemas/Customer-SliceAttach-V1'
-          description: Customer who orders the device attach operations.
-        sliceId:
-          type: string
-          maxLength: 64
-          minLength: 5
-          pattern: ^[a-zA-Z0-9][a-zA-Z0-9-]{3,63}[a-zA-Z0-9]$
-          title: Sliceid
-          description: Slice resource identifier, simple name or UUID.
-        mobile_services:
-          items:
-            type: string
-          type: array
-          maxItems: 10
-          title: Mobile Services
-          description: List of services allowed for the device.
-          default:
-          - Voice
-          - Voicemail
-          - 5G-Data
-        traffic_categories:
-          allOf:
-          - $ref: '#/components/schemas/TrafficCategories-SliceAttach-V1'
-          description: Denotes the operating system id and the applications' identifiers
-        webhook:
-          allOf:
-          - $ref: '#/components/schemas/Webhook-SliceAttach-V1'
-          description: Callback settings for the requester application.
-      type: object
-      required:
-      - device
-      - sliceId
-      title: AttachResource
-    HTTPValidationError-SliceAttach-V1:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError-SliceAttach-V1'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
   parameters:
     x-rapidapi-host:
       name: x-rapidapi-host

@@ -102,6 +102,14 @@ paths:
           default: http://localhost:9091
           description: API root
 components:
+  headers:
+    X-Correlator-KYC-T-V0:
+      description: Correlation id for the different services
+      required: false
+      schema:
+        type: string
+        pattern: ^[a-zA-Z0-9-]{1,55}$
+        example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
   schemas:
     PhoneNumber-KYC-T-V0:
       description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
@@ -198,31 +206,6 @@ components:
                 status: 400
                 code: OUT_OF_RANGE
                 message: Client specified an invalid range.
-    Generic403-KYC-T-V0:
-      description: Forbidden
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/X-Correlator-KYC-T-V0'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo-KYC-T-V0'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 403
-                code:
-                  enum:
-                  - PERMISSION_DENIED
-          examples:
-            GENERIC_403_PERMISSION_DENIED:
-              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
-              value:
-                status: 403
-                code: PERMISSION_DENIED
-                message: Client does not have sufficient permissions to perform this action.
     Generic404-KYC-T-V0:
       description: Not found
       headers:
@@ -280,6 +263,31 @@ components:
                 status: 401
                 code: AUTHENTICATION_REQUIRED
                 message: New authentication is required.
+    Generic403-KYC-T-V0:
+      description: Forbidden
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/X-Correlator-KYC-T-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-KYC-T-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 403
+                code:
+                  enum:
+                  - PERMISSION_DENIED
+          examples:
+            GENERIC_403_PERMISSION_DENIED:
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action.
     Generic422-KYC-T-V0:
       description: Unprocessable Content
       headers:
@@ -319,14 +327,6 @@ components:
                 status: 422
                 code: UNNECESSARY_IDENTIFIER
                 message: An explicit phone number has been provided when one is already associated with the access token
-  headers:
-    X-Correlator-KYC-T-V0:
-      description: Correlation id for the different services
-      required: false
-      schema:
-        type: string
-        pattern: ^[a-zA-Z0-9-]{1,55}$
-        example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
   parameters:
     x-rapidapi-host:
       name: x-rapidapi-host

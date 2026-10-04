@@ -89,6 +89,38 @@ paths:
           description: API root
 components:
   responses:
+    Generic400-NUMR-RECYCL-V0:
+      description: Problem with the client request
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-NUMR-RECYCL-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-NUMR-RECYCL-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 400
+                code:
+                  enum:
+                  - INVALID_ARGUMENT
+                  - OUT_OF_RANGE
+          examples:
+            InvalidArgument:
+              description: Invalid Argument. Generic Syntax Exception
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Client specified an invalid argument, request body or query param.
+            OutOfRange:
+              description: Out of Range. Specific Syntax Exception used when a given field has a pre-defined range or a invalid filter criteria combination is requested
+              value:
+                status: 400
+                code: OUT_OF_RANGE
+                message: Client specified an invalid range.
     Generic422-NUMR-RECYCL-V0:
       description: Unprocessable Content
       headers:
@@ -128,8 +160,17 @@ components:
                 status: 422
                 code: MISSING_IDENTIFIER
                 message: The phone number cannot be identified
-    Generic400-NUMR-RECYCL-V0:
-      description: Problem with the client request
+    Generic200-NUMR-RECYCL-V0:
+      description: OK
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-NUMR-RECYCL-V0'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CheckNumRecyclingInfo-NUMR-RECYCL-V0'
+    Generic401-NUMR-RECYCL-V0:
+      description: Authentication problem with the client request
       headers:
         x-correlator:
           $ref: '#/components/headers/x-correlator-NUMR-RECYCL-V0'
@@ -142,24 +183,17 @@ components:
               properties:
                 status:
                   enum:
-                  - 400
+                  - 401
                 code:
                   enum:
-                  - INVALID_ARGUMENT
-                  - OUT_OF_RANGE
+                  - UNAUTHENTICATED
           examples:
-            InvalidArgument:
-              description: Invalid Argument. Generic Syntax Exception
+            Unauthenticated:
+              description: Request cannot be authenticated and a new authentication is required
               value:
-                status: 400
-                code: INVALID_ARGUMENT
-                message: Client specified an invalid argument, request body or query param.
-            OutOfRange:
-              description: Out of Range. Specific Syntax Exception used when a given field has a pre-defined range or a invalid filter criteria combination is requested
-              value:
-                status: 400
-                code: OUT_OF_RANGE
-                message: Client specified an invalid range.
+                status: 401
+                code: UNAUTHENTICATED
+                message: Request not authenticated due to missing, invalid, or expired credentials. A new authentication is required.
     Generic403-NUMR-RECYCL-V0:
       description: Client does not have sufficient permission
       headers:
@@ -210,40 +244,6 @@ components:
                 status: 404
                 code: IDENTIFIER_NOT_FOUND
                 message: Phone number not found.
-    Generic401-NUMR-RECYCL-V0:
-      description: Authentication problem with the client request
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator-NUMR-RECYCL-V0'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo-NUMR-RECYCL-V0'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 401
-                code:
-                  enum:
-                  - UNAUTHENTICATED
-          examples:
-            Unauthenticated:
-              description: Request cannot be authenticated and a new authentication is required
-              value:
-                status: 401
-                code: UNAUTHENTICATED
-                message: Request not authenticated due to missing, invalid, or expired credentials. A new authentication is required.
-    Generic200-NUMR-RECYCL-V0:
-      description: OK
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator-NUMR-RECYCL-V0'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/CheckNumRecyclingInfo-NUMR-RECYCL-V0'
   schemas:
     ErrorInfo-NUMR-RECYCL-V0:
       type: object
@@ -273,6 +273,10 @@ components:
           format: date
           description: Specified date to check whether there has been a change in the subscriber associated with the specific phone number, in RFC 3339 calendar date format (YYYY-MM-DD).
           example: '2024-10-31'
+    XCorrelator-NUMR-RECYCL-V0:
+      type: string
+      pattern: ^[a-zA-Z0-9-_:;.\/<>{}]{0,256}$
+      example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
     PhoneNumber-NUMR-RECYCL-V0:
       description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
       type: string
@@ -288,15 +292,6 @@ components:
           description: 'Set to true (Boolean, not string) when there has been a change in the subscriber associated with the specific phone number after “specifiedDate”.
 
             '
-    XCorrelator-NUMR-RECYCL-V0:
-      type: string
-      pattern: ^[a-zA-Z0-9-_:;.\/<>{}]{0,256}$
-      example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
-  headers:
-    x-correlator-NUMR-RECYCL-V0:
-      description: Correlation id for the different services
-      schema:
-        $ref: '#/components/schemas/XCorrelator-NUMR-RECYCL-V0'
   parameters:
     x-correlator-NUMR-RECYCL-V0:
       name: x-correlator
@@ -312,6 +307,11 @@ components:
       schema:
         type: string
         example: network-as-code.p-eu.rapidapi.com
+  headers:
+    x-correlator-NUMR-RECYCL-V0:
+      description: Correlation id for the different services
+      schema:
+        $ref: '#/components/schemas/XCorrelator-NUMR-RECYCL-V0'
   securitySchemes:
     openId:
       description: OpenID Connect authentication

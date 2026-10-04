@@ -171,6 +171,69 @@ paths:
           description: API root
 components:
   responses:
+    Generic404-KYC-M-V0:
+      description: Not found
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-KYC-M-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-KYC-M-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 404
+                code:
+                  enum:
+                  - NOT_FOUND
+                  - IDENTIFIER_NOT_FOUND
+          examples:
+            GENERIC_404_NOT_FOUND:
+              description: Resource is not found
+              value:
+                status: 404
+                code: NOT_FOUND
+            GENERIC_404_IDENTIFIER_NOT_FOUND:
+              description: The phone number is not associated with a CSP customer account
+              value:
+                status: 404
+                code: IDENTIFIER_NOT_FOUND
+                message: The phone number provided is not associated with a customer account
+    Generic400-KYC-M-V0:
+      description: Bad Request
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-KYC-M-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-KYC-M-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 400
+                code:
+                  enum:
+                  - INVALID_ARGUMENT
+                  - KNOW_YOUR_CUSTOMER.INVALID_PARAM_COMBINATION
+          examples:
+            GENERIC_400_INVALID_ARGUMENT:
+              description: Invalid Argument. Generic Syntax Exception
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Client specified an invalid argument, request body or query param.
+            KNOW_YOUR_CUSTOMER.INVALID_PARAM_COMBINATION:
+              description: Indicated param combination is invalid
+              value:
+                status: 400
+                code: KNOW_YOUR_CUSTOMER.INVALID_PARAM_COMBINATION
+                message: Indicated parameter combination is invalid
     Generic401-KYC-M-V0:
       description: Unauthorized
       headers:
@@ -203,37 +266,6 @@ components:
                 status: 401
                 code: AUTHENTICATION_REQUIRED
                 message: New authentication is required.
-    Generic404-KYC-M-V0:
-      description: Not found
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator-KYC-M-V0'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo-KYC-M-V0'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 404
-                code:
-                  enum:
-                  - NOT_FOUND
-                  - IDENTIFIER_NOT_FOUND
-          examples:
-            GENERIC_404_NOT_FOUND:
-              description: Resource is not found
-              value:
-                status: 404
-                code: NOT_FOUND
-            GENERIC_404_IDENTIFIER_NOT_FOUND:
-              description: The phone number is not associated with a CSP customer account
-              value:
-                status: 404
-                code: IDENTIFIER_NOT_FOUND
-                message: The phone number provided is not associated with a customer account
     Generic422-KYC-M-V0:
       description: Unprocessable Content
       headers:
@@ -312,38 +344,6 @@ components:
                 status: 403
                 code: KNOW_YOUR_CUSTOMER.ID_DOCUMENT_MISMATCH
                 message: The idDocument needs to match the one associated with the provided phoneNumber
-    Generic400-KYC-M-V0:
-      description: Bad Request
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator-KYC-M-V0'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo-KYC-M-V0'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 400
-                code:
-                  enum:
-                  - INVALID_ARGUMENT
-                  - KNOW_YOUR_CUSTOMER.INVALID_PARAM_COMBINATION
-          examples:
-            GENERIC_400_INVALID_ARGUMENT:
-              description: Invalid Argument. Generic Syntax Exception
-              value:
-                status: 400
-                code: INVALID_ARGUMENT
-                message: Client specified an invalid argument, request body or query param.
-            KNOW_YOUR_CUSTOMER.INVALID_PARAM_COMBINATION:
-              description: Indicated param combination is invalid
-              value:
-                status: 400
-                code: KNOW_YOUR_CUSTOMER.INVALID_PARAM_COMBINATION
-                message: Indicated parameter combination is invalid
   schemas:
     ErrorInfo-KYC-M-V0:
       type: object
@@ -466,6 +466,11 @@ components:
           allOf:
           - $ref: '#/components/schemas/MatchResult-KYC-M-V0'
           - description: Indicates whether the gender of the customer matches with the one on the Operator's system.
+    MatchScoreResult-KYC-M-V0:
+      type: integer
+      description: Indicates the similarity score assigned to the input value when it does not exactly match the value stored in the operator's system. This property shall only be returned when the value of the corresponding match field is `false`.
+      minimum: 0
+      maximum: 100
     KYC_MatchRequestBody-KYC-M-V0:
       type: object
       description: Payload to validate the customer data.
@@ -538,23 +543,12 @@ components:
           - MALE
           - FEMALE
           - OTHER
-    MatchScoreResult-KYC-M-V0:
-      type: integer
-      description: Indicates the similarity score assigned to the input value when it does not exactly match the value stored in the operator's system. This property shall only be returned when the value of the corresponding match field is `false`.
-      minimum: 0
-      maximum: 100
     MatchResult-KYC-M-V0:
       type: string
       enum:
       - 'true'
       - 'false'
       - not_available
-  headers:
-    x-correlator-KYC-M-V0:
-      description: Correlation id for the different services
-      schema:
-        type: string
-        pattern: ^[a-zA-Z0-9-]{0,55}$
   parameters:
     x-correlator-KYC-M-V0:
       name: x-correlator
@@ -572,6 +566,12 @@ components:
       schema:
         type: string
         example: network-as-code.p-eu.rapidapi.com
+  headers:
+    x-correlator-KYC-M-V0:
+      description: Correlation id for the different services
+      schema:
+        type: string
+        pattern: ^[a-zA-Z0-9-]{0,55}$
   securitySchemes:
     openId:
       description: OpenID Connect authentication

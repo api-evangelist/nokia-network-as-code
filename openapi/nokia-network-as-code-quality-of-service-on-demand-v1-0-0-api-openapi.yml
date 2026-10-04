@@ -446,98 +446,101 @@ paths:
           description: API root
 components:
   schemas:
-    SingleIpv4Addr-QoD-V1:
-      description: A single IPv4 address with no subnet mask
-      type: string
-      format: ipv4
-      example: 84.125.93.10
-    NetworkAccessIdentifier-QoD-V1:
-      description: A public identifier addressing a subscription in a mobile network. In 3GPP terminology, it corresponds to the GPSI formatted with the External Identifier ({Local Identifier}@{Domain Identifier}). Unlike the telephone number, the network access identifier is not subjected to portability ruling in force, and is individually managed by each operator.
-      type: string
-      example: 123456789@domain.com
-    RetrieveSessionInput-QoD-V1:
-      properties:
-        device:
-          $ref: '#/components/schemas/Device-QoD-V1'
-      type: object
-      required:
-      - device
-      title: RetrieveSessionInput
-    ExtendSessionDuration-QoD-V1:
-      description: Attributes required to extend the duration of an active session
-      type: object
-      properties:
-        requestedAdditionalDuration:
-          description: 'Additional duration in seconds to be extended.
-
-            '
-          type: integer
-          format: int32
-          minimum: 1
-          maximum: 86399
-          example: 60
-      required:
-      - requestedAdditionalDuration
-    HTTPValidationError-QoD-V1:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError-QoD-V1'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    Message-QoD-V1:
-      type: object
-      properties:
-        severity:
-          description: Message severity
-          type: string
-          enum:
-          - INFO
-          - WARNING
-        description:
-          description: Detailed message text
-          type: string
-      required:
-      - severity
-      - description
-    DeviceIpv4Addr-QoD-V1:
-      type: object
-      description: 'The device should be identified by either the public (observed) IP address and port as seen by the application server, or the private (local) and any public (observed) IP addresses in use by the device (this information can be obtained by various means, for example from some DNS servers).
+    SessionInfo-QoD-V1:
+      description: Session related information.
+      allOf:
+      - $ref: '#/components/schemas/BaseSessionInfo-QoD-V1'
+      - type: object
+        properties:
+          sessionId:
+            $ref: '#/components/schemas/SessionId-QoD-V1'
+          duration:
+            type: integer
+            format: int32
+            minimum: 1
+            example: 86400
+          startedAt:
+            type: integer
+            example: 1639479600
+            description: Timestamp of session start in seconds since Unix epoch
+            format: int64
+          expiresAt:
+            type: integer
+            example: 1639566000
+            description: Timestamp of session expiration if the session was not deleted, in seconds since Unix epoch
+            format: int64
+          qosStatus:
+            $ref: '#/components/schemas/QosStatus-QoD-V1'
+          statusInfo:
+            $ref: '#/components/schemas/StatusInfo-QoD-V1'
+          messages:
+            type: array
+            items:
+              $ref: '#/components/schemas/Message-QoD-V1'
+        required:
+        - sessionId
+        - duration
+        - startedAt
+        - expiresAt
+        - qosStatus
+    Device-QoD-V1:
+      description: 'End-user equipment able to connect to a network. Examples of devices include smartphones or IoT sensors/actuators.
 
 
-        If the allocated and observed IP addresses are the same (i.e. NAT is not in use) then  the same address should be specified for both publicAddress and privateAddress.
+        The developer can choose to provide the below specified device identifiers:
 
 
-        If NAT64 is in use, the device should be identified by its publicAddress and publicPort, or separately by its allocated IPv6 address (field ipv6Address of the Device object)
+        * `ipv4Address`
+
+        * `ipv6Address`
+
+        * `phoneNumber`
+
+        * `networkAccessIdentifier`
 
 
-        In all cases, publicAddress must be specified, along with at least one of either privateAddress or publicPort, dependent upon which is known. In general, mobile devices cannot be identified by their public IPv4 address alone.
+        NOTE: the MNO might support only a subset of these options. The API invoker can provide multiple identifiers to be compatible across different MNOs. In this case the identifiers MUST belong to the same device
 
         '
+      type: object
       properties:
-        publicAddress:
-          $ref: '#/components/schemas/SingleIpv4Addr-QoD-V1'
-        privateAddress:
-          $ref: '#/components/schemas/SingleIpv4Addr-QoD-V1'
-        publicPort:
-          $ref: '#/components/schemas/Port-QoD-V1'
-      anyOf:
-      - required:
-        - publicAddress
-        - privateAddress
-      - required:
-        - publicAddress
-        - publicPort
-      example:
-        publicAddress: 84.125.93.10
-        publicPort: 59765
-    PhoneNumber-QoD-V1:
-      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber-QoD-V1'
+        networkAccessIdentifier:
+          $ref: '#/components/schemas/NetworkAccessIdentifier-QoD-V1'
+        ipv4Address:
+          $ref: '#/components/schemas/DeviceIpv4Addr-QoD-V1'
+        ipv6Address:
+          $ref: '#/components/schemas/DeviceIpv6Address-QoD-V1'
+      minProperties: 1
+    Port-QoD-V1:
+      description: TCP or UDP port number
+      type: integer
+      minimum: 0
+      maximum: 65535
+    QosStatus-QoD-V1:
+      description: 'The current status of the requested QoS session. The status can be one of the following:
+
+        * `REQUESTED` - QoS has been requested by creating a session
+
+        * `AVAILABLE` - The requested QoS has been provided by the network
+
+        * `UNAVAILABLE` - The requested QoS cannot be provided by the network due to some reason
+
+        '
       type: string
-      pattern: ^\+?[0-9]{5,15}$
-      example: '+123456789'
+      enum:
+      - REQUESTED
+      - AVAILABLE
+      - UNAVAILABLE
+    QosProfileName-QoD-V1:
+      description: "A unique name for identifying a specific QoS profile.\nThis may follow different formats depending on the service providers implementation.\nSome options addresses:\n\n\n\n\n  - A UUID style string\n  - Support for predefined profiles QOS_S, QOS_M, QOS_L, and QOS_E\n  - A searchable descriptive name\n"
+      type: string
+      example: QCI_1_voice
+      minLength: 3
+      maxLength: 256
+      format: string
+      pattern: ^[a-zA-Z0-9_.-]+$
     CloudEvent-QoD-V1:
       description: Event compliant with the CloudEvents specification
       required:
@@ -582,33 +585,15 @@ components:
         propertyName: type
         mapping:
           org.camaraproject.quality-on-demand.v1.qos-status-changed: '#/components/schemas/EventQosStatusChanged'
-    QosProfileName-QoD-V1:
-      description: "A unique name for identifying a specific QoS profile.\nThis may follow different formats depending on the service providers implementation.\nSome options addresses:\n\n\n\n\n  - A UUID style string\n  - Support for predefined profiles QOS_S, QOS_M, QOS_L, and QOS_E\n  - A searchable descriptive name\n"
-      type: string
-      example: QCI_1_voice
-      minLength: 3
-      maxLength: 256
-      format: string
-      pattern: ^[a-zA-Z0-9_.-]+$
-    ApplicationServerIpv6Address-QoD-V1:
-      type: string
-      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
-      description: "IPv6 address may be specified in form <address/mask> as:\n  - address - The /128 subnet is optional for single addresses:\n    - 2001:db8:85a3:8d3:1319:8a2e:370:7344\n    - 2001:db8:85a3:8d3:1319:8a2e:370:7344/128\n  - address/mask - an IP v6 number with a mask:\n    - 2001:db8:85a3:8d3::0/64\n    - 2001:db8:85a3:8d3::/64\n"
-    StatusInfo-QoD-V1:
-      description: 'Reason for the new `qosStatus`. Currently `statusInfo` is only applicable when `qosStatus` is ''UNAVAILABLE''.
-
-        * `DURATION_EXPIRED` - Session terminated due to requested duration expired
-
-        * `NETWORK_TERMINATED` - Network terminated the session before the requested duration expired
-
-        * `DELETE_REQUESTED`- User requested the deletion of the session before the requested duration expired
-
-        '
-      type: string
-      enum:
-      - DURATION_EXPIRED
-      - NETWORK_TERMINATED
-      - DELETE_REQUESTED
+    HTTPValidationError-QoD-V1:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError-QoD-V1'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     CreateSession-QoD-V1:
       description: Attributes required to create a session
       allOf:
@@ -633,39 +618,37 @@ components:
             maximum: 86400
             default: 86400
             example: 86400
-    SessionId-QoD-V1:
-      description: Session ID in UUID format
-      type: string
-      format: uuid
-    PortsSpec-QoD-V1:
+    DeviceIpv4Addr-QoD-V1:
       type: object
-      minProperties: 1
+      description: 'The device should be identified by either the public (observed) IP address and port as seen by the application server, or the private (local) and any public (observed) IP addresses in use by the device (this information can be obtained by various means, for example from some DNS servers).
+
+
+        If the allocated and observed IP addresses are the same (i.e. NAT is not in use) then  the same address should be specified for both publicAddress and privateAddress.
+
+
+        If NAT64 is in use, the device should be identified by its publicAddress and publicPort, or separately by its allocated IPv6 address (field ipv6Address of the Device object)
+
+
+        In all cases, publicAddress must be specified, along with at least one of either privateAddress or publicPort, dependent upon which is known. In general, mobile devices cannot be identified by their public IPv4 address alone.
+
+        '
       properties:
-        ranges:
-          type: array
-          minItems: 1
-          items:
-            type: object
-            required:
-            - from
-            - to
-            properties:
-              from:
-                $ref: '#/components/schemas/Port-QoD-V1'
-              to:
-                $ref: '#/components/schemas/Port-QoD-V1'
-        ports:
-          type: array
-          minItems: 1
-          items:
-            $ref: '#/components/schemas/Port-QoD-V1'
+        publicAddress:
+          $ref: '#/components/schemas/SingleIpv4Addr-QoD-V1'
+        privateAddress:
+          $ref: '#/components/schemas/SingleIpv4Addr-QoD-V1'
+        publicPort:
+          $ref: '#/components/schemas/Port-QoD-V1'
+      anyOf:
+      - required:
+        - publicAddress
+        - privateAddress
+      - required:
+        - publicAddress
+        - publicPort
       example:
-        ranges:
-        - from: 5010
-          to: 5020
-        ports:
-        - 5060
-        - 5070
+        publicAddress: 84.125.93.10
+        publicPort: 59765
     SinkCredential-QoD-V1:
       type: object
       properties:
@@ -684,93 +667,18 @@ components:
           ACCESSTOKEN: '#/components/schemas/AccessTokenCredential'
       required:
       - credentialType
-    SessionInfo-QoD-V1:
-      description: Session related information.
-      allOf:
-      - $ref: '#/components/schemas/BaseSessionInfo-QoD-V1'
-      - type: object
-        properties:
-          sessionId:
-            $ref: '#/components/schemas/SessionId-QoD-V1'
-          duration:
-            type: integer
-            format: int32
-            minimum: 1
-            example: 86400
-          startedAt:
-            type: integer
-            example: 1639479600
-            description: Timestamp of session start in seconds since Unix epoch
-            format: int64
-          expiresAt:
-            type: integer
-            example: 1639566000
-            description: Timestamp of session expiration if the session was not deleted, in seconds since Unix epoch
-            format: int64
-          qosStatus:
-            $ref: '#/components/schemas/QosStatus-QoD-V1'
-          statusInfo:
-            $ref: '#/components/schemas/StatusInfo-QoD-V1'
-          messages:
-            type: array
-            items:
-              $ref: '#/components/schemas/Message-QoD-V1'
-        required:
-        - sessionId
-        - duration
-        - startedAt
-        - expiresAt
-        - qosStatus
-    ApplicationServerIpv4Address-QoD-V1:
-      type: string
-      example: 192.168.0.1/24
-      description: "IPv4 address may be specified in form <address/mask> as:\n  - address - an IPv4 number in dotted-quad form 1.2.3.4. Only this exact IP number will match the flow control rule.\n  - address/mask - an IP number as above with a mask width of the form 1.2.3.4/24.\n    In this case, all IP numbers from 1.2.3.0 to 1.2.3.255 will match. The bit width MUST be valid for the IP version.\n"
-    Device-QoD-V1:
-      description: 'End-user equipment able to connect to a network. Examples of devices include smartphones or IoT sensors/actuators.
-
-
-        The developer can choose to provide the below specified device identifiers:
-
-
-        * `ipv4Address`
-
-        * `ipv6Address`
-
-        * `phoneNumber`
-
-        * `networkAccessIdentifier`
-
-
-        NOTE: the MNO might support only a subset of these options. The API invoker can provide multiple identifiers to be compatible across different MNOs. In this case the identifiers MUST belong to the same device
-
-        '
-      type: object
+    RetrieveSessionInput-QoD-V1:
       properties:
-        phoneNumber:
-          $ref: '#/components/schemas/PhoneNumber-QoD-V1'
-        networkAccessIdentifier:
-          $ref: '#/components/schemas/NetworkAccessIdentifier-QoD-V1'
-        ipv4Address:
-          $ref: '#/components/schemas/DeviceIpv4Addr-QoD-V1'
-        ipv6Address:
-          $ref: '#/components/schemas/DeviceIpv6Address-QoD-V1'
-      minProperties: 1
-    ErrorInfo-QoD-V1:
+        device:
+          $ref: '#/components/schemas/Device-QoD-V1'
       type: object
-      properties:
-        status:
-          type: integer
-          description: HTTP status code returned along with this error response
-        code:
-          type: string
-          description: Code given to this error
-        message:
-          type: string
-          description: Detailed error description
       required:
-      - status
-      - code
-      - message
+      - device
+      title: RetrieveSessionInput
+    NetworkAccessIdentifier-QoD-V1:
+      description: A public identifier addressing a subscription in a mobile network. In 3GPP terminology, it corresponds to the GPSI formatted with the External Identifier ({Local Identifier}@{Domain Identifier}). Unlike the telephone number, the network access identifier is not subjected to portability ruling in force, and is individually managed by each operator.
+      type: string
+      example: 123456789@domain.com
     BaseSessionInfo-QoD-V1:
       description: Common attributes of a QoD session
       type: object
@@ -801,6 +709,21 @@ components:
       required:
       - applicationServer
       - qosProfile
+    StatusInfo-QoD-V1:
+      description: 'Reason for the new `qosStatus`. Currently `statusInfo` is only applicable when `qosStatus` is ''UNAVAILABLE''.
+
+        * `DURATION_EXPIRED` - Session terminated due to requested duration expired
+
+        * `NETWORK_TERMINATED` - Network terminated the session before the requested duration expired
+
+        * `DELETE_REQUESTED`- User requested the deletion of the session before the requested duration expired
+
+        '
+      type: string
+      enum:
+      - DURATION_EXPIRED
+      - NETWORK_TERMINATED
+      - DELETE_REQUESTED
     ValidationError-QoD-V1:
       properties:
         loc:
@@ -822,6 +745,44 @@ components:
       - msg
       - type
       title: ValidationError
+    PhoneNumber-QoD-V1:
+      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+      type: string
+      pattern: ^\+?[0-9]{5,15}$
+      example: '+123456789'
+    ApplicationServerIpv4Address-QoD-V1:
+      type: string
+      example: 192.168.0.1/24
+      description: "IPv4 address may be specified in form <address/mask> as:\n  - address - an IPv4 number in dotted-quad form 1.2.3.4. Only this exact IP number will match the flow control rule.\n  - address/mask - an IP number as above with a mask width of the form 1.2.3.4/24.\n    In this case, all IP numbers from 1.2.3.0 to 1.2.3.255 will match. The bit width MUST be valid for the IP version.\n"
+    ApplicationServerIpv6Address-QoD-V1:
+      type: string
+      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
+      description: "IPv6 address may be specified in form <address/mask> as:\n  - address - The /128 subnet is optional for single addresses:\n    - 2001:db8:85a3:8d3:1319:8a2e:370:7344\n    - 2001:db8:85a3:8d3:1319:8a2e:370:7344/128\n  - address/mask - an IP v6 number with a mask:\n    - 2001:db8:85a3:8d3::0/64\n    - 2001:db8:85a3:8d3::/64\n"
+    Message-QoD-V1:
+      type: object
+      properties:
+        severity:
+          description: Message severity
+          type: string
+          enum:
+          - INFO
+          - WARNING
+        description:
+          description: Detailed message text
+          type: string
+      required:
+      - severity
+      - description
+    DeviceIpv6Address-QoD-V1:
+      description: 'The device should be identified by the observed IPv6 address, or by any single IPv6 address from within the subnet allocated to the device (e.g. adding ::0 to the /64 prefix).
+
+
+        The session shall apply to all IP flows between the device subnet and the specified application server, unless further restricted by the optional parameters devicePorts or applicationServerPorts.
+
+        '
+      type: string
+      format: ipv6
+      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
     ApplicationServer-QoD-V1:
       description: 'A server hosting backend applications to deliver some business logic to clients.
 
@@ -841,36 +802,75 @@ components:
         ipv6Address:
           $ref: '#/components/schemas/ApplicationServerIpv6Address-QoD-V1'
       minProperties: 1
-    Port-QoD-V1:
-      description: TCP or UDP port number
-      type: integer
-      minimum: 0
-      maximum: 65535
-    QosStatus-QoD-V1:
-      description: 'The current status of the requested QoS session. The status can be one of the following:
-
-        * `REQUESTED` - QoS has been requested by creating a session
-
-        * `AVAILABLE` - The requested QoS has been provided by the network
-
-        * `UNAVAILABLE` - The requested QoS cannot be provided by the network due to some reason
-
-        '
+    SessionId-QoD-V1:
+      description: Session ID in UUID format
       type: string
-      enum:
-      - REQUESTED
-      - AVAILABLE
-      - UNAVAILABLE
-    DeviceIpv6Address-QoD-V1:
-      description: 'The device should be identified by the observed IPv6 address, or by any single IPv6 address from within the subnet allocated to the device (e.g. adding ::0 to the /64 prefix).
+      format: uuid
+    ExtendSessionDuration-QoD-V1:
+      description: Attributes required to extend the duration of an active session
+      type: object
+      properties:
+        requestedAdditionalDuration:
+          description: 'Additional duration in seconds to be extended.
 
-
-        The session shall apply to all IP flows between the device subnet and the specified application server, unless further restricted by the optional parameters devicePorts or applicationServerPorts.
-
-        '
+            '
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 86399
+          example: 60
+      required:
+      - requestedAdditionalDuration
+    PortsSpec-QoD-V1:
+      type: object
+      minProperties: 1
+      properties:
+        ranges:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required:
+            - from
+            - to
+            properties:
+              from:
+                $ref: '#/components/schemas/Port-QoD-V1'
+              to:
+                $ref: '#/components/schemas/Port-QoD-V1'
+        ports:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/Port-QoD-V1'
+      example:
+        ranges:
+        - from: 5010
+          to: 5020
+        ports:
+        - 5060
+        - 5070
+    ErrorInfo-QoD-V1:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: HTTP status code returned along with this error response
+        code:
+          type: string
+          description: Code given to this error
+        message:
+          type: string
+          description: Detailed error description
+      required:
+      - status
+      - code
+      - message
+    SingleIpv4Addr-QoD-V1:
+      description: A single IPv4 address with no subnet mask
       type: string
-      format: ipv6
-      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
+      format: ipv4
+      example: 84.125.93.10
   examples:
     QOS_STATUS_CHANGED_EXAMPLE-QoD-V1:
       summary: QoS status changed
@@ -905,36 +905,6 @@ components:
             status: 403
             code: PERMISSION_DENIED
             message: 'Operation not allowed: ...'
-    Generic401-QoD-V1:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo-QoD-V1'
-          example:
-            status: 401
-            code: UNAUTHENTICATED
-            message: 'Authorization failed: ...'
-    Generic400-QoD-V1:
-      description: Invalid input
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo-QoD-V1'
-          example:
-            status: 400
-            code: INVALID_ARGUMENT
-            message: Schema validation failed at  ...
-    Generic503-QoD-V1:
-      description: Service unavailable
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo-QoD-V1'
-          example:
-            status: 503
-            code: UNAVAILABLE
-            message: Service unavailable
     SessionNotFound404-QoD-V1:
       description: Session not found
       content:
@@ -945,6 +915,16 @@ components:
             status: 404
             code: NOT_FOUND
             message: Session Id does not exist
+    Generic400-QoD-V1:
+      description: Invalid input
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-QoD-V1'
+          example:
+            status: 400
+            code: INVALID_ARGUMENT
+            message: Schema validation failed at  ...
     Generic500-QoD-V1:
       description: Internal server error
       content:
@@ -955,6 +935,26 @@ components:
             status: 500
             code: INTERNAL
             message: 'Internal server error: ...'
+    Generic401-QoD-V1:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-QoD-V1'
+          example:
+            status: 401
+            code: UNAUTHENTICATED
+            message: 'Authorization failed: ...'
+    Generic503-QoD-V1:
+      description: Service unavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-QoD-V1'
+          example:
+            status: 503
+            code: UNAVAILABLE
+            message: Service unavailable
   parameters:
     x-rapidapi-host:
       name: x-rapidapi-host

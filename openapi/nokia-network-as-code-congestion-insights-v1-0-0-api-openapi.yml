@@ -242,30 +242,83 @@ paths:
           description: API root
 components:
   schemas:
-    CongestionAnalytics-ConI-V1:
+    CongestionLevel-ConI-V1:
+      type: string
+      enum:
+      - Low
+      - Medium
+      - High
+      title: CongestionLevel
+    TimeAndDate-ConI-V1:
       properties:
-        cngType:
+        startTime:
           type: string
-          maxLength: 50
-          title: Cngtype
-        tmWdw:
-          $ref: '#/components/schemas/TimeAndDate-ConI-V1'
-        nsi:
-          $ref: '#/components/schemas/ThresholdLevel-ConI-V1'
-        confidence:
-          type:
-          - integer
-          - 'null'
-          maximum: 100
-          minimum: 0
-          format: int32
-          title: Confidence
+          format: date-time
+          title: Starttime
+        stopTime:
+          type: string
+          format: date-time
+          title: Stoptime
       type: object
       required:
-      - cngType
-      - tmWdw
-      - nsi
-      title: CongestionAnalytics
+      - startTime
+      - stopTime
+      title: TimeAndDate
+    ValidationError-ConI-V1:
+      properties:
+        loc:
+          type: array
+          items:
+            type: string
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    SubscriptionInfo-ConI-V1:
+      properties:
+        device:
+          $ref: '#/components/schemas/Device-ConI-V1'
+          description: Identifiers of the device
+        webhook:
+          $ref: '#/components/schemas/Webhook-ConI-V1'
+        subscriptionExpireTime:
+          type: string
+          format: date-time
+          title: Subscriptionexpiretime
+          description: Time when the subscription expires.
+        subscriptionId:
+          type: string
+          title: Subscriptionid
+        startedAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          title: Startedat
+          description: Time when subscription started
+        expiresAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          title: Expiresat
+          description: Time when subscription will expire or expired
+      type: object
+      required:
+      - device
+      - webhook
+      - subscriptionExpireTime
+      - subscriptionId
+      title: SubscriptionInfo
     CongestionData-ConI-V1:
       properties:
         timeIntervalStart:
@@ -310,205 +363,6 @@ components:
       - webhook
       - subscriptionExpireTime
       title: SubscribeCongestionCreate
-    ThresholdLevel-ConI-V1:
-      properties:
-        congLevel:
-          type: integer
-          maximum: 100
-          minimum: 0
-          format: int32
-          title: Conglevel
-      type: object
-      required:
-      - congLevel
-      title: ThresholdLevel
-    AnalyticsEvent-ConI-V1:
-      type: string
-      enum:
-      - CONGESTION
-      title: AnalyticsEvent
-    TimeAndDate-ConI-V1:
-      properties:
-        startTime:
-          type: string
-          format: date-time
-          title: Starttime
-        stopTime:
-          type: string
-          format: date-time
-          title: Stoptime
-      type: object
-      required:
-      - startTime
-      - stopTime
-      title: TimeAndDate
-    SubscriptionInfo-ConI-V1:
-      properties:
-        device:
-          $ref: '#/components/schemas/Device-ConI-V1'
-          description: Identifiers of the device
-        webhook:
-          $ref: '#/components/schemas/Webhook-ConI-V1'
-        subscriptionExpireTime:
-          type: string
-          format: date-time
-          title: Subscriptionexpiretime
-          description: Time when the subscription expires.
-        subscriptionId:
-          type: string
-          title: Subscriptionid
-        startedAt:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          title: Startedat
-          description: Time when subscription started
-        expiresAt:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          title: Expiresat
-          description: Time when subscription will expire or expired
-      type: object
-      required:
-      - device
-      - webhook
-      - subscriptionExpireTime
-      - subscriptionId
-      title: SubscriptionInfo
-    FetchCongestion-ConI-V1:
-      properties:
-        device:
-          $ref: '#/components/schemas/Device-ConI-V1'
-        start:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          title: Start
-          description: Start of the period queried. If not set, 15 minutes before end. If neither start or end is set, then the upcoming 15 minutes are predicted.
-        end:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          title: End
-          description: End of the period queried. If not set, 15 minutes after start.
-      type: object
-      required:
-      - device
-      title: FetchCongestion
-    HTTPValidationError-ConI-V1:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError-ConI-V1'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    CongestInfo-ConI-V1:
-      properties:
-        cngAnas:
-          items:
-            $ref: '#/components/schemas/CongestionAnalytics-ConI-V1'
-          type: array
-          title: Cnganas
-      type: object
-      required:
-      - cngAnas
-      title: CongestInfo
-    AnalyticsEventNotification-ConI-V1:
-      properties:
-        notifId:
-          type: string
-          maxLength: 100
-          title: Notifid
-        analyEventNotifs:
-          items:
-            $ref: '#/components/schemas/AnalyticsEventNotif-ConI-V1'
-          type: array
-          title: Analyeventnotifs
-      type: object
-      required:
-      - notifId
-      - analyEventNotifs
-      title: AnalyticsEventNotification
-    Webhook-ConI-V1:
-      properties:
-        notificationUrl:
-          type: string
-          maxLength: 256
-          title: Notificationurl
-          description: Notification URL for session-related events.
-          example: https://application-server.com
-        notificationAuthToken:
-          type:
-          - string
-          - 'null'
-          maxLength: 4096
-          title: Notificationauthtoken
-          description: Authorization token for notification sending.
-          example: c8974e592c2fa383d4a3960714
-      type: object
-      required:
-      - notificationUrl
-      title: Webhook
-    CongestionLevel-ConI-V1:
-      type: string
-      enum:
-      - Low
-      - Medium
-      - High
-      title: CongestionLevel
-    DeviceIpv4Addr-ConI-V1:
-      properties:
-        publicAddress:
-          type:
-          - string
-          - 'null'
-          maxLength: 15
-          title: Publicaddress
-          description: Public IPv4 address of the device. Either of the device or the NAT the device is behind.
-        privateAddress:
-          type:
-          - string
-          - 'null'
-          maxLength: 15
-          title: Privateaddress
-          description: Private IPv4 address of the device, if it is behind a NAT.
-        publicPort:
-          type:
-          - integer
-          - 'null'
-          maximum: 65535
-          minimum: 0
-          format: int32
-          title: Publicport
-          description: Public port used by the device. Port is necessary, as private address ranges overlap, and public port is used to extend the range for CGNAT.
-      type: object
-      title: DeviceIpv4Addr
-    ValidationError-ConI-V1:
-      properties:
-        loc:
-          type: array
-          items:
-            type: string
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     Device-ConI-V1:
       properties:
         phoneNumber:
@@ -540,6 +394,152 @@ components:
           description: IPv6 address of the device. IP address is needed for some flow-oriented services, such as QoD.
       type: object
       title: Device
+    CongestInfo-ConI-V1:
+      properties:
+        cngAnas:
+          items:
+            $ref: '#/components/schemas/CongestionAnalytics-ConI-V1'
+          type: array
+          title: Cnganas
+      type: object
+      required:
+      - cngAnas
+      title: CongestInfo
+    ThresholdLevel-ConI-V1:
+      properties:
+        congLevel:
+          type: integer
+          maximum: 100
+          minimum: 0
+          format: int32
+          title: Conglevel
+      type: object
+      required:
+      - congLevel
+      title: ThresholdLevel
+    DeviceIpv4Addr-ConI-V1:
+      properties:
+        publicAddress:
+          type:
+          - string
+          - 'null'
+          maxLength: 15
+          title: Publicaddress
+          description: Public IPv4 address of the device. Either of the device or the NAT the device is behind.
+        privateAddress:
+          type:
+          - string
+          - 'null'
+          maxLength: 15
+          title: Privateaddress
+          description: Private IPv4 address of the device, if it is behind a NAT.
+        publicPort:
+          type:
+          - integer
+          - 'null'
+          maximum: 65535
+          minimum: 0
+          format: int32
+          title: Publicport
+          description: Public port used by the device. Port is necessary, as private address ranges overlap, and public port is used to extend the range for CGNAT.
+      type: object
+      title: DeviceIpv4Addr
+    Webhook-ConI-V1:
+      properties:
+        notificationUrl:
+          type: string
+          maxLength: 256
+          title: Notificationurl
+          description: Notification URL for session-related events.
+          example: https://application-server.com
+        notificationAuthToken:
+          type:
+          - string
+          - 'null'
+          maxLength: 4096
+          title: Notificationauthtoken
+          description: Authorization token for notification sending.
+          example: c8974e592c2fa383d4a3960714
+      type: object
+      required:
+      - notificationUrl
+      title: Webhook
+    AnalyticsEventNotification-ConI-V1:
+      properties:
+        notifId:
+          type: string
+          maxLength: 100
+          title: Notifid
+        analyEventNotifs:
+          items:
+            $ref: '#/components/schemas/AnalyticsEventNotif-ConI-V1'
+          type: array
+          title: Analyeventnotifs
+      type: object
+      required:
+      - notifId
+      - analyEventNotifs
+      title: AnalyticsEventNotification
+    AnalyticsEvent-ConI-V1:
+      type: string
+      enum:
+      - CONGESTION
+      title: AnalyticsEvent
+    HTTPValidationError-ConI-V1:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError-ConI-V1'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    CongestionAnalytics-ConI-V1:
+      properties:
+        cngType:
+          type: string
+          maxLength: 50
+          title: Cngtype
+        tmWdw:
+          $ref: '#/components/schemas/TimeAndDate-ConI-V1'
+        nsi:
+          $ref: '#/components/schemas/ThresholdLevel-ConI-V1'
+        confidence:
+          type:
+          - integer
+          - 'null'
+          maximum: 100
+          minimum: 0
+          format: int32
+          title: Confidence
+      type: object
+      required:
+      - cngType
+      - tmWdw
+      - nsi
+      title: CongestionAnalytics
+    FetchCongestion-ConI-V1:
+      properties:
+        device:
+          $ref: '#/components/schemas/Device-ConI-V1'
+        start:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          title: Start
+          description: Start of the period queried. If not set, 15 minutes before end. If neither start or end is set, then the upcoming 15 minutes are predicted.
+        end:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          title: End
+          description: End of the period queried. If not set, 15 minutes after start.
+      type: object
+      required:
+      - device
+      title: FetchCongestion
     AnalyticsEventNotif-ConI-V1:
       properties:
         analyEvent:

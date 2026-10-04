@@ -263,27 +263,6 @@ paths:
           description: API root
 components:
   schemas:
-    PhoneNumber-DS-RES-V0:
-      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
-      type: string
-      pattern: ^\+[1-9][0-9]{4,14}$
-      example: '+99999991000'
-    ErrorInfo-DS-RES-V0:
-      type: object
-      required:
-      - status
-      - code
-      - message
-      properties:
-        status:
-          type: integer
-          description: HTTP response status code
-        code:
-          type: string
-          description: Code given to this error
-        message:
-          type: string
-          description: Detailed error description
     Subscription-DS-RES-V0:
       description: Represents a event-type subscription.
       type: object
@@ -372,29 +351,89 @@ components:
         startsAt: '2024-07-03T21:12:02.871Z'
         expiresAt: '2024-07-03T21:12:02.871Z'
         status: ACTIVE
-    SinkCredential-DS-RES-V0:
-      description: A sink credential provides authentication or authorization information necessary to enable delivery of events to a target.
+    DeviceIpv4Addr-DS-RES-V0:
+      type: object
+      description: 'The device should be identified by either the public (observed) IP address and port as seen by the application server, or the private (local) and any public (observed) IP addresses in use by the device (this information can be obtained by various means, for example from some DNS servers).
+
+
+        If the allocated and observed IP addresses are the same (i.e. NAT is not in use) then  the same address should be specified for both publicAddress and privateAddress.
+
+
+        If NAT64 is in use, the device should be identified by its publicAddress and publicPort, or separately by its allocated IPv6 address (field ipv6Address of the Device object)
+
+
+        In all cases, publicAddress must be specified, along with at least one of either privateAddress or publicPort, dependent upon which is known. In general, mobile devices cannot be identified by their public IPv4 address alone.
+
+        '
+      properties:
+        publicAddress:
+          $ref: '#/components/schemas/SingleIpv4Addr-DS-RES-V0'
+        privateAddress:
+          $ref: '#/components/schemas/SingleIpv4Addr-DS-RES-V0'
+        publicPort:
+          $ref: '#/components/schemas/Port-DS-RES-V0'
+      anyOf:
+      - required:
+        - publicAddress
+        - privateAddress
+      - required:
+        - publicAddress
+        - publicPort
+      example:
+        publicAddress: 84.125.93.10
+        publicPort: 59765
+    Source-DS-RES-V0:
+      type: string
+      format: uri-reference
+      minLength: 1
+      description: "Identifies the context in which an event happened - be a non-empty `URI-reference` like:\n- URI with a DNS authority:\n\n\n\n\n  * https://github.com/cloudevents\n  * mailto:cncf-wg-serverless@lists.cncf.io\n- Universally-unique URN with a UUID:\n\n\n\n\n  * urn:uuid:6e8bc430-9c3a-11d9-9669-0800200c9a66\n- Application-specific identifier:\n\n\n\n\n  * /cloudevents/spec/pull/123\n  * 1-555-123-4567\n"
+      example: https://notificationSendServer12.supertelco.com
+    Device-DS-RES-V0:
+      description: 'End-user equipment able to connect to a mobile network. Examples of devices include smartphones or IoT sensors/actuators.
+
+
+        The developer can choose to provide the below specified device identifiers:
+
+
+        * `ipv4Address`
+
+        * `ipv6Address`
+
+        * `phoneNumber`
+
+        * `networkAccessIdentifier`
+
+
+        NOTE: the MNO might support only a subset of these options. The API invoker can provide multiple identifiers to be compatible across different MNOs. In this case the identifiers MUST belong to the same device.
+
+        '
       type: object
       properties:
-        credentialType:
-          type: string
-          enum:
-          - PLAIN
-          - ACCESSTOKEN
-          - REFRESHTOKEN
-          description: 'The type of the credential.
-
-            Note: Type of the credential - MUST be set to ACCESSTOKEN for now
-
-            '
-      discriminator:
-        propertyName: credentialType
-        mapping:
-          PLAIN: '#/components/schemas/PlainCredential'
-          ACCESSTOKEN: '#/components/schemas/AccessTokenCredential'
-          REFRESHTOKEN: '#/components/schemas/RefreshTokenCredential'
-      required:
-      - credentialType
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber-DS-RES-V0'
+        networkAccessIdentifier:
+          $ref: '#/components/schemas/NetworkAccessIdentifier-DS-RES-V0'
+        ipv4Address:
+          $ref: '#/components/schemas/DeviceIpv4Addr-DS-RES-V0'
+        ipv6Address:
+          $ref: '#/components/schemas/DeviceIpv6Address-DS-RES-V0'
+      minProperties: 1
+    Protocol-DS-RES-V0:
+      type: string
+      enum:
+      - HTTP
+      - MQTT3
+      - MQTT5
+      - AMQP
+      - NATS
+      - KAFKA
+      description: Identifier of a delivery protocol. Only HTTP is allowed for now
+      example: HTTP
+    SingleIpv4Addr-DS-RES-V0:
+      description: A single IPv4 address with no subnet mask
+      type: string
+      format: ipv4
+      example: 84.125.93.10
     Config-DS-RES-V0:
       description: 'Implementation-specific configuration parameters needed by the subscription manager for acquiring events.
 
@@ -428,17 +467,12 @@ components:
             Example: Consumer subscribes to reachability SMS. If consumer sets initialEvent to true and device is already reachable by SMS, an event is triggered.
 
             '
-    Protocol-DS-RES-V0:
-      type: string
-      enum:
-      - HTTP
-      - MQTT3
-      - MQTT5
-      - AMQP
-      - NATS
-      - KAFKA
-      description: Identifier of a delivery protocol. Only HTTP is allowed for now
-      example: HTTP
+    CreateSubscriptionDetail-DS-RES-V0:
+      description: The detail of the requested event subscription.
+      type: object
+      properties:
+        device:
+          $ref: '#/components/schemas/Device-DS-RES-V0'
     DeviceIpv6Address-DS-RES-V0:
       description: 'The device should be identified by the observed IPv6 address, or by any single IPv6 address from within the subnet allocated to the device (e.g. adding ::0 to the /64 prefix).
 
@@ -446,80 +480,11 @@ components:
       type: string
       format: ipv6
       example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
-    EventTypeNotification-DS-RES-V0:
-      type: string
-      description: 'reachability-data - Event triggered when the device is connected to the network for Data usage (regardless of the SMS reachability).
-
-
-        reachability-sms - Event triggered when the device is connected to the network only for SMS usage
-
-
-        reachability-disconnected - Event triggered when the device is not connected.
-
-
-        subscription-ends - Event triggered when the subscription is terminated
-
-        '
-      enum:
-      - org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data
-      - org.camaraproject.device-reachability-status-subscriptions.v0.reachability-sms
-      - org.camaraproject.device-reachability-status-subscriptions.v0.reachability-disconnected
-      - org.camaraproject.device-reachability-status-subscriptions.v0.subscription-ends
-    SubscriptionId-DS-RES-V0:
-      type: string
-      description: The unique identifier of the subscription in the scope of the subscription manager. When this information is contained within an event notification, this concept SHALL be referred as `subscriptionId` as per [Commonalities Event Notification Model](https://github.com/camaraproject/Commonalities/blob/r2.3/documentation/API-design-guidelines.md#122-event-notification).
-      example: qs15-h556-rt89-1298
     Port-DS-RES-V0:
       description: TCP or UDP port number
       type: integer
       minimum: 0
       maximum: 65535
-    DeviceIpv4Addr-DS-RES-V0:
-      type: object
-      description: 'The device should be identified by either the public (observed) IP address and port as seen by the application server, or the private (local) and any public (observed) IP addresses in use by the device (this information can be obtained by various means, for example from some DNS servers).
-
-
-        If the allocated and observed IP addresses are the same (i.e. NAT is not in use) then  the same address should be specified for both publicAddress and privateAddress.
-
-
-        If NAT64 is in use, the device should be identified by its publicAddress and publicPort, or separately by its allocated IPv6 address (field ipv6Address of the Device object)
-
-
-        In all cases, publicAddress must be specified, along with at least one of either privateAddress or publicPort, dependent upon which is known. In general, mobile devices cannot be identified by their public IPv4 address alone.
-
-        '
-      properties:
-        publicAddress:
-          $ref: '#/components/schemas/SingleIpv4Addr-DS-RES-V0'
-        privateAddress:
-          $ref: '#/components/schemas/SingleIpv4Addr-DS-RES-V0'
-        publicPort:
-          $ref: '#/components/schemas/Port-DS-RES-V0'
-      anyOf:
-      - required:
-        - publicAddress
-        - privateAddress
-      - required:
-        - publicAddress
-        - publicPort
-      example:
-        publicAddress: 84.125.93.10
-        publicPort: 59765
-    SubscriptionEventType-DS-RES-V0:
-      type: string
-      description: 'reachability-data - Event triggered when the device is connected to the network for Data usage (regardless of the SMS reachability).
-
-
-        reachability-sms - Event triggered when the device is connected to the network only for SMS usage
-
-
-        reachability-disconnected - Event triggered when the device is not connected.
-
-        '
-      enum:
-      - org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data
-      - org.camaraproject.device-reachability-status-subscriptions.v0.reachability-sms
-      - org.camaraproject.device-reachability-status-subscriptions.v0.reachability-disconnected
     SubscriptionRequest-DS-RES-V0:
       description: The request for creating a event-type event subscription
       type: object
@@ -560,62 +525,98 @@ components:
           AMQP: '#/components/schemas/AMQPSubscriptionRequest'
           NATS: '#/components/schemas/NATSSubscriptionRequest'
           KAFKA: '#/components/schemas/ApacheKafkaSubscriptionRequest'
-    DateTime-DS-RES-V0:
+    SubscriptionEventType-DS-RES-V0:
       type: string
-      format: date-time
-      description: 'Timestamp of when the occurrence happened.
+      description: 'reachability-data - Event triggered when the device is connected to the network for Data usage (regardless of the SMS reachability).
 
-        If the time of the occurrence cannot be determined then this attribute MAY be set to some other time (such as the current time) by the CloudEvents producer,
 
-        however all producers for the same source MUST be consistent in this respect. In other words,
+        reachability-sms - Event triggered when the device is connected to the network only for SMS usage
 
-        either they all use the actual time of the occurrence or they all use the same algorithm to determine the value used.
 
-        It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
-
-        Recommended format is yyyy-MM-dd''T''HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z)
+        reachability-disconnected - Event triggered when the device is not connected.
 
         '
-      example: '2018-04-05T17:31:00Z'
+      enum:
+      - org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data
+      - org.camaraproject.device-reachability-status-subscriptions.v0.reachability-sms
+      - org.camaraproject.device-reachability-status-subscriptions.v0.reachability-disconnected
+    SubscriptionAsync-DS-RES-V0:
+      description: Response for a device reachability status operation managed asynchronously (Creation or Deletion)
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/SubscriptionId-DS-RES-V0'
+    ErrorInfo-DS-RES-V0:
+      type: object
+      required:
+      - status
+      - code
+      - message
+      properties:
+        status:
+          type: integer
+          description: HTTP response status code
+        code:
+          type: string
+          description: Code given to this error
+        message:
+          type: string
+          description: Detailed error description
     NetworkAccessIdentifier-DS-RES-V0:
       description: A public identifier addressing a subscription in a mobile network. In 3GPP terminology, it corresponds to the GPSI formatted with the External Identifier ({Local Identifier}@{Domain Identifier}). Unlike the telephone number, the network access identifier is not subjected to portability ruling in force, and is individually managed by each operator.
       type: string
       example: 123456789@domain.com
-    Device-DS-RES-V0:
-      description: 'End-user equipment able to connect to a mobile network. Examples of devices include smartphones or IoT sensors/actuators.
+    SubscriptionId-DS-RES-V0:
+      type: string
+      description: The unique identifier of the subscription in the scope of the subscription manager. When this information is contained within an event notification, this concept SHALL be referred as `subscriptionId` as per [Commonalities Event Notification Model](https://github.com/camaraproject/Commonalities/blob/r2.3/documentation/API-design-guidelines.md#122-event-notification).
+      example: qs15-h556-rt89-1298
+    EventTypeNotification-DS-RES-V0:
+      type: string
+      description: 'reachability-data - Event triggered when the device is connected to the network for Data usage (regardless of the SMS reachability).
 
 
-        The developer can choose to provide the below specified device identifiers:
+        reachability-sms - Event triggered when the device is connected to the network only for SMS usage
 
 
-        * `ipv4Address`
-
-        * `ipv6Address`
-
-        * `phoneNumber`
-
-        * `networkAccessIdentifier`
+        reachability-disconnected - Event triggered when the device is not connected.
 
 
-        NOTE: the MNO might support only a subset of these options. The API invoker can provide multiple identifiers to be compatible across different MNOs. In this case the identifiers MUST belong to the same device.
+        subscription-ends - Event triggered when the subscription is terminated
 
         '
+      enum:
+      - org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data
+      - org.camaraproject.device-reachability-status-subscriptions.v0.reachability-sms
+      - org.camaraproject.device-reachability-status-subscriptions.v0.reachability-disconnected
+      - org.camaraproject.device-reachability-status-subscriptions.v0.subscription-ends
+    PhoneNumber-DS-RES-V0:
+      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+      type: string
+      pattern: ^\+[1-9][0-9]{4,14}$
+      example: '+99999991000'
+    SinkCredential-DS-RES-V0:
+      description: A sink credential provides authentication or authorization information necessary to enable delivery of events to a target.
       type: object
       properties:
-        phoneNumber:
-          $ref: '#/components/schemas/PhoneNumber-DS-RES-V0'
-        networkAccessIdentifier:
-          $ref: '#/components/schemas/NetworkAccessIdentifier-DS-RES-V0'
-        ipv4Address:
-          $ref: '#/components/schemas/DeviceIpv4Addr-DS-RES-V0'
-        ipv6Address:
-          $ref: '#/components/schemas/DeviceIpv6Address-DS-RES-V0'
-      minProperties: 1
-    SingleIpv4Addr-DS-RES-V0:
-      description: A single IPv4 address with no subnet mask
-      type: string
-      format: ipv4
-      example: 84.125.93.10
+        credentialType:
+          type: string
+          enum:
+          - PLAIN
+          - ACCESSTOKEN
+          - REFRESHTOKEN
+          description: 'The type of the credential.
+
+            Note: Type of the credential - MUST be set to ACCESSTOKEN for now
+
+            '
+      discriminator:
+        propertyName: credentialType
+        mapping:
+          PLAIN: '#/components/schemas/PlainCredential'
+          ACCESSTOKEN: '#/components/schemas/AccessTokenCredential'
+          REFRESHTOKEN: '#/components/schemas/RefreshTokenCredential'
+      required:
+      - credentialType
     CloudEvent-DS-RES-V0:
       description: The notification callback
       required:
@@ -654,25 +655,274 @@ components:
           org.camaraproject.device-reachability-status-subscriptions.v0.reachability-sms: '#/components/schemas/EventReachabilitySms'
           org.camaraproject.device-reachability-status-subscriptions.v0.reachability-disconnected: '#/components/schemas/EventReachabilityDisconnected'
           org.camaraproject.device-reachability-status-subscriptions.v0.subscription-ends: '#/components/schemas/EventSubscriptionEnds'
-    CreateSubscriptionDetail-DS-RES-V0:
-      description: The detail of the requested event subscription.
-      type: object
-      properties:
-        device:
-          $ref: '#/components/schemas/Device-DS-RES-V0'
-    Source-DS-RES-V0:
+    DateTime-DS-RES-V0:
       type: string
-      format: uri-reference
-      minLength: 1
-      description: "Identifies the context in which an event happened - be a non-empty `URI-reference` like:\n- URI with a DNS authority:\n\n\n\n\n  * https://github.com/cloudevents\n  * mailto:cncf-wg-serverless@lists.cncf.io\n- Universally-unique URN with a UUID:\n\n\n\n\n  * urn:uuid:6e8bc430-9c3a-11d9-9669-0800200c9a66\n- Application-specific identifier:\n\n\n\n\n  * /cloudevents/spec/pull/123\n  * 1-555-123-4567\n"
-      example: https://notificationSendServer12.supertelco.com
-    SubscriptionAsync-DS-RES-V0:
-      description: Response for a device reachability status operation managed asynchronously (Creation or Deletion)
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/SubscriptionId-DS-RES-V0'
+      format: date-time
+      description: 'Timestamp of when the occurrence happened.
+
+        If the time of the occurrence cannot be determined then this attribute MAY be set to some other time (such as the current time) by the CloudEvents producer,
+
+        however all producers for the same source MUST be consistent in this respect. In other words,
+
+        either they all use the actual time of the occurrence or they all use the same algorithm to determine the value used.
+
+        It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone.
+
+        Recommended format is yyyy-MM-dd''T''HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z)
+
+        '
+      example: '2018-04-05T17:31:00Z'
+  examples:
+    SUBSCRIPTION_ENDS-DS-RES-V0:
+      value:
+        id: '123658'
+        source: https://notificationSendServer12.supertelco.com
+        type: org.camaraproject.device-reachability-status-subscriptions.v0.subscription-ends
+        specversion: '1.0'
+        datacontenttype: application/json
+        data:
+          device:
+            phoneNumber: '+99999991000'
+          terminationReason: SUBSCRIPTION_EXPIRED
+          subscriptionId: qs15-h556-rt89-1298
+          terminationDescription: Subscription expiry time has been reached
+        time: '2024-03-22T05:40:23.682Z'
+    SUBSCRIPTION_ACTIVATION_REQUESTED-DS-RES-V0:
+      value:
+        id: 550e8400-e29b-41d4-a716-446655440000
+        sink: https://endpoint.example.com/sink
+        protocol: HTTP
+        types:
+        - org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data
+        config:
+          subscriptionDetail:
+            device:
+              phoneNumber: '+99999991000'
+          subscriptionExpireTime: '2024-07-17T13:18:23.682Z'
+          subscriptionMaxEvents: 5
+          initialEvent: true
+        startsAt: '2024-07-03T21:12:02.871Z'
+        expiresAt: '2024-07-03T21:12:02.871Z'
+        status: ACTIVATION_REQUESTED
+    REACHABILITY_SMS-DS-RES-V0:
+      value:
+        id: '123656'
+        source: https://notificationSendServer12.supertelco.com
+        type: org.camaraproject.device-reachability-status-subscriptions.v0.reachability-sms
+        specversion: '1.0'
+        datacontenttype: application/json
+        data:
+          device:
+            phoneNumber: '+99999991000'
+          subscriptionId: qs15-h556-rt89-1298
+        time: '2023-01-19T13:18:23.682Z'
+    REACHABILITY_DISCONNECTED-DS-RES-V0:
+      value:
+        id: '123656'
+        source: https://notificationSendServer12.supertelco.com
+        type: org.camaraproject.device-reachability-status-subscriptions.v0.reachability-disconnected
+        specversion: '1.0'
+        datacontenttype: application/json
+        data:
+          device:
+            phoneNumber: '+99999991000'
+          subscriptionId: qs15-h556-rt89-1298
+        time: '2023-01-19T13:18:23.682Z'
+    SUBSCRIPTION_DELETED-DS-RES-V0:
+      value:
+        id: 550e8400-e29b-41d4-a716-446655440000
+        sink: https://endpoint.example.com/sink
+        protocol: HTTP
+        types:
+        - org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data
+        config:
+          subscriptionDetail:
+            device:
+              phoneNumber: '+99999991000'
+          subscriptionExpireTime: '2024-07-17T13:18:23.682Z'
+          subscriptionMaxEvents: 5
+          initialEvent: true
+        startsAt: '2024-07-03T21:12:02.871Z'
+        expiresAt: '2024-07-03T21:12:02.871Z'
+        status: DELETED
+    CREATE_DISCONNECTED_SUBSCRIPTION-DS-RES-V0:
+      value:
+        sink: https://endpoint.example.com/sink
+        protocol: HTTP
+        types:
+        - org.camaraproject.device-reachability-status-subscriptions.v0.reachability-disconnected
+        config:
+          subscriptionDetail:
+            device:
+              phoneNumber: '+99999991000'
+          subscriptionMaxEvents: 5
+          initialEvent: true
+    CREATE_DATA_SUBSCRIPTION-DS-RES-V0:
+      value:
+        sink: https://endpoint.example.com/sink
+        protocol: HTTP
+        types:
+        - org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data
+        config:
+          subscriptionDetail:
+            device:
+              phoneNumber: '+99999991000'
+          subscriptionMaxEvents: 5
+          initialEvent: true
+    REACHABILITY_DATA-DS-RES-V0:
+      value:
+        id: '123656'
+        source: https://notificationSendServer12.supertelco.com
+        type: org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data
+        specversion: '1.0'
+        datacontenttype: application/json
+        data:
+          device:
+            phoneNumber: '+99999991000'
+          subscriptionId: qs15-h556-rt89-1298
+        time: '2023-01-19T13:18:23.682Z'
+    CREATE_SMS_SUBSCRIPTION-DS-RES-V0:
+      value:
+        sink: https://endpoint.example.com/sink
+        protocol: HTTP
+        types:
+        - org.camaraproject.device-reachability-status-subscriptions.v0.reachability-sms
+        config:
+          subscriptionDetail:
+            device:
+              phoneNumber: '+99999991000'
+          subscriptionMaxEvents: 5
+          initialEvent: true
+    SUBSCRIPTION_ACTIVE-DS-RES-V0:
+      value:
+        id: 550e8400-e29b-41d4-a716-446655440000
+        sink: https://endpoint.example.com/sink
+        protocol: HTTP
+        types:
+        - org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data
+        config:
+          subscriptionDetail:
+            device:
+              phoneNumber: '+99999991000'
+          subscriptionExpireTime: '2024-07-17T13:18:23.682Z'
+          subscriptionMaxEvents: 5
+          initialEvent: true
+        startsAt: '2024-07-03T21:12:02.871Z'
+        expiresAt: '2024-07-03T21:12:02.871Z'
+        status: ACTIVE
+  parameters:
+    SubscriptionId-DS-RES-V0:
+      name: subscriptionId
+      in: path
+      description: Subscription identifier that was obtained from the create event subscription operation
+      required: true
+      schema:
+        $ref: '#/components/schemas/SubscriptionId-DS-RES-V0'
+    x-correlator-DS-RES-V0:
+      name: x-correlator
+      in: header
+      description: Correlation id for the different services
+      schema:
+        type: string
+        pattern: ^[a-zA-Z0-9-]{0,55}$
+        example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
+    x-rapidapi-host:
+      name: x-rapidapi-host
+      in: header
+      required: true
+      description: The API's Host value as defined in the RapidAPI Hub.
+      schema:
+        type: string
+        example: network-as-code.p-eu.rapidapi.com
   responses:
+    SubscriptionIdRequired400-DS-RES-V0:
+      description: Problem with the client request
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-DS-RES-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-DS-RES-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 400
+                code:
+                  enum:
+                  - INVALID_ARGUMENT
+          examples:
+            GENERIC_400_INVALID_ARGUMENT:
+              description: Invalid Argument. Generic Syntax Exception
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Client specified an invalid argument, request body or query param.
+            GENERIC_400_SUBSCRIPTION_ID_REQUIRED:
+              description: subscription id is required
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: 'Expected property is missing: subscriptionId'
+    Generic401-DS-RES-V0:
+      description: Authentication problem with the client request
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-DS-RES-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-DS-RES-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 401
+                code:
+                  enum:
+                  - UNAUTHENTICATED
+                  - AUTHENTICATION_REQUIRED
+          examples:
+            GENERIC_401_UNAUTHENTICATED:
+              description: Request cannot be authenticated
+              value:
+                status: 401
+                code: UNAUTHENTICATED
+                message: Request not authenticated due to missing, invalid, or expired credentials.
+            GENERIC_401_AUTHENTICATION_REQUIRED:
+              description: New authentication is needed, authentication is no longer valid
+              value:
+                status: 401
+                code: AUTHENTICATION_REQUIRED
+                message: New authentication is required.
+    Generic400-DS-RES-V0:
+      description: Problem with the client request
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-DS-RES-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-DS-RES-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 400
+                code:
+                  enum:
+                  - INVALID_ARGUMENT
+          examples:
+            GENERIC_400_INVALID_ARGUMENT:
+              description: Invalid Argument. Generic Syntax Exception
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Client specified an invalid argument, request body or query param.
     SubscriptionPermissionDenied403-DS-RES-V0:
       description: Client does not have sufficient permission
       headers:
@@ -758,62 +1008,6 @@ components:
                 status: 400
                 code: INVALID_TOKEN
                 message: Only bearer token is supported
-    Generic400-DS-RES-V0:
-      description: Problem with the client request
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator-DS-RES-V0'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo-DS-RES-V0'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 400
-                code:
-                  enum:
-                  - INVALID_ARGUMENT
-          examples:
-            GENERIC_400_INVALID_ARGUMENT:
-              description: Invalid Argument. Generic Syntax Exception
-              value:
-                status: 400
-                code: INVALID_ARGUMENT
-                message: Client specified an invalid argument, request body or query param.
-    SubscriptionIdRequired400-DS-RES-V0:
-      description: Problem with the client request
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator-DS-RES-V0'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo-DS-RES-V0'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 400
-                code:
-                  enum:
-                  - INVALID_ARGUMENT
-          examples:
-            GENERIC_400_INVALID_ARGUMENT:
-              description: Invalid Argument. Generic Syntax Exception
-              value:
-                status: 400
-                code: INVALID_ARGUMENT
-                message: Client specified an invalid argument, request body or query param.
-            GENERIC_400_SUBSCRIPTION_ID_REQUIRED:
-              description: subscription id is required
-              value:
-                status: 400
-                code: INVALID_ARGUMENT
-                message: 'Expected property is missing: subscriptionId'
     Generic409-DS-RES-V0:
       description: Conflict
       headers:
@@ -846,6 +1040,63 @@ components:
                 status: 409
                 code: ALREADY_EXISTS
                 message: The resource that a client tried to create already exists.
+    Generic429-DS-RES-V0:
+      description: Too Many Requests
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-DS-RES-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-DS-RES-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 429
+                code:
+                  enum:
+                  - QUOTA_EXCEEDED
+                  - TOO_MANY_REQUESTS
+          examples:
+            GENERIC_429_QUOTA_EXCEEDED:
+              description: Request is rejected due to exceeding a business quota limit
+              value:
+                status: 429
+                code: QUOTA_EXCEEDED
+                message: Out of resource quota.
+            GENERIC_429_TOO_MANY_REQUESTS:
+              description: Access to the API has been temporarily blocked due to rate or spike arrest limits being reached
+              value:
+                status: 429
+                code: TOO_MANY_REQUESTS
+                message: Rate limit reached.
+    Generic404-DS-RES-V0:
+      description: Resource Not Found
+      headers:
+        x-correlator:
+          $ref: '#/components/headers/x-correlator-DS-RES-V0'
+      content:
+        application/json:
+          schema:
+            allOf:
+            - $ref: '#/components/schemas/ErrorInfo-DS-RES-V0'
+            - type: object
+              properties:
+                status:
+                  enum:
+                  - 404
+                code:
+                  enum:
+                  - NOT_FOUND
+          examples:
+            GENERIC_404_NOT_FOUND:
+              description: Resource is not found
+              value:
+                status: 404
+                code: NOT_FOUND
+                message: The specified resource is not found.
     Generic403-DS-RES-V0:
       description: Client does not have sufficient permission
       headers:
@@ -931,63 +1182,6 @@ components:
                 status: 422
                 code: MULTIEVENT_SUBSCRIPTION_NOT_SUPPORTED
                 message: Multi event types subscription not managed
-    Generic404-DS-RES-V0:
-      description: Resource Not Found
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator-DS-RES-V0'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo-DS-RES-V0'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 404
-                code:
-                  enum:
-                  - NOT_FOUND
-          examples:
-            GENERIC_404_NOT_FOUND:
-              description: Resource is not found
-              value:
-                status: 404
-                code: NOT_FOUND
-                message: The specified resource is not found.
-    Generic401-DS-RES-V0:
-      description: Authentication problem with the client request
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator-DS-RES-V0'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo-DS-RES-V0'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 401
-                code:
-                  enum:
-                  - UNAUTHENTICATED
-                  - AUTHENTICATION_REQUIRED
-          examples:
-            GENERIC_401_UNAUTHENTICATED:
-              description: Request cannot be authenticated
-              value:
-                status: 401
-                code: UNAUTHENTICATED
-                message: Request not authenticated due to missing, invalid, or expired credentials.
-            GENERIC_401_AUTHENTICATION_REQUIRED:
-              description: New authentication is needed, authentication is no longer valid
-              value:
-                status: 401
-                code: AUTHENTICATION_REQUIRED
-                message: New authentication is required.
     Generic410-DS-RES-V0:
       description: Gone
       headers:
@@ -1013,200 +1207,6 @@ components:
                 status: 410
                 code: GONE
                 message: Access to the target resource is no longer available.
-    Generic429-DS-RES-V0:
-      description: Too Many Requests
-      headers:
-        x-correlator:
-          $ref: '#/components/headers/x-correlator-DS-RES-V0'
-      content:
-        application/json:
-          schema:
-            allOf:
-            - $ref: '#/components/schemas/ErrorInfo-DS-RES-V0'
-            - type: object
-              properties:
-                status:
-                  enum:
-                  - 429
-                code:
-                  enum:
-                  - QUOTA_EXCEEDED
-                  - TOO_MANY_REQUESTS
-          examples:
-            GENERIC_429_QUOTA_EXCEEDED:
-              description: Request is rejected due to exceeding a business quota limit
-              value:
-                status: 429
-                code: QUOTA_EXCEEDED
-                message: Out of resource quota.
-            GENERIC_429_TOO_MANY_REQUESTS:
-              description: Access to the API has been temporarily blocked due to rate or spike arrest limits being reached
-              value:
-                status: 429
-                code: TOO_MANY_REQUESTS
-                message: Rate limit reached.
-  examples:
-    REACHABILITY_DATA-DS-RES-V0:
-      value:
-        id: '123656'
-        source: https://notificationSendServer12.supertelco.com
-        type: org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data
-        specversion: '1.0'
-        datacontenttype: application/json
-        data:
-          device:
-            phoneNumber: '+99999991000'
-          subscriptionId: qs15-h556-rt89-1298
-        time: '2023-01-19T13:18:23.682Z'
-    CREATE_DISCONNECTED_SUBSCRIPTION-DS-RES-V0:
-      value:
-        sink: https://endpoint.example.com/sink
-        protocol: HTTP
-        types:
-        - org.camaraproject.device-reachability-status-subscriptions.v0.reachability-disconnected
-        config:
-          subscriptionDetail:
-            device:
-              phoneNumber: '+99999991000'
-          subscriptionMaxEvents: 5
-          initialEvent: true
-    SUBSCRIPTION_ENDS-DS-RES-V0:
-      value:
-        id: '123658'
-        source: https://notificationSendServer12.supertelco.com
-        type: org.camaraproject.device-reachability-status-subscriptions.v0.subscription-ends
-        specversion: '1.0'
-        datacontenttype: application/json
-        data:
-          device:
-            phoneNumber: '+99999991000'
-          terminationReason: SUBSCRIPTION_EXPIRED
-          subscriptionId: qs15-h556-rt89-1298
-          terminationDescription: Subscription expiry time has been reached
-        time: '2024-03-22T05:40:23.682Z'
-    SUBSCRIPTION_ACTIVE-DS-RES-V0:
-      value:
-        id: 550e8400-e29b-41d4-a716-446655440000
-        sink: https://endpoint.example.com/sink
-        protocol: HTTP
-        types:
-        - org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data
-        config:
-          subscriptionDetail:
-            device:
-              phoneNumber: '+99999991000'
-          subscriptionExpireTime: '2024-07-17T13:18:23.682Z'
-          subscriptionMaxEvents: 5
-          initialEvent: true
-        startsAt: '2024-07-03T21:12:02.871Z'
-        expiresAt: '2024-07-03T21:12:02.871Z'
-        status: ACTIVE
-    CREATE_DATA_SUBSCRIPTION-DS-RES-V0:
-      value:
-        sink: https://endpoint.example.com/sink
-        protocol: HTTP
-        types:
-        - org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data
-        config:
-          subscriptionDetail:
-            device:
-              phoneNumber: '+99999991000'
-          subscriptionMaxEvents: 5
-          initialEvent: true
-    SUBSCRIPTION_ACTIVATION_REQUESTED-DS-RES-V0:
-      value:
-        id: 550e8400-e29b-41d4-a716-446655440000
-        sink: https://endpoint.example.com/sink
-        protocol: HTTP
-        types:
-        - org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data
-        config:
-          subscriptionDetail:
-            device:
-              phoneNumber: '+99999991000'
-          subscriptionExpireTime: '2024-07-17T13:18:23.682Z'
-          subscriptionMaxEvents: 5
-          initialEvent: true
-        startsAt: '2024-07-03T21:12:02.871Z'
-        expiresAt: '2024-07-03T21:12:02.871Z'
-        status: ACTIVATION_REQUESTED
-    SUBSCRIPTION_DELETED-DS-RES-V0:
-      value:
-        id: 550e8400-e29b-41d4-a716-446655440000
-        sink: https://endpoint.example.com/sink
-        protocol: HTTP
-        types:
-        - org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data
-        config:
-          subscriptionDetail:
-            device:
-              phoneNumber: '+99999991000'
-          subscriptionExpireTime: '2024-07-17T13:18:23.682Z'
-          subscriptionMaxEvents: 5
-          initialEvent: true
-        startsAt: '2024-07-03T21:12:02.871Z'
-        expiresAt: '2024-07-03T21:12:02.871Z'
-        status: DELETED
-    CREATE_SMS_SUBSCRIPTION-DS-RES-V0:
-      value:
-        sink: https://endpoint.example.com/sink
-        protocol: HTTP
-        types:
-        - org.camaraproject.device-reachability-status-subscriptions.v0.reachability-sms
-        config:
-          subscriptionDetail:
-            device:
-              phoneNumber: '+99999991000'
-          subscriptionMaxEvents: 5
-          initialEvent: true
-    REACHABILITY_DISCONNECTED-DS-RES-V0:
-      value:
-        id: '123656'
-        source: https://notificationSendServer12.supertelco.com
-        type: org.camaraproject.device-reachability-status-subscriptions.v0.reachability-disconnected
-        specversion: '1.0'
-        datacontenttype: application/json
-        data:
-          device:
-            phoneNumber: '+99999991000'
-          subscriptionId: qs15-h556-rt89-1298
-        time: '2023-01-19T13:18:23.682Z'
-    REACHABILITY_SMS-DS-RES-V0:
-      value:
-        id: '123656'
-        source: https://notificationSendServer12.supertelco.com
-        type: org.camaraproject.device-reachability-status-subscriptions.v0.reachability-sms
-        specversion: '1.0'
-        datacontenttype: application/json
-        data:
-          device:
-            phoneNumber: '+99999991000'
-          subscriptionId: qs15-h556-rt89-1298
-        time: '2023-01-19T13:18:23.682Z'
-  parameters:
-    SubscriptionId-DS-RES-V0:
-      name: subscriptionId
-      in: path
-      description: Subscription identifier that was obtained from the create event subscription operation
-      required: true
-      schema:
-        $ref: '#/components/schemas/SubscriptionId-DS-RES-V0'
-    x-correlator-DS-RES-V0:
-      name: x-correlator
-      in: header
-      description: Correlation id for the different services
-      schema:
-        type: string
-        pattern: ^[a-zA-Z0-9-]{0,55}$
-        example: b4333c46-49c0-4f62-80d7-f0ef930f1c46
-    x-rapidapi-host:
-      name: x-rapidapi-host
-      in: header
-      required: true
-      description: The API's Host value as defined in the RapidAPI Hub.
-      schema:
-        type: string
-        example: network-as-code.p-eu.rapidapi.com
   headers:
     x-correlator-DS-RES-V0:
       description: Correlation id for the different services

@@ -87,54 +87,23 @@ paths:
           default: http://localhost:9091
           description: API root
 components:
-  examples:
-    RETRIEVAL_CIRCLE-LocR-V0:
-      value:
-        lastLocationTime: '2023-10-17T13:18:23.682Z'
-        area:
-          areaType: CIRCLE
-          center:
-            latitude: 45.754114
-            longitude: 4.860374
-          radius: 800
-    RETRIEVAL_POLYGON-LocR-V0:
-      value:
-        lastLocationTime: '2023-10-17T13:18:23.682Z'
-        area:
-          areaType: POLYGON
-          boundary:
-          - latitude: 45.754114
-            longitude: 4.860374
-          - latitude: 45.753845
-            longitude: 4.863185
-          - latitude: 45.75249
-            longitude: 4.861876
-          - latitude: 45.751224
-            longitude: 4.861125
-          - latitude: 45.751442
-            longitude: 4.859827
   schemas:
-    SingleIpv4Addr-LocR-V0:
-      description: A single IPv4 address with no subnet mask
-      type: string
-      format: ipv4
-      example: 84.125.93.10
-    AreaType-LocR-V0:
-      type: string
-      description: 'Type of this area.
-
-        CIRCLE - The area is defined as a circle.
-
-        POLYGON - The area is defined as a polygon.
-
-        '
-      enum:
-      - CIRCLE
-      - POLYGON
-    NetworkAccessIdentifier-LocR-V0:
-      description: A public identifier addressing a subscription in a mobile network. In 3GPP terminology, it corresponds to the GPSI formatted with the External Identifier ({Local Identifier}@{Domain Identifier}). Unlike the telephone number, the network access identifier is not subjected to portability ruling in force, and is individually managed by each operator.
-      type: string
-      example: 123456789@domain.com
+    Port-LocR-V0:
+      description: TCP or UDP port number
+      type: integer
+      minimum: 0
+      maximum: 65535
+    RetrievalLocationRequest-LocR-V0:
+      type: object
+      properties:
+        device:
+          $ref: '#/components/schemas/Device-LocR-V0'
+        maxAge:
+          type: integer
+          description: Maximum age of the location information which is accepted for the location retrieval (in seconds)
+          minimum: 60
+      required:
+      - device
     Device-LocR-V0:
       description: 'End-user equipment able to connect to a mobile network. Examples of devices include smartphones or IoT sensors/actuators.
 
@@ -165,23 +134,17 @@ components:
         ipv6Address:
           $ref: '#/components/schemas/DeviceIpv6Address-LocR-V0'
       minProperties: 1
-    Area-LocR-V0:
-      type: object
-      properties:
-        areaType:
-          $ref: '#/components/schemas/AreaType-LocR-V0'
-      required:
-      - areaType
-      discriminator:
-        propertyName: areaType
-        mapping:
-          CIRCLE: '#/components/schemas/Circle'
-          POLYGON: '#/components/schemas/Polygon'
-    PhoneNumber-LocR-V0:
-      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, optionally prefixed with '+'.
+    DeviceIpv6Address-LocR-V0:
+      description: 'The device should be identified by the observed IPv6 address, or by any single IPv6 address from within the subnet allocated to the device (e.g. adding ::0 to the /64 prefix).
+
+        '
       type: string
-      pattern: ^\+?[0-9]{5,15}$
-      example: '123456789'
+      format: ipv6
+      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
+    NetworkAccessIdentifier-LocR-V0:
+      description: A public identifier addressing a subscription in a mobile network. In 3GPP terminology, it corresponds to the GPSI formatted with the External Identifier ({Local Identifier}@{Domain Identifier}). Unlike the telephone number, the network access identifier is not subjected to portability ruling in force, and is individually managed by each operator.
+      type: string
+      example: 123456789@domain.com
     Location-LocR-V0:
       type: object
       description: Device location
@@ -195,17 +158,23 @@ components:
           format: date-time
         area:
           $ref: '#/components/schemas/Area-LocR-V0'
-    RetrievalLocationRequest-LocR-V0:
-      type: object
-      properties:
-        device:
-          $ref: '#/components/schemas/Device-LocR-V0'
-        maxAge:
-          type: integer
-          description: Maximum age of the location information which is accepted for the location retrieval (in seconds)
-          minimum: 60
-      required:
-      - device
+    SingleIpv4Addr-LocR-V0:
+      description: A single IPv4 address with no subnet mask
+      type: string
+      format: ipv4
+      example: 84.125.93.10
+    AreaType-LocR-V0:
+      type: string
+      description: 'Type of this area.
+
+        CIRCLE - The area is defined as a circle.
+
+        POLYGON - The area is defined as a polygon.
+
+        '
+      enum:
+      - CIRCLE
+      - POLYGON
     ErrorInfo-LocR-V0:
       type: object
       required:
@@ -222,6 +191,18 @@ components:
         message:
           type: string
           description: Detailed error description
+    Area-LocR-V0:
+      type: object
+      properties:
+        areaType:
+          $ref: '#/components/schemas/AreaType-LocR-V0'
+      required:
+      - areaType
+      discriminator:
+        propertyName: areaType
+        mapping:
+          CIRCLE: '#/components/schemas/Circle'
+          POLYGON: '#/components/schemas/Polygon'
     DeviceIpv4Addr-LocR-V0:
       type: object
       description: 'The device should be identified by either the public (observed) IP address and port as seen by the application server, or the private (local) and any public (observed) IP addresses in use by the device (this information can be obtained by various means, for example from some DNS servers).
@@ -253,29 +234,12 @@ components:
       example:
         publicAddress: 84.125.93.10
         publicPort: 59765
-    Port-LocR-V0:
-      description: TCP or UDP port number
-      type: integer
-      minimum: 0
-      maximum: 65535
-    DeviceIpv6Address-LocR-V0:
-      description: 'The device should be identified by the observed IPv6 address, or by any single IPv6 address from within the subnet allocated to the device (e.g. adding ::0 to the /64 prefix).
-
-        '
+    PhoneNumber-LocR-V0:
+      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, optionally prefixed with '+'.
       type: string
-      format: ipv6
-      example: 2001:db8:85a3:8d3:1319:8a2e:370:7344
+      pattern: ^\+?[0-9]{5,15}$
+      example: '123456789'
   responses:
-    Generic401-LocR-V0:
-      description: Unauthenticated
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo-LocR-V0'
-          example:
-            status: 401
-            code: UNAUTHENTICATED
-            message: 'Authorization failed: ...'
     Generic503-LocR-V0:
       description: Service unavailable
       content:
@@ -286,6 +250,33 @@ components:
             status: 503
             code: UNAVAILABLE
             message: Service unavailable
+    RetrieveLocationBadRequest400-LocR-V0:
+      description: "Problem with the client request. In addition to regular scenario of `INVALID_ARGUMENT`, another scenarios may exist:\n\n\n\n\n  - maxAge threshold cannot be satisfied"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-LocR-V0'
+          examples:
+            InvalidArgument:
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Invalid argument
+            MaxAgeIssue:
+              value:
+                status: 400
+                code: LOCATION_RETRIEVAL.MAXAGE_INVALID_ARGUMENT
+                message: maxAge threshold cannot be satisfied
+    Generic404-LocR-V0:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorInfo-LocR-V0'
+          example:
+            status: 404
+            code: NOT_FOUND
+            message: The specified resource is not found
     Generic500-LocR-V0:
       description: Internal server error
       content:
@@ -306,33 +297,42 @@ components:
             status: 403
             code: PERMISSION_DENIED
             message: 'Operation not allowed: ...'
-    Generic404-LocR-V0:
-      description: Not found
+    Generic401-LocR-V0:
+      description: Unauthenticated
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorInfo-LocR-V0'
           example:
-            status: 404
-            code: NOT_FOUND
-            message: The specified resource is not found
-    RetrieveLocationBadRequest400-LocR-V0:
-      description: "Problem with the client request. In addition to regular scenario of `INVALID_ARGUMENT`, another scenarios may exist:\n\n\n\n\n  - maxAge threshold cannot be satisfied"
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorInfo-LocR-V0'
-          examples:
-            InvalidArgument:
-              value:
-                status: 400
-                code: INVALID_ARGUMENT
-                message: Invalid argument
-            MaxAgeIssue:
-              value:
-                status: 400
-                code: LOCATION_RETRIEVAL.MAXAGE_INVALID_ARGUMENT
-                message: maxAge threshold cannot be satisfied
+            status: 401
+            code: UNAUTHENTICATED
+            message: 'Authorization failed: ...'
+  examples:
+    RETRIEVAL_CIRCLE-LocR-V0:
+      value:
+        lastLocationTime: '2023-10-17T13:18:23.682Z'
+        area:
+          areaType: CIRCLE
+          center:
+            latitude: 45.754114
+            longitude: 4.860374
+          radius: 800
+    RETRIEVAL_POLYGON-LocR-V0:
+      value:
+        lastLocationTime: '2023-10-17T13:18:23.682Z'
+        area:
+          areaType: POLYGON
+          boundary:
+          - latitude: 45.754114
+            longitude: 4.860374
+          - latitude: 45.753845
+            longitude: 4.863185
+          - latitude: 45.75249
+            longitude: 4.861876
+          - latitude: 45.751224
+            longitude: 4.861125
+          - latitude: 45.751442
+            longitude: 4.859827
   parameters:
     x-rapidapi-host:
       name: x-rapidapi-host
